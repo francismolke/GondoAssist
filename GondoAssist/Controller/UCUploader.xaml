@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="GondoAssist.UCUploader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GondoAssist"
+             mc:Ignorable="d" d:DesignWidth="800" Height="700">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top">
+            <TabControl  HorizontalAlignment="Center" VerticalAlignment="Top">
+                <TabItem Name="Youtube" Header="Youtube" Width="150">
+                    <TabPanel Height="600" Width="500" Background="#FF1E1029">
+                        <StackPanel Width="350" Margin="100,10,-100,-42" >
+                            <Label Content="Wählen Sie Ihre Datei aus:" Foreground="White"/>
+                            <Button x:Name="selectFileB" Content="Datei wählen..." Click="onSelectFileButtonClicked"/>
+                            <TextBox x:Name="pathbox" Text="" Width="350"/>
+                            <Label Content="Titel:" Foreground="White"/>
+                            <TextBox x:Name="titletb"  Text=""/>
+                            <Label Content="Beschreibung:" Foreground="White"/>
+                            <TextBox x:Name="DescriptionBox" Height="150"  Text=""/>
+                            <Label Content="Wo soll Timestamp gespeichert werden?" Foreground="White"/>
+                            <Button Name="sfTSbutton" Content="Speicherort..." Click="onSelectFolderTSClicked" Margin="0,0,0,5"/>
+                            <Button Name="asdSbutton" Content="wähle .xml" Click="onXMLClicked" Margin="0,0,0,5"/>
+                            <Button Name="tsbutton" Content="create Timestamps" Click="onTimestampCreatedClicked" />
+                            <TextBox x:Name="EpisodeNumber" Height="15" Width="50" Text="" Margin="5,5,5,5"/>
+                            <Button Name="folderbutton" Content="take files out of folders" Click="collectVideos" />
+                            <Label  Content="Tags" Foreground="White"/>
+                            <TextBox x:Name="TagBox" Text=""/>
+                            <Label Content="Privacy Status" Foreground="White"/>
+                            <ListBox x:Name="Privacy" SelectionMode="Single" SelectionChanged="onListboxItemSelected">
+                                <ListBoxItem Name="public" Content="Öffentlich"/>
+                                <ListBoxItem Name="private" Content="Privat"/>
+                                <ListBoxItem Name="unlisted" Content="Nicht gelistet"/>
+                            </ListBox>
+                            <Button Name="startUpload" Content="Upload starten" Click="onUploadClicked"/>
+                        </StackPanel>
+                    </TabPanel>
+                </TabItem>
+                <TabItem Name="Wordpress" Header="Wordpress" Width="150">
+                    <TabPanel Height="500" Width="500" Background="#FF1E1029">
+                        <StackPanel Margin="134,0,-134,0">
+                            <Label Content="Titel:" Foreground="White"/>
+                            <TextBox x:Name="wtitletb" Width="200" Text=""/>
+                            <Label Content="Link zum Video:" Foreground="White"/>
+                            <TextBox x:Name="wDescriptionBox"  Width="200" Text=""/>
+                            <Label Content="Thumbnail" Width="200" Foreground="White"/>
+                            <Button x:Name="wThumbnail" Content="auswählen..." Margin="0,5,0,5" Height="20" Width="200" Click="onThumbnailOpenClicked"/>
+                            <Button Name="xstartUpload" Content="posten" Click="onPostClicked"/>
+                        </StackPanel>
+                    </TabPanel>
+                </TabItem>
+                <TabItem Name="GoogleDrive" Header="Google Drive" Width="150">
+                    <TabPanel Height="500" Width="500" Background="#FF1E1029">
+                        <StackPanel Margin="134,25,-134,-141">
+                            <Label Content="Titel:" Foreground="White"/>
+                            <TextBox x:Name="gtitletb" Width="200" Text="" Margin="10"/>
+                            <Label Content="Datei:" Foreground="White"/>
+                            <Button Name="GDSelectFile" Content="Datei auswählen..." Click="onGDSelectFile"/>
+                            <Label Content="Was für eine Datei?" Foreground="White"/>
+                            <ListBox Name="LBDatatype" Margin="10" SelectionChanged="onGDLBISelected">
+                                <ListBoxItem Content="Video"/>
+                                <ListBoxItem Content="Bild"/>
+                                <ListBoxItem Content="ZIP"/>
+                            </ListBox>
+                            <TextBox x:Name="gDescriptionBox"  Width="200" Text="" Margin="10"/>
+
+                            <Button Name="gstartUpload" Content="posten" Click="onGPostClicked"/>
+                            <Label Name="UploadControl" Content="" Foreground="White"/>
+                        </StackPanel>
+                    </TabPanel>
+                </TabItem>
+                <TabItem Name="Instagram" Header="InstaGram" Width="150">
+                    <TabPanel Height="500" Width="500" Background="#FF1E1029">
+                        <StackPanel Margin="134,0,-134,0">
+                            <Label Content="Name der Textdatei:" Foreground="White"/>
+                            <TextBox x:Name="igtitle" Width="200" Text=""/>
+                            <Label Content="Speicherort:" Foreground="White"/>
+                            <Button Name="igSavePath" Content="auswählen..." Click="onIGSavePathClicked"/>
+                            <Label Content="Datum auswählen" Width="200" Foreground="White"/>
+                            <DatePicker Name="dpSelectedDate"/>                            
+                            <Label Content="Zeit eingeben (z.B. 21:00):" Width="200" Foreground="White"/>
+                            <TextBox x:Name="igDescriptionBox" Height="20" Width="25" Text="" Margin="0,0,55,0"/>
+                            <Label Content=":" Foreground="White" Margin="83,-25,-55,0"/>
+                            <TextBox x:Name="igDescriptionBox2" Height="20" Width="25" Text="" Margin="10,-22,0,0"/>
+                            <Label Content="Thumbnail" Width="200" Foreground="White"/>
+                            <Button x:Name="igThumbnail" Content="create..." Margin="0,5,0,5" Height="20" Width="200" Click="onCreateIGListClicked"/>
+                            
+
+                            <Button Name="igstartUpload" Content="wie immer...noch nicht fertig" Click="onPostClicked" Margin="0,50,0,0"/>
+                        </StackPanel>
+                    </TabPanel>
+                </TabItem>
+            </TabControl>
+        </StackPanel>
+        <StackPanel>
+
+        </StackPanel>
+    </DockPanel>
+</UserControl>

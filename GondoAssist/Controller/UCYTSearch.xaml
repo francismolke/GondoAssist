@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="GondoAssist.UCYTSearch"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GondoAssist"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel Margin="0,0,0,-57" >
+        <StackPanel DockPanel.Dock="Bottom" Height="194">
+            <TextBox Name="Searchbox" Height="30" Margin="150,10,130,0" Background="OldLace" KeyDown="onSearchEntered"/>
+            <Button Name="search" Content="Search..." Height="20" Margin="150,10,130,0" Click="OnSearchClicked"/>
+            <Button Name="download" Content="Download..." Height="20" Margin="150,10,130,0" Click="onDownloadClicked"/>
+            <Button Name="browser" Click="openInBrowser" Content="open in Browser" Height="20" Margin="150,10,130,0"/>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Top" Margin="10,10,10,0" Height="300">
+            <!--<Image gif:ImageBehavior.AnimatedSource="C:\Users\Agrre\Desktop\C#\AbschlussProjekt\Gondossitent\Protondla\Image\gondo.gif" Height="263"  Width="400"/>-->
+            <DataGrid MouseRightButtonDown="onYTVideoRightClicked" MouseDoubleClick="onYTVideoDoubClicked" Height="300" x:Name="dataGridView" SelectionChanged="OnSelect" SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding YoutubeApi}">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="180" Header="Image">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Image}" Height="100" Width="200"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--<DataGridTextColumn Header="Thumbnail" Binding="{Binding Thumbnail}"/>-->
+                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
+                    <DataGridTextColumn Header="Url" Binding="{Binding Url}" />
+                    <DataGridTextColumn Header="Author" Binding="{Binding Author}" />
+                    <DataGridTextColumn/>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+    </DockPanel>
+
+</UserControl>

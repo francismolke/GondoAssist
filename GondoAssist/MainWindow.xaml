@@ -1,0 +1,39 @@
+﻿<Window x:Class="GondoAssist.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GondoAssist"
+        mc:Ignorable="d"
+        Title="GondoAssist" Height="650" Width="800">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Left" >
+            <Menu Name="MainMenu" Width="100" Height="669" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FF1E1029" BorderBrush="Black">
+                <MenuItem Name="mYtSearch" Header="Youtube Suche" Height="65" Width="100" Click="onYoutubeSearchClicked" FontFamily="Segoe UI Black" Foreground="#FFFFE3E2"/>
+                <Separator Height="2" Width="130" HorizontalAlignment="Right" />
+                <MenuItem Name="Downloader" Header="Downloader" Height="65" Width="100" Click="onDownloaderClicked" FontFamily="Segoe UI Black" Foreground="#FFFFE3E2"/>
+                <Separator Height="2" Width="130" HorizontalAlignment="Right" />
+                <MenuItem Name="mUpload" Header="Uploader" Height="65" Width="100" Click="onUploaderClicked" FontFamily="Segoe UI Black" Foreground="#FFFFE3E2">
+                    <MenuItem.Background>
+                        <ImageBrush/>
+                    </MenuItem.Background>
+                </MenuItem>
+                <Separator Height="2" Width="130" HorizontalAlignment="Right" />
+                <MenuItem Name="newDownload" Header="New Downloader" Height="65" Width="100" Click="onNewDownloaderClicked" FontFamily="Segoe UI Black" Foreground="#FFFFE3E2">
+                    <MenuItem.Background>
+                        <ImageBrush/>
+                    </MenuItem.Background>
+                </MenuItem>
+                <Separator Height="2" Width="130" HorizontalAlignment="Right" />
+                <MenuItem Name="InstagramLinkGraber" Header="IG-Linkgrabber" Height="65" Width="100" Click="onIGLinkGrabberClicked" FontFamily="Segoe UI Black" Foreground="#FFFFE3E2">
+                    <MenuItem.Background>
+                        <ImageBrush/>
+                    </MenuItem.Background>
+                </MenuItem>
+            </Menu>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Top" x:Name="maincontent" Background="#FF654580" >
+
+        </StackPanel>
+    </DockPanel>
+</Window>

@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="GondoAssist.TestDownloader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GondoAssist"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel>
+        <StackPanel Width="352" Height="450" Background="#FF47326C">
+            <Label Background="#FF47326C" Content="Link einfügen(falls nötig):" Foreground="Wheat" Height="30" Margin="121,12,85,-12" Width="146" HorizontalAlignment="Center"/>
+            <TextBox x:Name="urlbox" Height="30" Margin="37,5" Visibility="Collapsed"/>
+            <TextBox x:Name="lbVideoName" Height="25" Margin="37,5" LostFocus="onLinkTextChanged"/>
+            <!--<ListBox Height="25" Width="200" Margin="5,5,5,5" Name="lbLinks"/>-->
+            <ComboBox Height="25" Margin="76,5" x:Name="cBLinks"/>
+            <Button x:Name="WhereToSave" Height="25" Width="100" Margin="-10,30,48,-25" Content="Save..." Click="onSaveFolderClicked"/>
+            <Button x:Name="dbutton" Content="Download" Height="30" Width="150" Margin="25,30,25,-30" Click="onDownloadClicked"/>
+            <Label x:Name="lblPercent" Height="25" Width="200" Margin="5,35,5,5" BorderBrush="#FF65B4F9" />
+            <Label x:Name="lblTotalDW" Height="25" Width="150" Margin="5,5,5,5" BorderBrush="#FF65B4F9"/>
+            <ProgressBar x:Name="progressBar" Height="25" Width="150" Margin="0,5,0,0" BorderBrush="#FF65B4F9"/>
+        </StackPanel>
+    </DockPanel>
+</UserControl>

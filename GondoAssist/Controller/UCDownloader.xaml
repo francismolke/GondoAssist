@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="GondoAssist.UCDownloader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GondoAssist"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel>
+        <StackPanel Width="352" Height="450" Background="#FF47326C">
+            <!--<TabControl  HorizontalAlignment="Center" VerticalAlignment="Top" Height="450" Margin="71,0">
+                <TabItem Name="YoutubeDL" Header="Youtube alt" Width="150">
+                    <TabPanel Height="600" Width="200" Background="#FF1E1029">-->
+                        <Label Background="#FF47326C" Content="Link einfügen(falls nötig):" Foreground="Wheat" Height="30" Margin="29,12,-7,-12" Width="146" HorizontalAlignment="Center"/>
+                        <TextBox Name="urlbox" Height="30" Margin="37,5" Visibility="Collapsed"/>
+                        <TextBox Name="lbVideoName" Height="25" Margin="37,5" LostFocus="onLinkTextChanged"/>
+                        <!--<ListBox Height="25" Width="200" Margin="5,5,5,5" Name="lbLinks"/>-->
+                        <ComboBox Height="25" Margin="76,5" Name="cBLinks"/>
+                        <Button Name="WhereToSave" Height="25" Width="100" Margin="-10,30,48,-25" Content="Save..." Click="onSaveFolderClicked"/>
+                        <Button Name="dbutton" Content="Download" Height="30" Width="150" Margin="25,30,25,-30" Click="onDownloadClicked"/>
+                        <Label Name="lblPercent" Height="25" Width="200" Margin="5,5,5,5" BorderBrush="#FF65B4F9" />
+                        <Label Name="lblTotalDW" Height="25" Width="150" Margin="5,5,5,5" BorderBrush="#FF65B4F9"/>
+                        <ProgressBar Name="progressBar" Height="25" Width="150" Margin="0,5,0,0" BorderBrush="#FF65B4F9"/>
+
+
+                        <!--<Image gif:ImageBehavior.AnimatedSource="C:\Users\Agrre\Desktop\C#\AbschlussProjekt\Gondossitent\Protondla\Image\Gondo.gif" Height="53"  Width="225"/>-->
+
+                    <!--</TabPanel>
+                </TabItem>-->
+                <!--<TabItem Name="YoutubeNeu" Header="Youtube neu" Width="150">
+                    <TabPanel Height="500" Width="205" Background="#FF1E1029">
+                        <Label Background="#FF47326C" Content="Link einfügen(falls nötig):" Foreground="Wheat" Height="30" Margin="29,12,-7,-12" Width="146" HorizontalAlignment="Center"/>
+                        <TextBox Name="urlbox1" Margin="-63.167,65,27,-100" />
+                        <TextBox Name="lbVideoName1" Margin="-157,78,124,-103" LostFocus="onLinkTextChanged"/>
+                        --><!--<ListBox Height="25" Width="200" Margin="5,5,5,5" Name="lbLinks"/>--><!--
+                        <ComboBox Height="25" Margin="76,5" Name="cBLinks1"/>
+                        <Button Name="WhereToSave1" Height="25" Width="100" Margin="-15,108,55,-103" Content="Save..." Click="onSaveFolderClicked"/>
+                        <Button Name="dbutton1" Content="Download" Height="30" Width="150" Margin="28,139,27,-139" Click="onDownloadClicked"/>
+                        <Label Name="lblPercent1" Height="25" Width="200" Margin="5,157,0,-152" BorderBrush="#FF65B4F9" />
+                        <Label Name="lblTotalDW1" Height="25" Width="150" Margin="28,152,27,-147" BorderBrush="#FF65B4F9"/>
+                        <ProgressBar Name="progressBar1" Height="25" Width="150" Margin="28,147,27,-142" BorderBrush="#FF65B4F9"/>
+
+                    </TabPanel>
+                </TabItem>
+
+            </TabControl>-->
+
+
+
+
+        </StackPanel>
+    </DockPanel>
+</UserControl>
