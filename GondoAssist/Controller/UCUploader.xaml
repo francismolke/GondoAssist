@@ -22,8 +22,7 @@
                             <Button Name="sfTSbutton" Content="Speicherort..." Click="onSelectFolderTSClicked" Margin="0,0,0,5"/>
                             <Button Name="asdSbutton" Content="wähle .xml" Click="onXMLClicked" Margin="0,0,0,5"/>
                             <Button Name="tsbutton" Content="create Timestamps" Click="onTimestampCreatedClicked" />
-                            <TextBox x:Name="EpisodeNumber" Height="15" Width="50" Text="" Margin="5,5,5,5"/>
-                            <Button Name="folderbutton" Content="take files out of folders" Click="collectVideos" />
+
                             <Label  Content="Tags" Foreground="White"/>
                             <TextBox x:Name="TagBox" Text=""/>
                             <Label Content="Privacy Status" Foreground="White"/>
@@ -69,7 +68,7 @@
                         </StackPanel>
                     </TabPanel>
                 </TabItem>
-                <TabItem Name="Instagram" Header="InstaGram" Width="150">
+                <TabItem Name="InstagramTab" Header="InstaGram" Width="150">
                     <TabPanel Height="500" Width="500" Background="#FF1E1029">
                         <StackPanel Margin="134,0,-134,0">
                             <Label Content="Name der Textdatei:" Foreground="White"/>
@@ -78,14 +77,35 @@
                             <Button Name="igSavePath" Content="auswählen..." Click="onIGSavePathClicked"/>
                             <Label Content="Datum auswählen" Width="200" Foreground="White"/>
                             <DatePicker Name="dpSelectedDate"/>                            
-                            <Label Content="Zeit eingeben (z.B. 21:00):" Width="200" Foreground="White"/>
-                            <TextBox x:Name="igDescriptionBox" Height="20" Width="25" Text="" Margin="0,0,55,0"/>
+                            <Label Name="resultLabel" Content="" Width="200" Foreground="White"/>
                             <Label Content=":" Foreground="White" Margin="83,-25,-55,0"/>
-                            <TextBox x:Name="igDescriptionBox2" Height="20" Width="25" Text="" Margin="10,-22,0,0"/>
-                            <Label Content="Thumbnail" Width="200" Foreground="White"/>
-                            <Button x:Name="igThumbnail" Content="create..." Margin="0,5,0,5" Height="20" Width="200" Click="onCreateIGListClicked"/>
                             
+                            <Label Content="Datum eintragen z.B 17.10.2019" Width="200" Foreground="White"/>
+                            <TextBox x:Name="insertedDate" Width="75" Text="17.10.2019" TextAlignment="Center"/>
+                            <Button x:Name="igThumbnail" Content="create..." Margin="0,5,0,5" Height="20" Width="200" Click="onCreateIGListClicked"/>
+                            <!--<DatePicker Name="IGDatePicker"/>-->
 
+                            <DatePicker Name="IGDatePicker" SelectedDate="{Binding Path = SuggestedDateX, StringFormat = {}{0:dd-MM-yyyy}}">
+                                <DatePicker.Resources>
+                                    <Style TargetType="DatePickerTextBox">
+                                        <Setter Property="Control.Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <TextBox x:Name="PART_TextBox"
+                                                     Text="{Binding Path=SelectedDate, StringFormat = {}{0:dd-MM-yyyy}, 
+                                                     RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" 
+                                                     />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DatePicker.Resources>
+                            </DatePicker>
+
+                            <Label Content="Ordnername (Episodenname)" Width="200" Foreground="White"/>
+                            <TextBox x:Name="EpisodeNumber" Height="15" Width="50" Text="" Margin="5,5,5,5"/>
+                            <Button Name="folderbutton" Content="take files out of folders" Click="collectVideos" />
+                            <ProgressBar Name="pbStatus" />
                             <Button Name="igstartUpload" Content="wie immer...noch nicht fertig" Click="onPostClicked" Margin="0,50,0,0"/>
                         </StackPanel>
                     </TabPanel>

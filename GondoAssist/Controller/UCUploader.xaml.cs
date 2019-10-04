@@ -53,12 +53,24 @@ namespace GondoAssist
         string _filePath;
         private static WordPressClient _clientAuth;
         private static WordPressClient _client;
+        BackgroundWorker backgroundWorker1 = new BackgroundWorker();
+        //Window IGPB = new Window();
+
         public UCUploader()
         {
             InitializeComponent();
             DataContext = this;
+            backgroundWorker1.WorkerReportsProgress = true;
+            backgroundWorker1.WorkerSupportsCancellation = true;
+            
+            //IGPB.Height = 300;
+            //IGPB.Width = 400;
+            //IGPB.Name = "IGProgressBar";
+            //IGPB.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
 
             
+
         }
         [ClassInitialize]
         public static async Task Init(TestContext testContext)
@@ -134,7 +146,7 @@ namespace GondoAssist
         {
             using (System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog())
             {
-                
+
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     pathbox.Text = ofd.FileName;
@@ -173,7 +185,6 @@ namespace GondoAssist
             Pfad = pathbox.Text;
             try
             {
-
                 Run().Wait();
             }
             catch (AggregateException ex)
@@ -212,7 +223,7 @@ namespace GondoAssist
                 if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     TNSavePath = fbd.FileName;
-                    TNSaveFile = System.IO.Path.GetFileName(TNSavePath);                    
+                    TNSaveFile = System.IO.Path.GetFileName(TNSavePath);
                 }
             }
         }
@@ -223,10 +234,10 @@ namespace GondoAssist
             try
             {
                 WordPressClient client = await GetClient();
-                
-                
 
-                
+
+
+
                 if (await client.IsValidJWToken())
                 {
 
@@ -243,9 +254,9 @@ namespace GondoAssist
                     Debug.WriteLine(File.Exists(path));
 
                     var mediaitem = await client.Media.Create(path, file);
-                    
+
                     //var mediaitem = await _clientAuth.Media.Create(path, "cat.jpg");
-                      Assert.IsNotNull(mediaitem);
+                    Assert.IsNotNull(mediaitem);
 
                     var post = new Post
                     {
@@ -254,8 +265,8 @@ namespace GondoAssist
                         FeaturedMedia = mediaitem.Id
 
                     };
-                    
-                 await client.Posts.Create(post);
+
+                    await client.Posts.Create(post);
                     MessageBoxResult result = MessageBox.Show("Upload finished");
 
 
@@ -283,8 +294,8 @@ namespace GondoAssist
         private static string ApplicationName = "GoogleDriveAPIStart";
         private static string FolderId = "1lgB8zg1AqOBN99R_l6s0LsQTM4Br3WbE";
         private static string _fileName = "testFile";
-    //    private static string _filePath = @"C:\Users\Agrre\Desktop\Neuer Ordner\hehe.rar";
-      //  private static string _contentType = GDdatentyp;
+        //    private static string _filePath = @"C:\Users\Agrre\Desktop\Neuer Ordner\hehe.rar";
+        //  private static string _contentType = GDdatentyp;
         //"application/zip";
         //image/jpeg
         //video/mp4
@@ -314,14 +325,14 @@ namespace GondoAssist
             }
 
             gDescriptionBox.Text = GDdatentyp;
-        }        
+        }
         // Button event für Datei auswahl für Google Drive 
         private void onGDSelectFile(object sender, RoutedEventArgs e)
         {
             using (System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog())
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                   _filePath = ofd.FileName;                   
+                    _filePath = ofd.FileName;
                 }
         }
         // Hier wird für Google Drive die Status-Meldungen abgehandelt
@@ -331,10 +342,10 @@ namespace GondoAssist
 
             try
             {
-           //     Console.WriteLine("Create creds");
+                //     Console.WriteLine("Create creds");
                 UserCredential credential = GetUserCredential();
 
-          //      Console.WriteLine("get Serivce");
+                //      Console.WriteLine("get Serivce");
                 DriveService service = GetDriveService(credential);
                 _fileName = gtitletb.Text;
                 if (GDdatentyp == "video/mp4")
@@ -368,7 +379,7 @@ namespace GondoAssist
             catch (AggregateException ex)
             {
                 foreach (var de in ex.InnerExceptions)
-                {                   
+                {
                     throw new AggregateException("ErrorMessage:" + de.Message);
                 }
             }
@@ -417,7 +428,7 @@ namespace GondoAssist
                 request.Upload();
             }
             var file = request.ResponseBody;
-            return file.Id;            
+            return file.Id;
         }
 
         private void collectVideos(object sender, RoutedEventArgs e)
@@ -430,7 +441,7 @@ namespace GondoAssist
             string destFile;
             Directory.CreateDirectory(targetPath);
             // check if directory exists
-            if(Directory.Exists(sourcePath))
+            if (Directory.Exists(sourcePath))
             {
                 Directory.CreateDirectory(targetPath);
                 // get directories into arrays
@@ -490,6 +501,7 @@ namespace GondoAssist
                 }
             }
         }
+
         // Button Event für das Abrufen der Timestamp Methode
         public void onTimestampCreatedClicked(object sender, RoutedEventArgs e)
         {
@@ -500,61 +512,65 @@ namespace GondoAssist
         string sourcepath = @"C:\Users\Agrre\Desktop\InstagramProfileList.txt";
         string savepath = @"C:\Users\Agrre\Desktop\";
 
+
         private void DateTimeCheck()
         {
+
+
             int counter = 1;
+
             DateTime dateTimeNow = DateTime.Now;
             DateTime lastThuesday = DateTime.Now.AddDays(-1);
             DateTime lastFriday = DateTime.Now.AddDays(-1);
+            DateTime insertDate = (DateTime)IGDatePicker.SelectedDate;
             DateTime suggestedDate;
-            if (dateTimeNow.DayOfWeek == DayOfWeek.Friday)
+            //  insertDate = dpSelectedDate;
+
+            if (insertDate == null)
             {
-
-
-                while (lastThuesday.DayOfWeek != DayOfWeek.Friday)
+                if (dateTimeNow.DayOfWeek == DayOfWeek.Friday)
                 {
-                    lastThuesday = lastThuesday.AddDays(-1);
-                    counter++;
+
+
+                    while (lastThuesday.DayOfWeek != DayOfWeek.Friday)
+                    {
+                        lastThuesday = lastThuesday.AddDays(-1);
+                        counter++;
+                    }
+                    TimeSpan diffDays = dateTimeNow.Subtract(lastThuesday);
+                    suggestedDate = dateTimeNow - diffDays;
                 }
-                TimeSpan diffDays = dateTimeNow.Subtract(lastThuesday);
-                suggestedDate = dateTimeNow - diffDays;
-            }
-            else
-            {
-
-
-                while (lastFriday.DayOfWeek != DayOfWeek.Friday)
+                else
                 {
-                    lastFriday = lastFriday.AddDays(-1);
-                    counter++;
+
+
+                    while (lastFriday.DayOfWeek != DayOfWeek.Friday)
+                    {
+                        lastFriday = lastFriday.AddDays(-1);
+                        counter++;
+                    }
+                    TimeSpan diffDays = dateTimeNow.Subtract(lastFriday);
+                    suggestedDate = dateTimeNow - diffDays;
+
                 }
-                TimeSpan diffDays = dateTimeNow.Subtract(lastFriday);
-                suggestedDate = dateTimeNow - diffDays;
-
+                dpSelectedDate.SelectedDate = suggestedDate;
+                GetInstagramList(suggestedDate);
             }
-            dpSelectedDate.SelectedDate = suggestedDate;
 
-            GetInstagramList(suggestedDate);
+
+            GetInstagramList(insertDate);
 
 
         }
 
-        private void GetInstagramList(DateTime suggestedDate)
-        {
-            List<string> profileList = new List<string>();
-            using (StreamReader filereader = new StreamReader(sourcepath))
-            {
-                foreach (string line in File.ReadLines(sourcepath, Encoding.UTF8))
-                {
-                    profileList.Add(line);
-                }
-                GetHTMLInfo(profileList, suggestedDate);
-            }
-        }
+
+
+
 
         public void GetHTMLInfo(List<string> profileList, DateTime suggestedDate)
         {
             int counter = 0;
+            File.WriteAllText(savepath + "\\Quellen.txt", String.Empty);
             var service = ChromeDriverService.CreateDefaultService();
             service.HideCommandPromptWindow = true;
             IWebDriver driver = new ChromeDriver(service, new ChromeOptions());
@@ -562,8 +578,23 @@ namespace GondoAssist
             driver.Manage().Window.Minimize();
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
 
+            //
+            
+
+            //IGPB.Show();
+            //
+            ProgressBar IGPBar = new ProgressBar()
+            {
+                Minimum = 0,
+                Maximum = profileList.Count,
+            }; ;
+            //IGPB.Content = IGPBar;
+
             while (counter < profileList.Count)
             {
+
+                backgroundWorker1.DoWork += backgroundWorker1_DoWork;
+                backgroundWorker1.ProgressChanged += worker_ProgressChanged;
                 //progressBarIG
                 //progressBarIG.Minimum = 1;
                 //progressBarIG.Maximum = profileList.Count;
@@ -606,6 +637,7 @@ namespace GondoAssist
 
                     using (StreamWriter writer = new StreamWriter(savepath + "\\Quellen.txt", true, Encoding.UTF8))
                     {
+
                         string link = "";
                         DateTime returnValue;
                         string error;
@@ -613,12 +645,14 @@ namespace GondoAssist
                         {
                             link = "https://www.instagram.com" + item.Attributes["href"].Value;
                             returnValue = DateTimeExpress(link, driver);
-                           // DateTime dt1 = new DateTime(2019, 8, 9, 20, 0, 0);
+                            // DateTime dt1 = new DateTime(2019, 8, 9, 20, 0, 0);
                             if (returnValue > suggestedDate)
                                 writer.Write("https://www.instagram.com" + item.Attributes["href"].Value + "\r\n");
-                          //  else
-                               // writer.Write(profileList);
+                            else
+                            { }
+                            // writer.Write(profileList);
                         }
+                        writer.Close();
                     }
 
                     //  Thread.Sleep(3000);
@@ -631,23 +665,137 @@ namespace GondoAssist
                     //  driver.Quit();
 
                 }
-          //      progressBarIG.Value += counter;
+                //      progressBarIG.Value += counter;
                 counter++;
             }
             driver.Quit();
         }
 
+
+
+
+        int profilecount;
+
+        private int GetInstagramList(DateTime suggestedDate)
+        {
+            List<string> profileList = new List<string>();
+            using (StreamReader filereader = new StreamReader(sourcepath))
+            {
+                foreach (string line in File.ReadLines(sourcepath, Encoding.UTF8))
+                {
+                    profileList.Add(line);
+                }
+               // startBackGroundWOrker(profileList.Count, profileList, suggestedDate);
+
+
+                   GetHTMLInfo(profileList, suggestedDate);
+            }
+            return profilecount = profileList.Count;
+        }
+
+        private void startBackGroundWOrker(int count, List<string> profileList, DateTime suggestedDate)
+        {
+
+            if (backgroundWorker1.IsBusy != true)
+            {
+                backgroundWorker1.RunWorkerAsync();
+            }
+
+            //using (StreamReader filereader = new StreamReader(sourcepath))
+            //{
+            //    foreach (string line in File.ReadLines(sourcepath, Encoding.UTF8))
+            //    {
+            //        profilecount++;
+            //    }
+
+            // open dialog
+            // mit pg hier erstellen dynamisch
+            GetHTMLInfo(profileList, suggestedDate);
+          //  ShowProgressHandler(count, profileList, suggestedDate);
+            //}
+        }
+
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            
+            for (int i=0; i<= profilecount; i++)
+            {
+                if (worker.CancellationPending == true)
+                {
+                    e.Cancel = true;
+                    break;                    
+                }
+                else
+                {
+                    if (i!=0)
+                    {
+                        int percentage = profilecount / i;
+                        worker.ReportProgress(percentage);
+                    }
+                    //
+                }
+            }
+        }
+
+        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+
+            pbStatus.Value = e.ProgressPercentage;
+        }
+
+
+        private void cancelBackGroundWorker()
+        {
+
+        }
+
+
+        //            var progressbar = new ProgressBar()
+
+        ////add it to the form
+        //            uploadForm.Controls.Add(progressbar);
+
+
+        private void ShowProgressHandler(int count, List<string> profileList, DateTime suggestedDate)
+        {
+            Window IGPB = new Window();
+            IGPB.Height = 300;
+            IGPB.Width = 400;
+            IGPB.Name = "IGProgressBar";
+            IGPB.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+           
+            ProgressBar IGPBar = new ProgressBar()
+            {
+                Minimum = 0,
+                Maximum = count,
+            }; ;
+            IGPB.Content = IGPBar;
+
+            IGPB.Show();
+            GetHTMLInfo(profileList, suggestedDate);
+
+            //for (int i = 0; i < count; i++)
+            //{
+            //    IGPBar.Value++;
+            //}
+        }
+
+
         string TimeStopRaw;
 
         private void onCreateIGListClicked(object sender, RoutedEventArgs e)
         {
+
             DateTimeCheck();
 
         }
 
         private DateTime DateTimeExpress(string Link, IWebDriver driver)
         {
-            
+
             string link = Link;
 
             driver.Url = link;
@@ -709,9 +857,9 @@ namespace GondoAssist
             TimeStamp = date + " " + time + "" + year + "" + month + "" + day + "" + hour + "" + minute + "" + seconds;
             DateTime dt1 = new DateTime(year, month, day, hour, minute, seconds);
 
-                return dt1;
+            return dt1;
         }
-        
+
         private void GetVideoTimeDate()
         {
             IWebDriver driver = new ChromeDriver();
@@ -781,3 +929,37 @@ namespace GondoAssist
 
     }
 }
+
+
+
+//int profilecount = 0;
+
+//private void CountProfileList()
+//{
+
+
+//    using (StreamReader filereader = new StreamReader(sourcepath))
+//    {
+//        foreach (string line in File.ReadLines(sourcepath, Encoding.UTF8))
+//        {
+//            profilecount++
+//                }
+//        // open dialog
+//        // mit pg hier erstellen dynamisch
+//        PB_Renderer(profilecount)
+//            }
+//}
+
+//private void PB_Renderer(count)
+//{
+
+//    for (int i = 0; i < count; i++)
+//    {
+//        InstagramCheckPB.Value++;
+//    }
+//}
+
+
+//    <Grid Margin = "20" >
+//        < ProgressBar Name="InstagramCheckPB" Minimum="0" Value="75" />
+//    </Grid>

@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="GondoAssist.Uploader_Wordpress"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GondoAssist"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="500" Background="WhiteSmoke" FontFamily="Bahnschrift SemiCondensed" FontSize="20">
+    <DockPanel>
+        <StackPanel>
+            <Label Content="Titel:" Foreground="Black" Width="200" Height="30"/>
+            <TextBox x:Name="wtitletb" Width="200" Text="" Height="30"/>
+            <Label Content="Link zum Video:" Foreground="Black" Width="200" Height="30"/>
+            <TextBox x:Name="wDescriptionBox"  Width="200" Text="" Height="30"/>
+            <Label Content="Thumbnail" Width="200" Foreground="Black" Height="30"/>
+            <Button x:Name="wThumbnail" Content="auswählen..."  Height="30" Margin="0,5,0,5" Width="200" Click="onThumbnailOpenClicked"/>
+            <Button Name="xstartUpload" Width="200" Content="posten" Click="onPostClicked" Height="30"/>
+        </StackPanel>
+    </DockPanel>
+</UserControl>
