@@ -1,6 +1,7 @@
 ﻿
 using GondoAssist;
-
+using GondoAssist;
+using GondoAssist.EditForms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,7 +105,8 @@ namespace GondoAssist
             maincontent.Children.Clear();
             string link = "";
             TestDownloader test = new TestDownloader();
-            UCDownloader ucd = new UCDownloader(link);
+           // UCDownloader test = new UCDownloader(link);
+
             maincontent.Children.Add(test);
 
 
@@ -176,7 +178,11 @@ namespace GondoAssist
 
         }
 
-
-
+        private void ThumbnailEditFormClicked(object sender, RoutedEventArgs e)
+        {
+            
+            ThumbnailSelectEditForm teF = new ThumbnailSelectEditForm();
+            teF.Show();
+        }
     }
 }

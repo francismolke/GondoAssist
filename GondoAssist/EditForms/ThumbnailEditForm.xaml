@@ -1,17 +1,18 @@
-﻿<Page x:Class="GondoAssist.ThumbnailSelector"
+﻿<Page x:Class="GondoAssist.EditForms.ThumbnailEditForm"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:GondoAssist"
-      mc:Ignorable="d" d:DesignWidth="800"
-      Title="ThumbnailSelector" Background="BlanchedAlmond" Height="750">
+      xmlns:local="clr-namespace:GondoAssist.EditForms"
+      mc:Ignorable="d" 
+      d:DesignHeight="650" d:DesignWidth="800"
+      Title="ThumbnailEditForm" Background="#FF742F2F">
 
     <DockPanel>
-        <StackPanel DockPanel.Dock="Top" Margin="0,50,0,0" >
-            <Button x:Name="OpenEditMode" Click="AddEditTN" Height="75" Width="75" Background="Transparent" BorderThickness="0">
-                <Image  Source="/GondoAssist;component/Resources/plus.png"/>
-            </Button>
+        <StackPanel DockPanel.Dock="Top">
+            <TextBox Name="Searchbox" Height="30" Margin="150,10,130,0" Background="OldLace" KeyDown="onSearchEntered"/>
+            <Button Name="search" Content="Search..." Height="20" Margin="150,10,130,0" Click="OnSearchClicked"/>
+
         </StackPanel>
         <StackPanel Margin="40,50,40,0" DockPanel.Dock="Bottom">
             <Border BorderBrush="Black" BorderThickness="2">
@@ -109,5 +110,6 @@
                 </Grid>
             </Border>
         </StackPanel>
+
     </DockPanel>
 </Page>

@@ -1,28 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace GondoAssist.Controller
+
+namespace GondoAssist
 {
     /// <summary>
     /// Interaktionslogik für ThumbnailSelector.xaml
     /// </summary>
     public partial class ThumbnailSelector : Page
     {
+
+
+    //    YouTubeService youtubeservice = new YouTubeService();
         public ThumbnailSelector()
         {
             InitializeComponent();
+        }
+
+
+
+        // Buttonevent zum öffnen des Bearbeitungsfensters für ThumbnailSelector
+        private void AddEditTN(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

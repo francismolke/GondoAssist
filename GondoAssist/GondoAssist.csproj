@@ -182,6 +182,12 @@
     <Compile Include="Controller\Uploader_Youtube.xaml.cs">
       <DependentUpon>Uploader_Youtube.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EditForms\ThumbnailEditForm.xaml.cs">
+      <DependentUpon>ThumbnailEditForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditForms\ThumbnailSelectEditForm.xaml.cs">
+      <DependentUpon>ThumbnailSelectEditForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utility\ApiCredentials-sample.cs" />
     <Compile Include="Utility\CapabilitiesJsonConverter_Tests.cs" />
     <Compile Include="Utility\ClientHelper.cs" />
@@ -207,6 +213,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controller\Uploader_Youtube.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditForms\ThumbnailEditForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditForms\ThumbnailSelectEditForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -281,6 +295,9 @@
     <Resource Include="Resources\unnamed-1-25.png" />
     <Resource Include="Resources\youtubeDL.png" />
     <Resource Include="Resources\youtube_PNG15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\plus.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

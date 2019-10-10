@@ -107,7 +107,7 @@ namespace GondoAssist
             video.Snippet = new VideoSnippet();
             video.Snippet.Title = Titel;
             video.Snippet.Description = Beschreibung;
-            video.Snippet.Tags = new string[] { Tags };
+            video.Snippet.Tags = new string[] { Tags };     
             video.Snippet.CategoryId = "22"; // See https://developers.google.com/youtube/v3/docs/videoCategories/list
             video.Status = new VideoStatus();
             video.Status.PrivacyStatus = privacystatus; // "unlisted"; // or "private" or "public"
