@@ -10,8 +10,14 @@
         <StackPanel DockPanel.Dock="Top">
             <TextBox Name="Searchbox" Height="30" Margin="150,10,130,0" Background="OldLace" KeyDown="onSearchEntered"/>
             <Button Name="search" Content="Search..." Height="20" Margin="150,10,130,0" Click="OnSearchClicked"/>
-
         </StackPanel>
+        
+        <StackPanel DockPanel.Dock="Top" Margin="0,15,0,0">
+            <Button Height="75" Width="75" Background="Transparent" Click="AddToTNBoard">
+                <Image Source="/GondoAssist;component/Resources/plus.png" />
+            </Button>
+        </StackPanel>
+        
         <StackPanel Margin="40,50,40,0" DockPanel.Dock="Bottom">
             <Border BorderBrush="Black" BorderThickness="2">
                 <Grid x:Name="TNGrid" Background="#FFCDD8E2" DataContext="{Binding Youtube}">
@@ -22,85 +28,91 @@
                         <ColumnDefinition Width="180"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="300"/>
+                        <RowDefinition Height="200"/>
                         <RowDefinition Height="200"/>
                     </Grid.RowDefinitions>
 
-                    <!--    0,0      WIDTH ÄNDERN BEI AUFRUFZAHL-->
-                    <StackPanel x:Name="SPxZero">
-                        <Image x:Name="Image0x0" Height="140"/>
-                        <Label Content="{Binding Title}" Height="30"/>
-                        <Label Content="{Binding Author}" Width="100" Height="30"/>
-                        <Label Content="{Binding Url}" Width="100" Height="30"/>
-                        
-                    </StackPanel>
+                    <!--    0,0    -->
+                    <Button Name="Button0x0" Click="SelectedThumbnail">
+                        <StackPanel>
+                            <Image x:Name="Image0x0" Height="140"/>
+                            <Label x:Name="Title0x0" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url0x0" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
 
                     <!--    0,1      -->
-                    <StackPanel Grid.Column="1">
+                    <Button Name="Button0x1" Click="SelectedThumbnail" Grid.Column="1">
+                        <StackPanel>
                         <Image x:Name="Image0x1" Height="140"/>
-                        <Label Content="Titel: Slamdank 12" />
+                        <Label x:Name="Title0x1" Content=""/>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="KanalName" Width="100" HorizontalAlignment="Right"/>
+                            <Label x:Name="Url0x1" Content=""  Width="100" HorizontalAlignment="Right"/>
                             <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </StackPanel>
+                    </Button>
+
 
                     <!--    0,2      -->
                     <StackPanel Grid.Column="2">
-                        <Image x:Name="Image0x2" Source="{Binding Image}" Height="140"/>
-                        <Label Content="Titel: Slamdank 12" />
+                        <Image x:Name="Image0x2" Height="140"/>
+                        <Label x:Name="Title0x2" Content=""/>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="KanalName" Width="100" HorizontalAlignment="Right"/>
+                            <Label x:Name="Url0x2" Content=""  Width="100" HorizontalAlignment="Right"/>
                             <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!--    0,3      -->
                     <StackPanel Grid.Column="3">
-                        <Image x:Name="Image0x3" Source="{Binding Image}" Height="140"/>
-                        <Label Content="Titel: Slamdank 12" />
+                        <Image x:Name="Image0x3" Height="140"/>
+                        <Label x:Name="Title0x3" Content=""/>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="KanalName" Width="100" HorizontalAlignment="Right"/>
+                            <Label x:Name="Url0x3" Content=""  Width="100" HorizontalAlignment="Right"/>
                             <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!--    1,0      -->
-                    <StackPanel Grid.Row="1" Grid.Column="0">
-                        <Image x:Name="Image1x0" Source="{Binding Image}" Height="140"/>
-                        <Label Content="Titel: Slamdank 12" />
+                    <StackPanel Grid.Row="3">
+                        <Image x:Name="Image1x0" Height="140"/>
+                        <Label x:Name="Title1x0" Content=""/>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="KanalName" Width="100" HorizontalAlignment="Right"/>
+                            <Label x:Name="Url1x0" Content=""  Width="100" HorizontalAlignment="Right"/>
                             <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!--    1,1      -->
                     <StackPanel Grid.Row="1" Grid.Column="1">
-                        <Image x:Name="Image1x1" Source="{Binding Image}" Height="140"/>
-                        <Label Content="Titel: Slamdank 12" />
+                        <Image x:Name="Image1x1" Height="140"/>
+                        <Label x:Name="Title1x1" Content=""/>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="KanalName" Width="100" HorizontalAlignment="Right"/>
+                            <Label x:Name="Url1x1" Content=""  Width="100" HorizontalAlignment="Right"/>
                             <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!--    1,2      -->
                     <StackPanel Grid.Row="1" Grid.Column="2">
-                        <Image x:Name="Image1x2" Source="{Binding Image}" Height="140"/>
-                        <Label Content="Titel: Slamdank 12" />
+                        <Image x:Name="Image1x2" Height="140"/>
+                        <Label x:Name="Title1x2" Content=""/>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="KanalName" Width="100" HorizontalAlignment="Right"/>
+                            <Label x:Name="Url1x2" Content=""  Width="100" HorizontalAlignment="Right"/>
                             <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!--    1,3      -->
                     <StackPanel Grid.Row="1" Grid.Column="3">
-                        <Image x:Name="Image1x3" Source="{Binding Image}" Height="140"/>
-                        <Label Content="Titel: Slamdank 12" />
+                        <Image x:Name="Image1x3" Height="140"/>
+                        <Label x:Name="Title1x3" Content=""/>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="KanalName" Width="100" HorizontalAlignment="Right"/>
+                            <Label x:Name="Url1x3" Content=""  Width="100" HorizontalAlignment="Right"/>
                             <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </StackPanel>

@@ -155,6 +155,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BitMapImage.cs" />
     <Compile Include="Controller\InstagramGrabber.xaml.cs">
       <DependentUpon>InstagramGrabber.xaml</DependentUpon>
     </Compile>

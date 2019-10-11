@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GondoAssist"
         mc:Ignorable="d"
-        Title="GondoAssist" Height="750" Width="1080" Background="Lavender" FontFamily="Bahnschrift SemiCondensed">
+        Title="GondoAssist" Height="750" Width="1380" Background="Lavender" FontFamily="Bahnschrift SemiCondensed">
     <!--<Window.Resources>
         <Style x:Key="MenuButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -45,7 +45,7 @@
                     <Button Background="#FF5852DE" Height="36" Foreground="BlanchedAlmond" Click="onWordpressClicked">Wordpress</Button>
                     <Button Background="#FF5852DE" Height="36" Foreground="BlanchedAlmond" Click="onGoogleDriveClicked">Google Drive</Button>
                     <Button Background="#FF8B8B8B" Height="36" Foreground="BlanchedAlmond" Click="ThumbnailEditFormClicked">Instagram</Button>
-                    <Button Height="36" Foreground="BlanchedAlmond" Background="#FF8B8B8B" >Amino</Button>
+                    <Button Height="36" Foreground="BlanchedAlmond" Background="#FF8B8B8B" Click="ThumbNailSelectedFormClicked">Amino</Button>
                 </StackPanel>
 
                 <!--<Button Background="Transparent" Grid.Column="1" Grid.Row="2">
@@ -56,7 +56,7 @@
                 <!--youtube_PNG15.png-->
             </Grid>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Right" x:Name="maincontent" Background="LightPink" Width="600">
+        <StackPanel DockPanel.Dock="Right" x:Name="maincontent" Background="LightPink" Width="800">
             <!--CONTROLLER FÜR WINDWOS HIER-->
         </StackPanel>
 

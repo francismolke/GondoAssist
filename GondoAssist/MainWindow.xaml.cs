@@ -25,6 +25,12 @@ namespace GondoAssist
     public partial class MainWindow : Window
     {
         //Window initialisierung
+
+        public int selectedColumn { get; set; }
+        public int selectedRow { get; set; }
+        public string tnTitle { get; set; }
+        public ImageSource tnThumbnail { get; set; }
+        public string tnUrl { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -181,8 +187,28 @@ namespace GondoAssist
         private void ThumbnailEditFormClicked(object sender, RoutedEventArgs e)
         {
             
-            ThumbnailSelectEditForm teF = new ThumbnailSelectEditForm();
+            ThumbnailSelectEditForm teF = new ThumbnailSelectEditForm(this);
+            teF.Owner = this;
+            
+
+            teF.Closed += TSEFWindow_Closed;
             teF.Show();
+        }
+
+        private void TSEFWindow_Closed(object sender, EventArgs e)
+        {
+            MessageBox.Show("Mainwindow");
+           // MessageBox.Show("Something has happened" + selectedRow + "" + selectedColumn, "Parent");
+        }
+
+        private void ThumbNailSelectedFormClicked(object sender, RoutedEventArgs e)
+        {
+            
+            maincontent.Children.Clear();
+            ThumbnailSelector teF = new ThumbnailSelector(this);
+            maincontent.Children.Add(teF);
+
+
         }
     }
 }
