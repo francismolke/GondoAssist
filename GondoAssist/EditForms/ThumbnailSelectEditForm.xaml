@@ -33,7 +33,7 @@
                     </Grid.RowDefinitions>
 
                     <!--    0,0    -->
-                    <Button Name="Button0x0" Click="SelectedThumbnail">
+                    <Button Name="Button0x0">
                         <StackPanel>
                             <Image x:Name="Image0x0" Height="140"/>
                             <Label x:Name="Title0x0" Content=""/>
@@ -47,75 +47,84 @@
                     <!--    0,1      -->
                     <Button Name="Button0x1" Click="SelectedThumbnail" Grid.Column="1">
                         <StackPanel>
-                        <Image x:Name="Image0x1" Height="140"/>
-                        <Label x:Name="Title0x1" Content=""/>
-                        <StackPanel Orientation="Horizontal">
-                            <Label x:Name="Url0x1" Content=""  Width="100" HorizontalAlignment="Right"/>
-                            <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            <Image x:Name="Image0x1" Height="140"/>
+                            <Label x:Name="Title0x1" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url0x1" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
                     </Button>
 
 
                     <!--    0,2      -->
-                    <StackPanel Grid.Column="2">
-                        <Image x:Name="Image0x2" Height="140"/>
-                        <Label x:Name="Title0x2" Content=""/>
-                        <StackPanel Orientation="Horizontal">
-                            <Label x:Name="Url0x2" Content=""  Width="100" HorizontalAlignment="Right"/>
-                            <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
-                        </StackPanel>
-                    </StackPanel>
+                    <Button Name="Button0x2" Click="SelectedThumbnail" Grid.Column="2">
 
-                    <!--    0,3      -->
-                    <StackPanel Grid.Column="3">
-                        <Image x:Name="Image0x3" Height="140"/>
-                        <Label x:Name="Title0x3" Content=""/>
-                        <StackPanel Orientation="Horizontal">
-                            <Label x:Name="Url0x3" Content=""  Width="100" HorizontalAlignment="Right"/>
-                            <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                        <StackPanel >
+                            <Image x:Name="Image0x2" Height="140"/>
+                            <Label x:Name="Title0x2" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url0x2" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
+                    </Button>
+                    <!--    0,3      -->
+                    <Button Name="Button0x3" Click="SelectedThumbnail" Grid.Column="3">
+                        <StackPanel >
+                            <Image x:Name="Image0x3" Height="140"/>
+                            <Label x:Name="Title0x3" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url0x3" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
 
                     <!--    1,0      -->
-                    <StackPanel Grid.Row="3">
-                        <Image x:Name="Image1x0" Height="140"/>
-                        <Label x:Name="Title1x0" Content=""/>
-                        <StackPanel Orientation="Horizontal">
-                            <Label x:Name="Url1x0" Content=""  Width="100" HorizontalAlignment="Right"/>
-                            <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                    <Button Name="Button1x0" Click="SelectedThumbnail" Grid.Row="1">
+                        <StackPanel>
+                            <Image x:Name="Image1x0" Height="140"/>
+                            <Label x:Name="Title1x0" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url1x0" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-
+                    </Button>
                     <!--    1,1      -->
-                    <StackPanel Grid.Row="1" Grid.Column="1">
-                        <Image x:Name="Image1x1" Height="140"/>
-                        <Label x:Name="Title1x1" Content=""/>
-                        <StackPanel Orientation="Horizontal">
-                            <Label x:Name="Url1x1" Content=""  Width="100" HorizontalAlignment="Right"/>
-                            <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                    <Button Name="Button1x1" Click="SelectedThumbnail" Grid.Column="1" Grid.Row="1">
+                        <StackPanel>
+                            <Image x:Name="Image1x1" Height="140"/>
+                            <Label x:Name="Title1x1" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url1x1" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-
+                    </Button>
                     <!--    1,2      -->
-                    <StackPanel Grid.Row="1" Grid.Column="2">
-                        <Image x:Name="Image1x2" Height="140"/>
-                        <Label x:Name="Title1x2" Content=""/>
-                        <StackPanel Orientation="Horizontal">
-                            <Label x:Name="Url1x2" Content=""  Width="100" HorizontalAlignment="Right"/>
-                            <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                    <Button Name="Button1x2" Click="SelectedThumbnail" Grid.Column="2" Grid.Row="1">
+                        <StackPanel>
+                            <Image x:Name="Image1x2" Height="140"/>
+                            <Label x:Name="Title1x2" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url1x2" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-
+                    </Button>
                     <!--    1,3      -->
-                    <StackPanel Grid.Row="1" Grid.Column="3">
-                        <Image x:Name="Image1x3" Height="140"/>
-                        <Label x:Name="Title1x3" Content=""/>
-                        <StackPanel Orientation="Horizontal">
-                            <Label x:Name="Url1x3" Content=""  Width="100" HorizontalAlignment="Right"/>
-                            <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                    <Button Name="Button1x3" Click="SelectedThumbnail" Grid.Column="3" Grid.Row="1">
+                        <StackPanel>
+                            <Image x:Name="Image1x3" Height="140"/>
+                            <Label x:Name="Title1x3" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url1x3" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
+                    </Button>
                 </Grid>
             </Border>
         </StackPanel>

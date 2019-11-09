@@ -63,6 +63,7 @@ namespace GondoAssist.EditForms
             return (c,r);            
         }
 
+
         private void AddToTNBoard(object sender, RoutedEventArgs e)
         {
           //  c = c + c;
