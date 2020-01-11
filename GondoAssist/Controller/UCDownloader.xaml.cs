@@ -26,7 +26,7 @@ namespace GondoAssist
         public string link;
         List<VideoInfo> VInfos;
         // default speicherort
-        public string DefDownloadPath { get; } = @"C:\Users\Agrre\Desktop\C#Test";
+        public string DefDownloadPath { get; } = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\C#Test";
 
 
         public UCDownloader(string xlink)

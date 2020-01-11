@@ -30,9 +30,9 @@ namespace GondoAssist
         string TNSavePath, TNSaveFile;
         string speicherort;
         // ÄNDERN
-        string savepath = @"C:\Users\Agrre\Desktop\";
+       // string savepath = @"C:\Users\E\Desktop\";
         //string sourcePath = @"C:\Users\Agrre\Desktop\JdownloadSlamdan";
-        string sourcepath = @"C:\Users\Agrre\Desktop\InstagramProfileList.txt";
+        string sourcepath = "InstagramProfileList.txt";
         string TimeStopRaw;
         public InstagramGrabber()
         {
@@ -49,6 +49,7 @@ namespace GondoAssist
                 }
             }
         }
+
 
         private void onCreateIGListClicked(object sender, RoutedEventArgs e)
         {
@@ -126,8 +127,9 @@ namespace GondoAssist
 
         public void GetHTMLInfo(List<string> profileList, DateTime suggestedDate)
         {
+            string error = "";
             int counter = 0;
-            File.WriteAllText(savepath + "\\Quellen.txt", String.Empty);
+            File.WriteAllText(speicherort + "\\Quellen.txt", String.Empty);
             var service = ChromeDriverService.CreateDefaultService();
             service.HideCommandPromptWindow = true;
             IWebDriver driver = new ChromeDriver(service, new ChromeOptions());
@@ -146,10 +148,11 @@ namespace GondoAssist
                 Maximum = profileList.Count,
             }; ;
             //IGPB.Content = IGPBar;
-
-            while (counter < profileList.Count)
+            try
             {
-
+                while (counter < profileList.Count)
+            {
+ 
                 backgroundWorker1.DoWork += backgroundWorker1_DoWork;
                 backgroundWorker1.ProgressChanged += worker_ProgressChanged;
                 //progressBarIG
@@ -192,12 +195,12 @@ namespace GondoAssist
                 if (node1 != null)
                 {
 
-                    using (StreamWriter writer = new StreamWriter(savepath + "\\Quellen.txt", true, Encoding.UTF8))
+                    using (StreamWriter writer = new StreamWriter(speicherort + "\\Quellen.txt", true, Encoding.UTF8))
                     {
 
                         string link = "";
                         DateTime returnValue;
-                        string error;
+                        
                         foreach (var item in node1)
                         {
                             link = "https://www.instagram.com" + item.Attributes["href"].Value;
@@ -222,8 +225,18 @@ namespace GondoAssist
                     //  driver.Quit();
 
                 }
+
                 //      progressBarIG.Value += counter;
                 counter++;
+            }
+            }
+            catch (Exception e)
+            {
+                using (StreamWriter writer = new StreamWriter(speicherort + "\\QuellenError.txt", true, Encoding.UTF8))
+
+                {
+                    writer.Write(e + error);
+                }
             }
             driver.Quit();
         }
@@ -295,10 +308,27 @@ namespace GondoAssist
             return dt1;
         }
 
+        string sourcePath;
+
+        private void onIGOpenPathClicked(object sender, RoutedEventArgs e)
+        {
+            using (System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select your Path" })
+            {
+                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    sourcePath = fbd.SelectedPath;
+                }
+            }
+        }
+
         private void collectVideos(object sender, RoutedEventArgs e)
         {
-            string sourcePath = @"C:\Users\Agrre\Desktop\JdownloadSlamdan";
-            string targetPath = @"C:\Users\Agrre\Desktop\" + igtitle.Text;
+            //string sourcePath = @"C:\Users\E\Desktop\JdownloadSlamdan";
+            if (igtitle.Text == "")
+            {
+                igtitle.Text = "Heute";
+            }
+            string targetPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\" + igtitle.Text;
             string directoryName;
             string destDirectory;
             string fileName;
@@ -364,6 +394,8 @@ namespace GondoAssist
                 }
             }
         }
+
+
 
         void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {

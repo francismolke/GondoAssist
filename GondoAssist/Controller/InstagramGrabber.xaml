@@ -33,7 +33,7 @@
             <Button x:Name="igThumbnail" Content="IG-LINKS ERSTELLEN..." Margin="0,5,0,5" Height="30" Width="200" Click="onCreateIGListClicked"/>
             <!--<DatePicker Name="IGDatePicker"/>-->
             <Label Content="SPEICHERORT" Foreground="Black" Width="200"/>
-            <Button Name="igVideoLocationPath" Height="30" Content="auswählen..." Click="onIGSavePathClicked" Width="200" Margin="0,0,0,5"/>
+            <Button Name="igVideoLocationPath" Height="30" Content="auswählen..." Click="onIGOpenPathClicked" Width="200" Margin="0,0,0,5"/>
             <CheckBox x:Name="memorizeIGVideoLocationSavePath" Width="200" Content="Merken?" Foreground="Gray"/>
 
             <Button Name="folderbutton" Height="30" Content="COLLECT VIDEOS" Click="collectVideos" Margin="0,5,0,0" Width="200"/>
