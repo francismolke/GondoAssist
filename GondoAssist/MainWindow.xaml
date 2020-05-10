@@ -27,8 +27,6 @@
               <Button Name="mYtSearch" BorderBrush="Black" BorderThickness="4" Background="Transparent" Margin="10" Click="onYoutubeSearchClicked">
                     <Image Source="Resources/youtube_PNG15.png"/>
                 </Button>
-
-
                 <Button Name="mUpload" Margin="10" Grid.Column="1" BorderThickness="4" BorderBrush="Black" Background="Transparent" MouseEnter="onUploaderIconClicked">
                     <Button.Content>
                         <Image Source="Resources/cloud-upload.png" Stretch="Fill"/>
@@ -39,6 +37,9 @@
                 </Button>
                 <Button Name="InstagramLinkGraber" Grid.Column="1" Grid.Row="1" BorderThickness="4" BorderBrush="Black" Background="Transparent" Margin="10" Click="onInstagramGrabberClicked">
                     <Image Source="Resources/unnamed-1-25.png" Stretch="Fill"/>
+                </Button>
+                <Button Name="AutoVideo" Margin="10" Grid.Row="2" BorderThickness="4" BorderBrush="Black" Background="Transparent" Click="onAutoVideoClicked">
+                    <Image Source="Resources/automode.png" Stretch="Fill"></Image>
                 </Button>
                 <StackPanel x:Name="SPUploader" Grid.Column="0" Grid.Row="2" Visibility="Hidden" Margin="10" MouseLeave="UploaderMouseLeave">
                     <Button Background="#FF5852DE" Height="36" Foreground="BlanchedAlmond" Click="onYoutubeUploaderClicked">Youtube</Button>

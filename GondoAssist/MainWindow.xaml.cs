@@ -210,5 +210,11 @@ namespace GondoAssist
 
 
         }
+
+        private void onAutoVideoClicked(object sender, RoutedEventArgs e)
+        {
+            maincontent.Children.Clear();
+            
+        }
     }
 }
