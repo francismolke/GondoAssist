@@ -135,7 +135,12 @@ namespace GondoAssist
             {//Video = videoformat
 
                 if (iterationCount == 0)
+                    if (video.Title == "")
+                    { }
+                else
                     lbVideoName.Text = video.Title;
+                
+                                    
                 strVideos[iterationCount++] = string.Format("Resolution: {0}, Format: {1}",
                         video.Resolution, video.VideoExtension);
                 VInfos.Add(video);

@@ -5,9 +5,65 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GondoAssist"
         mc:Ignorable="d"
-        Title="GondoAssist" Height="650" Width="800">
+        Title="GondoAssist" Height="750" Width="1380" Background="Lavender" FontFamily="Bahnschrift SemiCondensed">
+    <!--<Window.Resources>
+        <Style x:Key="MenuButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+    </Window.Resources>-->
     <DockPanel>
-        <StackPanel DockPanel.Dock="Left" >
+        <StackPanel DockPanel.Dock="Left" Margin="25" Width="425">
+            <Grid x:Name="MenuGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="200"/>
+                </Grid.RowDefinitions>
+              <Button Name="mYtSearch" BorderBrush="Black" BorderThickness="4" Background="Transparent" Margin="10" Click="onYoutubeSearchClicked">
+                    <Image Source="Resources/youtube_PNG15.png"/>
+                </Button>
+                <Button Name="mUpload" Margin="10" Grid.Column="1" BorderThickness="4" BorderBrush="Black" Background="Transparent" MouseEnter="onUploaderIconClicked">
+                    <Button.Content>
+                        <Image Source="Resources/cloud-upload.png" Stretch="Fill"/>
+                    </Button.Content>
+                </Button>
+                <Button Name="newDownloader" Margin="10" Grid.Row="1" BorderThickness="4" BorderBrush="Black" Background="Transparent" Click="onNewDownloaderClicked">
+                    <Image x:Name="YoutubeDL" Source="Resources/youtubeDL.png" Stretch="Fill"/>
+                </Button>
+                <Button Name="InstagramLinkGraber" Grid.Column="1" Grid.Row="1" BorderThickness="4" BorderBrush="Black" Background="Transparent" Margin="10" Click="onInstagramGrabberClicked">
+                    <Image Source="Resources/unnamed-1-25.png" Stretch="Fill"/>
+                </Button>
+                <Button Name="AutoVideo" Margin="10" Grid.Row="2" BorderThickness="4" BorderBrush="Black" Background="Transparent" Click="onAutoVideoClicked">
+                    <Image Source="Resources/automode.png" Stretch="Fill"></Image>
+                </Button>
+                <StackPanel x:Name="SPUploader" Grid.Column="0" Grid.Row="2" Visibility="Hidden" Margin="10" MouseLeave="UploaderMouseLeave">
+                    <Button Background="#FF5852DE" Height="36" Foreground="BlanchedAlmond" Click="onYoutubeUploaderClicked">Youtube</Button>
+                    <Button Background="#FF5852DE" Height="36" Foreground="BlanchedAlmond" Click="onWordpressClicked">Wordpress</Button>
+                    <Button Background="#FF5852DE" Height="36" Foreground="BlanchedAlmond" Click="onGoogleDriveClicked">Google Drive</Button>
+                    <Button Background="#FF8B8B8B" Height="36" Foreground="BlanchedAlmond" Click="ThumbnailEditFormClicked">Instagram</Button>
+                    <Button Height="36" Foreground="BlanchedAlmond" Background="#FF8B8B8B" Click="ThumbNailSelectedFormClicked">Amino</Button>
+                </StackPanel>
+
+                <!--<Button Background="Transparent" Grid.Column="1" Grid.Row="2">
+                    <Image Source="images/youtube_PNG15.png" Stretch="Fill"/>
+                </Button>-->
+                <!--<Button Grid.Column="0" Grid.Row="3" IsEnabled="False">test</Button>
+                <Button Grid.Column="1" Grid.Row="3" IsEnabled="False">test</Button>-->
+                <!--youtube_PNG15.png-->
+            </Grid>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Right" x:Name="maincontent" Background="LightPink" Width="800">
+            <!--CONTROLLER FÜR WINDWOS HIER-->
+        </StackPanel>
+
+    </DockPanel>
+</Window>
+<!--<StackPanel DockPanel.Dock="Left" >
             <Menu Name="MainMenu" Width="100" Height="669" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FF1E1029" BorderBrush="Black">
                 <MenuItem Name="mYtSearch" Header="Youtube Suche" Height="65" Width="100" Click="onYoutubeSearchClicked" FontFamily="Segoe UI Black" Foreground="#FFFFE3E2"/>
                 <Separator Height="2" Width="130" HorizontalAlignment="Right" />
@@ -34,6 +90,4 @@
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" x:Name="maincontent" Background="#FF654580" >
 
-        </StackPanel>
-    </DockPanel>
-</Window>
+        </StackPanel>-->

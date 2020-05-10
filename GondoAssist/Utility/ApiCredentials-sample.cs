@@ -3,7 +3,7 @@
     public class ApiCredentialsSample
     {
         public static string WordPressUri = "http://www.slamdank31.com/wp-json/";
-        public static string Username = "Arschloch1";
-        public static string Password = "Slimtwix13";
+        public static string Username = null;
+        public static string Password = "********";
     }
 }

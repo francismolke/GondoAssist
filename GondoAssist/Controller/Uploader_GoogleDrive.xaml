@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="GondoAssist.Uploader_GoogleDrive"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GondoAssist"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="500" Background="WhiteSmoke" FontFamily="Bahnschrift SemiCondensed" FontSize="20">
+
+    <DockPanel>
+        <StackPanel>
+            <Label Content="TITEL:" Foreground="Black" Width="200"/>
+            <TextBox x:Name="gtitletb" Width="200" Text="" Height="30"/>
+            <Label Content="DATEI:" Foreground="Black" Width="200"/>
+            <Button Name="GDSelectFile" Height="30" Content="Datei auswählen..." Click="onGDSelectFile" Width="200"/>
+            <Label Content="Was für eine Datei?" Height="30" Foreground="Black" Width="200"/>
+            <ListBox Name="LBDatatype" Margin="10" SelectionChanged="onGDLBISelected" Width="200">
+                <ListBoxItem Content="Video"/>
+                <ListBoxItem Content="Bild"/>
+                <ListBoxItem Content="ZIP"/>
+            </ListBox>
+            <TextBox x:Name="gDescriptionBox" Height="30" Width="200" Text="" Margin="10"/>
+
+            <Button Name="gstartUpload" Content="posten" Click="onGPostClicked" Height="30" Width="200"/>
+            <Label Name="UploadControl" Content="" Foreground="Black"/>
+        </StackPanel>
+
+    </DockPanel>
+</UserControl>

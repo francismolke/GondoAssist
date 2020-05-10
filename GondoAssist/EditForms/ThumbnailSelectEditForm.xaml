@@ -1,0 +1,133 @@
+﻿<Window x:Class="GondoAssist.EditForms.ThumbnailSelectEditForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GondoAssist.EditForms"
+        mc:Ignorable="d"
+        Title="ThumbnailSelectEditForm" Height="650" Width="800" Background="#FF742F2F">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top">
+            <TextBox Name="Searchbox" Height="30" Margin="150,10,130,0" Background="OldLace" KeyDown="onSearchEntered"/>
+            <Button Name="search" Content="Search..." Height="20" Margin="150,10,130,0" Click="OnSearchClicked"/>
+        </StackPanel>
+        
+        <StackPanel DockPanel.Dock="Top" Margin="0,15,0,0">
+            <Button Height="75" Width="75" Background="Transparent" Click="AddToTNBoard">
+                <Image Source="/GondoAssist;component/Resources/plus.png" />
+            </Button>
+        </StackPanel>
+        
+        <StackPanel Margin="40,50,40,0" DockPanel.Dock="Bottom">
+            <Border BorderBrush="Black" BorderThickness="2">
+                <Grid x:Name="TNGrid" Background="#FFCDD8E2" DataContext="{Binding Youtube}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="180"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="200"/>
+                        <RowDefinition Height="200"/>
+                    </Grid.RowDefinitions>
+
+                    <!--    0,0    -->
+                    <Button Name="Button0x0">
+                        <StackPanel>
+                            <Image x:Name="Image0x0" Height="140"/>
+                            <Label x:Name="Title0x0" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url0x0" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+
+                    <!--    0,1      -->
+                    <Button Name="Button0x1" Click="SelectedThumbnail" Grid.Column="1">
+                        <StackPanel>
+                            <Image x:Name="Image0x1" Height="140"/>
+                            <Label x:Name="Title0x1" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url0x1" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+
+
+                    <!--    0,2      -->
+                    <Button Name="Button0x2" Click="SelectedThumbnail" Grid.Column="2">
+
+                        <StackPanel >
+                            <Image x:Name="Image0x2" Height="140"/>
+                            <Label x:Name="Title0x2" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url0x2" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <!--    0,3      -->
+                    <Button Name="Button0x3" Click="SelectedThumbnail" Grid.Column="3">
+                        <StackPanel >
+                            <Image x:Name="Image0x3" Height="140"/>
+                            <Label x:Name="Title0x3" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url0x3" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+
+                    <!--    1,0      -->
+                    <Button Name="Button1x0" Click="SelectedThumbnail" Grid.Row="1">
+                        <StackPanel>
+                            <Image x:Name="Image1x0" Height="140"/>
+                            <Label x:Name="Title1x0" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url1x0" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <!--    1,1      -->
+                    <Button Name="Button1x1" Click="SelectedThumbnail" Grid.Column="1" Grid.Row="1">
+                        <StackPanel>
+                            <Image x:Name="Image1x1" Height="140"/>
+                            <Label x:Name="Title1x1" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url1x1" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <!--    1,2      -->
+                    <Button Name="Button1x2" Click="SelectedThumbnail" Grid.Column="2" Grid.Row="1">
+                        <StackPanel>
+                            <Image x:Name="Image1x2" Height="140"/>
+                            <Label x:Name="Title1x2" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url1x2" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                    <!--    1,3      -->
+                    <Button Name="Button1x3" Click="SelectedThumbnail" Grid.Column="3" Grid.Row="1">
+                        <StackPanel>
+                            <Image x:Name="Image1x3" Height="140"/>
+                            <Label x:Name="Title1x3" Content=""/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label x:Name="Url1x3" Content=""  Width="100" HorizontalAlignment="Right"/>
+                                <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+        </StackPanel>
+
+    </DockPanel>
+</Window>
