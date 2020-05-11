@@ -4,6 +4,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,7 @@ namespace GondoAssist
         string TNSavePath, TNSaveFile;
         string speicherort;
         // ÄNDERN
-       // string savepath = @"C:\Users\E\Desktop\";
+        // string savepath = @"C:\Users\E\Desktop\";
         //string sourcePath = @"C:\Users\Agrre\Desktop\JdownloadSlamdan";
         string sourcepath = "InstagramProfileList.txt";
         string TimeStopRaw;
@@ -151,84 +152,110 @@ namespace GondoAssist
             try
             {
                 while (counter < profileList.Count)
-            {
- 
-                backgroundWorker1.DoWork += backgroundWorker1_DoWork;
-                backgroundWorker1.ProgressChanged += worker_ProgressChanged;
-                //progressBarIG
-                //progressBarIG.Minimum = 1;
-                //progressBarIG.Maximum = profileList.Count;
-                //progressBarIG.Value = 1;
-                //  BackgroundWorker worker = new BackgroundWorker();
-                //  worker.WorkerReportsProgress = true;
-                //  worker.DoWork += worker_DoWork;
-                // https://www.wpf-tutorial.com/misc-controls/the-progressbar-control/
-                driver.Url = profileList.ElementAt(counter);
-                var html = driver.PageSource;
-                var htmlDoc = new HtmlDocument();
-                htmlDoc.LoadHtml(html);
-
-
-                #region Select 1 Node
-                //var node = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='v1Nh3 kIKUG  _bz0w']//a[@href]");
-
-                //if (node == null)
-                //{
-                //    label1.Content = "error";
-                //    label2.Content = "error";
-                //    Thread.Sleep(3000);
-                //    driver.Quit();
-                //}
-                //else
-                //{
-                //    label1.Content = node.Attributes["href"].Value;
-                //    label2.Content = node.OuterHtml;
-                //    Thread.Sleep(3000);
-                //    driver.Quit();
-                //}
-
-
-                //Select all nodes (while timeoutspan and scroll-range)
-                #endregion
-
-                var node1 = htmlDoc.DocumentNode.SelectNodes("//div[@class='v1Nh3 kIKUG  _bz0w']//a[@href]");
-                if (node1 != null)
                 {
 
-                    using (StreamWriter writer = new StreamWriter(speicherort + "\\Quellen.txt", true, Encoding.UTF8))
+                    backgroundWorker1.DoWork += backgroundWorker1_DoWork;
+                    backgroundWorker1.ProgressChanged += worker_ProgressChanged;
+                    //progressBarIG
+                    //progressBarIG.Minimum = 1;
+                    //progressBarIG.Maximum = profileList.Count;
+                    //progressBarIG.Value = 1;
+                    //  BackgroundWorker worker = new BackgroundWorker();
+                    //  worker.WorkerReportsProgress = true;
+                    //  worker.DoWork += worker_DoWork;
+                    // https://www.wpf-tutorial.com/misc-controls/the-progressbar-control/
+                    driver.Url = profileList.ElementAt(counter);
+                    var html = driver.PageSource;
+                    var htmlDoc = new HtmlDocument();
+                    htmlDoc.LoadHtml(html);
+
+
+                    // zweite
+                    
+
+                    #region Select 1 Node
+                    //var node = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='v1Nh3 kIKUG  _bz0w']//a[@href]");
+
+                    //if (node == null)
+                    //{
+                    //    label1.Content = "error";
+                    //    label2.Content = "error";
+                    //    Thread.Sleep(3000);
+                    //    driver.Quit();
+                    //}
+                    //else
+                    //{
+                    //    label1.Content = node.Attributes["href"].Value;
+                    //    label2.Content = node.OuterHtml;
+                    //    Thread.Sleep(3000);
+                    //    driver.Quit();
+                    //}
+
+
+                    //Select all nodes (while timeoutspan and scroll-range)
+                    #endregion
+
+                    var node1 = htmlDoc.DocumentNode.SelectNodes("//div[@class='v1Nh3 kIKUG  _bz0w']//a[@href]");
+                    var node2 = htmlDoc.DocumentNode.SelectNodes("//div[@class='vcOH2']");
+                    if (node1 != null)
                     {
 
-                        string link = "";
-                        DateTime returnValue;
-                        
-                        foreach (var item in node1)
+                        using (StreamWriter writer = new StreamWriter(speicherort + "\\Quellen.txt", true, Encoding.UTF8))
                         {
-                            link = "https://www.instagram.com" + item.Attributes["href"].Value;
-                            returnValue = DateTimeExpress(link, driver);
-                            // DateTime dt1 = new DateTime(2019, 8, 9, 20, 0, 0);
-                            if (returnValue > suggestedDate)
-                                writer.Write("https://www.instagram.com" + item.Attributes["href"].Value + "\r\n");
-                            else
-                            { }
-                            // writer.Write(profileList);
+
+                            string link = "";
+                            DateTime returnValue;
+
+                            foreach (var item in node1)
+                            {
+                                link = "https://www.instagram.com" + item.Attributes["href"].Value;
+                                returnValue = DateTimeExpress(link, driver);
+                                // DateTime dt1 = new DateTime(2019, 8, 9, 20, 0, 0);
+                                if (returnValue > suggestedDate)
+                                    writer.Write("https://www.instagram.com" + item.Attributes["href"].Value + "\r\n");
+                                else
+                                { }
+                                // writer.Write(profileList);
+                            }
+                            writer.Close();
                         }
-                        writer.Close();
+
+                        using (StreamWriter likeAbilityWriter = new StreamWriter(speicherort + "\\Quellen_Likeability.txt", true, Encoding.UTF8))
+                        {
+
+                            string link = "";
+                            double returnValue;
+                            DateTime returnValueDate;
+
+                            foreach (var item in node1)
+                            {
+                                link = "https://www.instagram.com" + item.Attributes["href"].Value;
+                                returnValue = DateTimeExpressForLikeability(link, driver);
+                                returnValueDate = DateTimeExpress(link, driver);
+                                // DateTime dt1 = new DateTime(2019, 8, 9, 20, 0, 0);
+                                if (returnValueDate > suggestedDate)
+                                likeAbilityWriter.Write(item.Attributes["href"].Value + returnValue +  "\r\n");
+                                else
+                                { }
+                                // writer.Write(profileList);
+                            }
+                            likeAbilityWriter.Close();
+                        }
+
+                        //  Thread.Sleep(3000);
+                        //driver.Quit();
+
+                    }
+                    else
+                    {
+                        //   Thread.Sleep(3000);
+                        //  driver.Quit();
+
                     }
 
-                    //  Thread.Sleep(3000);
-                    //driver.Quit();
-
+                    //      progressBarIG.Value += counter;
+                    counter++;
                 }
-                else
-                {
-                    //   Thread.Sleep(3000);
-                    //  driver.Quit();
-
-                }
-
-                //      progressBarIG.Value += counter;
-                counter++;
-            }
             }
             catch (Exception e)
             {
@@ -239,6 +266,39 @@ namespace GondoAssist
                 }
             }
             driver.Quit();
+        }
+        private double DateTimeExpressForLikeability(string Link, IWebDriver driver)
+        {
+
+            string link = Link;
+
+            driver.Url = link;
+
+
+
+
+            var html = driver.PageSource;
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(html);
+            var linkdate2 = htmlDoc.DocumentNode.SelectNodes("//time[@class='_1o9PC Nzb55'][@datetime]");
+            var linkdate3 = htmlDoc.DocumentNode.SelectNodes("//div[@class='QhbhU'][@datetime]");
+
+            foreach (var item in linkdate2)
+            {
+                TimeStopRaw = item.Attributes["datetime"].Value;
+            }
+
+            var aufrufeRoh = driver.FindElement(By.ClassName("vcOH2")).Text;
+            driver.FindElement(By.ClassName("vcOH2")).Click();
+            var likesRoh = driver.FindElement(By.ClassName("vJRqr")).Text;
+            var aufruf = aufrufeRoh.Split(' ').First();
+            var likes = likesRoh.Substring(likesRoh.IndexOf(' ') + 1).Trim();
+            likes = likes.Split(' ').First();
+            double summe = double.Parse(likes, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB")) / double.Parse(aufruf, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB"));
+            summe = summe * 100;
+            summe = Math.Round(summe, 2);
+
+            return summe;
         }
 
         private DateTime DateTimeExpress(string Link, IWebDriver driver)
