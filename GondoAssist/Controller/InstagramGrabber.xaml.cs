@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,16 +30,43 @@ namespace GondoAssist
     {
 
         BackgroundWorker backgroundWorker1 = new BackgroundWorker();
-        string TNSavePath, TNSaveFile;
-        string speicherort;
+        // string TNSavePath, TNSaveFile;
+        string speicherort, speicherortQuellenLikeability;
+        string targetPath;
+        string sourcePath;
+        bool isBotProfileBlocked = false;
+        bool botProfileIsActive = false;
         // ÄNDERN
         // string savepath = @"C:\Users\E\Desktop\";
         //string sourcePath = @"C:\Users\Agrre\Desktop\JdownloadSlamdan";
         string sourcepath = "InstagramProfileList.txt";
+        string JDSettingsPath = "JDownloaderLocation.txt";
         string TimeStopRaw;
         public InstagramGrabber()
         {
             InitializeComponent();
+            CheckIfJDownloaderPathIsSaved();
+        }
+
+        private void CheckIfJDownloaderPathIsSaved()
+        {
+            
+
+            List<string> ljd = new List<string>();
+            using (StreamReader sr = new StreamReader(JDSettingsPath))
+            {
+
+                foreach (string line in File.ReadLines(JDSettingsPath, Encoding.UTF8))
+                {
+                    ljd.Add(line);
+                }
+                if (ljd.First().ToString() != null || ljd.First().ToString() != "")
+                {
+                    igVideoLocationLabel.Content = "Ordner gefunden: " + ljd.First().ToString();
+                    igVideoLocationPath.Content = "Ordner ändern?";
+                    memorizeIGVideoLocationSavePath.Content = "Gemerkt!";
+                }
+            }
         }
 
         private void onIGSavePathClicked(object sender, RoutedEventArgs e)
@@ -54,7 +83,47 @@ namespace GondoAssist
 
         private void onCreateIGListClicked(object sender, RoutedEventArgs e)
         {
-            DateTimeCheck();
+            if (speicherort == "" || speicherort == null)
+            {
+                MessageBox.Show("Kein Speicherort ausgewählt, bitte wähle den Episoden Ordner");
+            }
+            else
+            {
+                if (igtitle.Text == "")
+                {
+                    igtitle.Text = "Heute";
+                }
+                //       string targetPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\" + igtitle.Text;
+                speicherortQuellenLikeability = Directory.GetCurrentDirectory();
+                targetPath = speicherort + @"\" + igtitle.Text;
+                Directory.CreateDirectory(targetPath);
+                if (startWithBotProfile.IsChecked == true)
+                {
+                    botProfileIsActive = true;
+                }
+
+                DateTimeCheck();
+            }
+        }
+
+        private void CreateIGListAgain()
+        {
+            if (speicherort == "" || speicherort == null)
+            {
+                MessageBox.Show("Kein Speicherort ausgewählt, bitte wähle den Episoden Ordner");
+            }
+            else
+            {
+                if (igtitle.Text == "")
+                {
+                    igtitle.Text = "Heute";
+                }
+                //       string targetPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\" + igtitle.Text;
+                speicherortQuellenLikeability = Directory.GetCurrentDirectory();
+                targetPath = speicherort + @"\" + igtitle.Text;
+                Directory.CreateDirectory(targetPath);
+                DateTimeCheck();
+            }
         }
 
         private void DateTimeCheck()
@@ -126,36 +195,89 @@ namespace GondoAssist
             return profilecount = profileList.Count;
         }
 
+        protected void WaitForPageLoad(IWebDriver driver)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            wait.Until(drivers => ((IJavaScriptExecutor)drivers).ExecuteScript("return document.readyState").Equals("complete"));
+        }
+
         public void GetHTMLInfo(List<string> profileList, DateTime suggestedDate)
         {
+
             string error = "";
             int counter = 0;
+            string creatorName = "";
             File.WriteAllText(speicherort + "\\Quellen.txt", String.Empty);
+            File.WriteAllText(speicherortQuellenLikeability + "\\Quellen_Likeability.txt", String.Empty);
+
+
+            ChromeOptions options = new ChromeOptions();
+            options.AddArguments(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Local\Google\Chrome\User Data\Default");
+            // options.AddArguments(@"C:\Users\Agrre\AppData\Local\Google\Chrome\User Data\Default");
             var service = ChromeDriverService.CreateDefaultService();
             service.HideCommandPromptWindow = true;
             IWebDriver driver = new ChromeDriver(service, new ChromeOptions());
 
-            driver.Manage().Window.Minimize();
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
-
-            //
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
 
 
+
+            //  COOKIE MANAGEMENT !?
+            if (isBotProfileBlocked == true)
+            {
+                driver.Url = "https://www.instagram.com/accounts/login/";
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
+                driver.Manage().Cookies.AddCookie(new Cookie("scheißIG", "fickdeinemutter"));
+
+                var username = driver.FindElement(By.CssSelector("input[name='username']"));
+                username.SendKeys("slamdankbot@gmail.com");
+                var password = driver.FindElement(By.CssSelector("input[name='password']"));
+                password.SendKeys("qwertzu123!");
+                password.SendKeys(Keys.Enter);
+                var allCookies = driver.Manage().Cookies.AllCookies;
+                using (StreamWriter cookieWriter = new StreamWriter(speicherort + "\\Cookies.data", true, Encoding.UTF8))
+                {
+                    foreach (var cookie in allCookies)
+                    {
+                        //driver.Manage().Cookies.AddCookie(cookie);
+
+                        cookieWriter.Write(cookie.Name + ";" + cookie.Value + ";" + cookie.Domain + ";" + cookie.Path + ";" + cookie.Expiry + ";" + cookie.Secure);
+
+                    }
+                    cookieWriter.Close();
+                }
+            }
+
+            //  Cookie ck = new Cookie(coo)
+            ///  aufrufeRoh = driver.FindElement(By.ClassName("vcOH2")).Text;
+            //var username = driver.FindElement(By.ClassName("_2hvTZ pexuQ zyHYP"));
+            //username.SendKeys("h.ljumic@gmx.at");
+            //var password = driver.FindElement(By.ClassName("_2hvTZ pexuQ zyHYP"));
+            //password.SendKeys("*********!");
+            //password.SendKeys(Keys.Enter);
+
+            //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20000);
+            Thread.Sleep(10000);
             //IGPB.Show();
             //
-            ProgressBar IGPBar = new ProgressBar()
-            {
-                Minimum = 0,
-                Maximum = profileList.Count,
-            }; ;
+            //ProgressBar IGPBar = new ProgressBar()
+            //{
+            //    Minimum = 0,
+            //    Maximum = profileList.Count,
+            //}; ;
             //IGPB.Content = IGPBar;
-            try
-            {
-                while (counter < profileList.Count)
-                {
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
 
-                    backgroundWorker1.DoWork += backgroundWorker1_DoWork;
-                    backgroundWorker1.ProgressChanged += worker_ProgressChanged;
+            while (counter < profileList.Count)
+            {
+
+
+
+                try
+                {
+                    #region BackgroundWorker
+                    //backgroundWorker1.DoWork += backgroundWorker1_DoWork;
+                    //backgroundWorker1.ProgressChanged += worker_ProgressChanged;
                     //progressBarIG
                     //progressBarIG.Minimum = 1;
                     //progressBarIG.Maximum = profileList.Count;
@@ -164,110 +286,165 @@ namespace GondoAssist
                     //  worker.WorkerReportsProgress = true;
                     //  worker.DoWork += worker_DoWork;
                     // https://www.wpf-tutorial.com/misc-controls/the-progressbar-control/
+
+                    #endregion
+
+
                     driver.Url = profileList.ElementAt(counter);
                     var html = driver.PageSource;
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(html);
-
-
+                    creatorName = GetProfileName(profileList.ElementAt(counter));
                     // zweite
-                    
-
-                    #region Select 1 Node
-                    //var node = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='v1Nh3 kIKUG  _bz0w']//a[@href]");
-
-                    //if (node == null)
-                    //{
-                    //    label1.Content = "error";
-                    //    label2.Content = "error";
-                    //    Thread.Sleep(3000);
-                    //    driver.Quit();
-                    //}
-                    //else
-                    //{
-                    //    label1.Content = node.Attributes["href"].Value;
-                    //    label2.Content = node.OuterHtml;
-                    //    Thread.Sleep(3000);
-                    //    driver.Quit();
-                    //}
 
 
-                    //Select all nodes (while timeoutspan and scroll-range)
-                    #endregion
+                    // Check if Bot was not blocked by Instagram
+                    isBotProfileBlocked = CheckIfInstagramBlockedBotProfile(htmlDoc);
 
-                    var node1 = htmlDoc.DocumentNode.SelectNodes("//div[@class='v1Nh3 kIKUG  _bz0w']//a[@href]");
-                    var node2 = htmlDoc.DocumentNode.SelectNodes("//div[@class='vcOH2']");
-                    if (node1 != null)
+                    if (isBotProfileBlocked == false)
                     {
+                        #region Select 1 Node
+                        //var node = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='v1Nh3 kIKUG  _bz0w']//a[@href]");
 
-                        using (StreamWriter writer = new StreamWriter(speicherort + "\\Quellen.txt", true, Encoding.UTF8))
+                        //if (node == null)
+                        //{
+                        //    label1.Content = "error";
+                        //    label2.Content = "error";
+                        //    Thread.Sleep(3000);
+                        //    driver.Quit();
+                        //}
+                        //else
+                        //{
+                        //    label1.Content = node.Attributes["href"].Value;
+                        //    label2.Content = node.OuterHtml;
+                        //    Thread.Sleep(3000);
+                        //    driver.Quit();
+                        //}
+
+                        if (targetPath == "\\Heute")
                         {
+                            targetPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-                            string link = "";
-                            DateTime returnValue;
-
-                            foreach (var item in node1)
-                            {
-                                link = "https://www.instagram.com" + item.Attributes["href"].Value;
-                                returnValue = DateTimeExpress(link, driver);
-                                // DateTime dt1 = new DateTime(2019, 8, 9, 20, 0, 0);
-                                if (returnValue > suggestedDate)
-                                    writer.Write("https://www.instagram.com" + item.Attributes["href"].Value + "\r\n");
-                                else
-                                { }
-                                // writer.Write(profileList);
-                            }
-                            writer.Close();
                         }
 
-                        using (StreamWriter likeAbilityWriter = new StreamWriter(speicherort + "\\Quellen_Likeability.txt", true, Encoding.UTF8))
+                        //Select all nodes (while timeoutspan and scroll-range)
+                        #endregion
+
+                        var node1 = htmlDoc.DocumentNode.SelectNodes("//div[@class='v1Nh3 kIKUG  _bz0w']//a[@href]");
+                        if (node1 != null)
                         {
 
-                            string link = "";
-                            double returnValue;
-                            DateTime returnValueDate;
-
-                            foreach (var item in node1)
+                            using (StreamWriter writer = new StreamWriter(targetPath + "\\Quellen.txt", true, Encoding.UTF8))
                             {
-                                link = "https://www.instagram.com" + item.Attributes["href"].Value;
-                                returnValue = DateTimeExpressForLikeability(link, driver);
-                                returnValueDate = DateTimeExpress(link, driver);
-                                // DateTime dt1 = new DateTime(2019, 8, 9, 20, 0, 0);
-                                if (returnValueDate > suggestedDate)
-                                likeAbilityWriter.Write(item.Attributes["href"].Value + returnValue +  "\r\n");
-                                else
-                                { }
-                                // writer.Write(profileList);
+                                using (StreamWriter likeAbilityWriter = new StreamWriter(speicherortQuellenLikeability + "\\Quellen_Likeability.txt", true, Encoding.UTF8))
+
+                                {
+                                    string link = "";
+                                    DateTime returnValueDate;
+                                    double returnValue;
+                                    string linkending = "";
+
+                                    foreach (var item in node1)
+                                    {
+                                        isBotProfileBlocked = CheckIfInstagramBlockedBotProfile(htmlDoc);
+
+                                        link = "https://www.instagram.com" + item.Attributes["href"].Value;
+                                        returnValue = LikeabilityExpress(link, driver);
+                                        returnValueDate = DateTimeExpress(link, driver);
+                                        // DateTime dt1 = new DateTime(2019, 8, 9, 20, 0, 0);
+                                        if (returnValueDate > suggestedDate && returnValue != 0)
+                                        {
+                                            writer.Write("https://www.instagram.com" + item.Attributes["href"].Value + "\r\n");
+                                            linkending = item.Attributes["href"].Value;
+                                            linkending = linkending.Substring(3).Trim();
+                                            linkending = linkending.Remove(linkending.IndexOf("/"));
+                                            // likeAbilityWriter.Write(@"C:\Users\Agrre\Desktop\testproject\" + creatorName + linkending + ".mp4" + " | " + returnValue + "\r\n");
+                                            likeAbilityWriter.Write(targetPath + @"\" + creatorName + linkending + ".mp4" + " | " + returnValue + "\r\n");
+                                        }
+                                        else
+                                        { }
+                                        // writer.Write(profileList);
+                                    }
+                                    likeAbilityWriter.Close();
+                                }
+                                writer.Close();
                             }
-                            likeAbilityWriter.Close();
+
+                            //  Thread.Sleep(3000);
+                            //driver.Quit();
+
                         }
+                        else
+                        {
+                            //   Thread.Sleep(3000);
+                            //  driver.Quit();
 
-                        //  Thread.Sleep(3000);
-                        //driver.Quit();
-
+                        }
                     }
                     else
                     {
-                        //   Thread.Sleep(3000);
-                        //  driver.Quit();
-
+                        break;
                     }
-
                     //      progressBarIG.Value += counter;
                     counter++;
                 }
-            }
-            catch (Exception e)
-            {
-                using (StreamWriter writer = new StreamWriter(speicherort + "\\QuellenError.txt", true, Encoding.UTF8))
-
+                catch (Exception e)
                 {
-                    writer.Write(e + error);
+                    using (StreamWriter writer = new StreamWriter(speicherort + "\\QuellenError.txt", true, Encoding.UTF8))
+
+                    {
+                        writer.Write(e + error);
+                    }
+                    continue;
+
                 }
+
             }
             driver.Quit();
+            if (isBotProfileBlocked == true && botProfileIsActive == false)
+            {
+                // MessageBox.Show("Bot Profile wurde gesperrt, versuche ohne von neu...");
+                MessageBoxResult result = MessageBox.Show("Bot Profile wurde gesperrt, versuch mit Botprofil?", "GondoAssist - Fehler", MessageBoxButton.YesNoCancel);
+                switch (result)
+                {
+                    case MessageBoxResult.Yes:
+                        botProfileIsActive = true;
+                        CreateIGListAgain();
+                        break;                                            
+                    case MessageBoxResult.No:
+                        MessageBox.Show("Oh well, too bad!", "My App");
+                        break;
+                    case MessageBoxResult.Cancel:                        
+                        break;
+                }
+
+            }
+            MessageBox.Show("Videosuche beendet.");
         }
-        private double DateTimeExpressForLikeability(string Link, IWebDriver driver)
+
+        private bool CheckIfInstagramBlockedBotProfile(HtmlDocument htmlDoc)
+        {
+            var doesPreExists = htmlDoc.DocumentNode.Descendants("pre").Any();
+            if (doesPreExists == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+        }
+
+        private string GetProfileName(string v)
+        {
+            string creatorName = v.Substring(26).Trim();
+            creatorName = creatorName.Substring(0, creatorName.Length - 1);
+            return creatorName + " - ";
+        }
+
+        private double LikeabilityExpress(string Link, IWebDriver driver)
         {
 
             string link = Link;
@@ -275,30 +452,92 @@ namespace GondoAssist
             driver.Url = link;
 
 
-
-
-            var html = driver.PageSource;
-            var htmlDoc = new HtmlDocument();
-            htmlDoc.LoadHtml(html);
-            var linkdate2 = htmlDoc.DocumentNode.SelectNodes("//time[@class='_1o9PC Nzb55'][@datetime]");
-            var linkdate3 = htmlDoc.DocumentNode.SelectNodes("//div[@class='QhbhU'][@datetime]");
-
-            foreach (var item in linkdate2)
+            string aufrufeRoh, likesRoh = "";
+            if (IsElementPresent(By.ClassName("vcOH2"), driver))
             {
-                TimeStopRaw = item.Attributes["datetime"].Value;
+                aufrufeRoh = driver.FindElement(By.ClassName("vcOH2")).Text;
+                driver.FindElement(By.ClassName("vcOH2")).Click();
+                // driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(1); // besser nicht wegen timeout error
+
+                //  creatorName = driver.FindElement(By.ClassName("sqdOP yWX7d     _8A5w5   ZIAjV ")).Text;
+
+
+                if (IsElementPresent(By.ClassName("vJRqr"), driver))
+                {
+                    likesRoh = driver.FindElement(By.ClassName("vJRqr")).Text;
+                    var aufruf = aufrufeRoh.Split(' ').First();
+                    var likes = likesRoh.Substring(likesRoh.IndexOf(' ') + 1).Trim();
+                    likes = likes.Split(' ').First();
+                    bool likeBool = IsNumericFromTryParse(likes);
+                    bool aufrufBool = IsNumericFromTryParse(aufruf);
+
+                    if (likeBool == true && aufrufBool == true)
+                    {
+                        double summe = double.Parse(likes, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB")) / double.Parse(aufruf, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB"));
+
+
+                        summe = summe * 100;
+
+                        if (summe <= 100)
+                        {
+                            summe = Math.Round(summe, 2);
+                            return summe;
+                        }
+                        if (summe >= 1000 && summe <= 10000)
+                        {
+                            summe = summe / 100;
+                        }
+                        else if (summe >= 10000)
+                        {
+                            summe = summe / 1000;
+                        }
+                        //    else if ()
+                        summe = Math.Round(summe, 2);
+                        return summe;
+
+
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                else
+                {
+                    //do if does not exists
+
+                }
             }
+            else
+            {
 
-            var aufrufeRoh = driver.FindElement(By.ClassName("vcOH2")).Text;
-            driver.FindElement(By.ClassName("vcOH2")).Click();
-            var likesRoh = driver.FindElement(By.ClassName("vJRqr")).Text;
-            var aufruf = aufrufeRoh.Split(' ').First();
-            var likes = likesRoh.Substring(likesRoh.IndexOf(' ') + 1).Trim();
-            likes = likes.Split(' ').First();
-            double summe = double.Parse(likes, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB")) / double.Parse(aufruf, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB"));
-            summe = summe * 100;
-            summe = Math.Round(summe, 2);
+                //do if does not exists
 
-            return summe;
+            }
+            //  var aufrufeRoh = driver.FindElement(By.ClassName("vcOH2")).Text;
+
+
+
+            return 0.00;
+        }
+
+        private static bool IsNumericFromTryParse(string likeaufrufe)
+        {
+            double result = 0;
+            return (double.TryParse(likeaufrufe, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB"), out result));
+        }
+
+        private bool IsElementPresent(By by, IWebDriver driver)
+        {
+            try
+            {
+                driver.FindElement(by);
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
         }
 
         private DateTime DateTimeExpress(string Link, IWebDriver driver)
@@ -311,6 +550,8 @@ namespace GondoAssist
             var html = driver.PageSource;
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
+            htmlDoc.OptionEmptyCollection = true;
+
             var linkdate2 = htmlDoc.DocumentNode.SelectNodes("//time[@class='_1o9PC Nzb55'][@datetime]");
 
             foreach (var item in linkdate2)
@@ -368,7 +609,7 @@ namespace GondoAssist
             return dt1;
         }
 
-        string sourcePath;
+
 
         private void onIGOpenPathClicked(object sender, RoutedEventArgs e)
         {
@@ -379,16 +620,29 @@ namespace GondoAssist
                     sourcePath = fbd.SelectedPath;
                 }
             }
+
         }
 
         private void collectVideos(object sender, RoutedEventArgs e)
         {
+
+            if (memorizeIGVideoLocationSavePath.IsChecked == true)
+            {
+                File.WriteAllText(Directory.GetCurrentDirectory() + "\\JDownloaderLocation.txt", String.Empty);
+                using (StreamWriter writer = new StreamWriter(Directory.GetCurrentDirectory() + "\\JDownloaderLocation.txt", true, Encoding.UTF8))
+                {
+                    writer.WriteLine(sourcePath);
+                }
+
+            }
+
             //string sourcePath = @"C:\Users\E\Desktop\JdownloadSlamdan";
             if (igtitle.Text == "")
             {
                 igtitle.Text = "Heute";
             }
             string targetPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\" + igtitle.Text;
+            //  string targetPath = speicherort + @"\" + igtitle.Text;
             string directoryName;
             string destDirectory;
             string fileName;

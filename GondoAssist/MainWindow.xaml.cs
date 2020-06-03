@@ -1,6 +1,7 @@
 ﻿
 using GondoAssist;
 using GondoAssist;
+using GondoAssist.Controller;
 using GondoAssist.EditForms;
 using System;
 using System.Collections.Generic;
@@ -213,7 +214,13 @@ namespace GondoAssist
 
         private void onAutoVideoClicked(object sender, RoutedEventArgs e)
         {
+
+            //maincontent.Children.Clear();
+            //InstagramGrabber igu = new InstagramGrabber();
+            //maincontent.Children.Add(igu);
             maincontent.Children.Clear();
+            AutoModeVideo amv = new AutoModeVideo();
+            maincontent.Children.Add(amv);
             
         }
     }

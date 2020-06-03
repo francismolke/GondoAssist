@@ -13,7 +13,8 @@
             <TextBox x:Name="igtitle" Width="200" Height="30" Text="" BorderBrush="Black" BorderThickness="1"/>
             <Label Content="SPEICHERORT" Foreground="Black" Width="200"/>
             <Button Name="igSavePath" Height="30" Content="auswählen..." Click="onIGSavePathClicked" Width="200" Margin="0,0,0,5"/>
-            <CheckBox x:Name="memorizeSavePath" Width="200" Content="Merken?" Foreground="Gray"/>
+            <!--<CheckBox x:Name="memorizeSavePath" Width="200" Content="Speicherort merken?" Foreground="Gray" Margin="0,5,0,0"/>-->
+            <CheckBox x:Name="startWithBotProfile" Width="200" Content="Mit Bot-Profil?" Foreground="Gray" Margin="0,5,0,0"/>
             <DatePicker Name="IGDatePicker" SelectedDate="{Binding Path = SuggestedDateX, StringFormat = {}{0:dd-MM-yyyy}}" Margin="0,5,0,0" Width="200">
                 <DatePicker.Resources>
                     <Style TargetType="DatePickerTextBox">
@@ -32,7 +33,7 @@
             </DatePicker>
             <Button x:Name="igThumbnail" Content="IG-LINKS ERSTELLEN..." Margin="0,5,0,5" Height="30" Width="200" Click="onCreateIGListClicked"/>
             <!--<DatePicker Name="IGDatePicker"/>-->
-            <Label Content="SPEICHERORT" Foreground="Black" Width="200"/>
+            <Label x:Name="igVideoLocationLabel" Content="                               SPEICHERORT" Foreground="Black" Width="500" />
             <Button Name="igVideoLocationPath" Height="30" Content="auswählen..." Click="onIGOpenPathClicked" Width="200" Margin="0,0,0,5"/>
             <CheckBox x:Name="memorizeIGVideoLocationSavePath" Width="200" Content="Merken?" Foreground="Gray"/>
 
