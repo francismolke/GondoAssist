@@ -1,93 +1,119 @@
-﻿using System;
+﻿using MediaToolkit;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
-using MediaToolkit;
-using MediaToolkit.Model;
 
 namespace GondoAssist.Klassen
 {
     public class AutoModeLikeability
     {
-        public AutoModeLikeability()
-        {
+        bool? cbTen, cbTwenty, cbAll;
+        int sortSequence;
 
+        public AutoModeLikeability(bool? _cbTen, bool? _cbTwenty, bool? _cbAll, int _sortSequence)
+        {
+            //CheckBox _cbTen, CheckBox _cbTwenty, CheckBox _cbAll
+            this.cbTen = _cbTen;
+            this.cbTwenty = _cbTwenty;
+            this.cbAll = _cbAll;
+            this.sortSequence = _sortSequence;
         }
 
         public void CreateBlankProjekt(string projektName, string speicherOrt)
         {
-            string projektDatei = projektName + ".wlmp";
-            //  string projektName = "Slamdank1";
-
-
-            // INTRO AUSWÄHLEN
-            //  string[] filepath = GetAllVideosFromFolder();
-
-
-            string[] filepath = GetLikeability();
-            Tuple<int, int> getValue = new Tuple<int, int>(GetFramesizeOfVideos(filepath, 0).Item1, GetFramesizeOfVideos(filepath, 0).Item2);
-            //int width = 1920;
-            //int height = 1080;
-            int width = getValue.Item1;
-            int height = getValue.Item2;
-            string newDirectiory = speicherOrt + @"\" + projektDatei;
-            double duration = GetDurationOfVideos(filepath, 0);
-            using (XmlWriter writer = XmlWriter.Create(newDirectiory))
+            List<string> lfilepath = new List<string>();
+            string[] filepath = null;
+            try
             {
-                writer.WriteStartDocument();
+                string projektDatei = projektName + ".wlmp";
+               
+                if (sortSequence == 0)
+                {
+                filepath = GetLikeability();
+                }
+                if (sortSequence == 1)
+                {
+                filepath = GetLikeabilityByCategory();                  
+                }
+
+
+                
+                Tuple<int, int> getValue = new Tuple<int, int>(GetFramesizeOfVideos(filepath, 0).Item1, GetFramesizeOfVideos(filepath, 0).Item2);
+                //int width = 1920;
+                //int height = 1080;
+                int width = getValue.Item1;
+                int height = getValue.Item2;
+                string newDirectiory = speicherOrt + @"\" + projektDatei;
+                double duration = GetDurationOfVideos(filepath, 0);
+                using (XmlWriter writer = XmlWriter.Create(newDirectiory))
+                {
+                    writer.WriteStartDocument();
+                }
+
+
+                // CREATES PROJECT/MEDIAITEMS/MEDIAITEM on EMPTY XML
+                new XDocument(
+                        new XElement("Project", new XAttribute("name", projektName), new XAttribute("themeId", 0), new XAttribute("version", 65540), new XAttribute("templateID", "SimpleProjectTemplate"),
+                                    new XElement(new XElement("MediaItems", new XElement("MediaItem", new XAttribute("id", 1), new XAttribute("filePath", filepath[0]), new XAttribute("arWidth", width), new XAttribute("arHeight", height), new XAttribute("duration", duration), new XAttribute("songTitle", ""), new XAttribute("songArtist", ""), new XAttribute("songAlbum", ""), new XAttribute("songCopyrightUrl", ""), new XAttribute("songArtistUrl", ""), new XAttribute("songAudioFileUrl", ""), new XAttribute("stabilizationMode", 0), new XAttribute("mediaItemType", 1)))),
+                                    new XElement("Extents", ""))).Save(newDirectiory);
+                XDocument doc = XDocument.Load(newDirectiory);
+
+                CreateProject(newDirectiory, filepath.Length, doc, filepath, projektDatei);
             }
-            
-
-            // CREATES PROJECT/MEDIAITEMS/MEDIAITEM on EMPTY XML
-            new XDocument(
-                    new XElement("Project", new XAttribute("name", projektName), new XAttribute("themeId", 0), new XAttribute("version", 65540), new XAttribute("templateID", "SimpleProjectTemplate"),
-                                new XElement(new XElement("MediaItems", new XElement("MediaItem", new XAttribute("id", 1), new XAttribute("filePath", filepath[0]), new XAttribute("arWidth", width), new XAttribute("arHeight", height), new XAttribute("duration", duration), new XAttribute("songTitle", ""), new XAttribute("songArtist", ""), new XAttribute("songAlbum", ""), new XAttribute("songCopyrightUrl", ""), new XAttribute("songArtistUrl", ""), new XAttribute("songAudioFileUrl", ""), new XAttribute("stabilizationMode", 0), new XAttribute("mediaItemType", 1)))),
-                                new XElement("Extents", ""))).Save(newDirectiory);
-            XDocument doc = XDocument.Load(newDirectiory);
-
-            CreateProject(newDirectiory, filepath.Length, doc, filepath, projektDatei);
-
+            catch (Exception e)
+            {
+                using (StreamWriter sr = new StreamWriter(Directory.GetCurrentDirectory() + "\\ErrorProject.txt", true, Encoding.UTF8))
+                {
+                    MessageBox.Show("Da gab es ein Problem:" + e.Message);
+                    sr.WriteLine(e.Message.ToString() + e.Message);
+                }
+            }
         }
 
 
 
         private static Tuple<int, int> GetFramesizeOfVideos(string[] allvideos, int position)
         {
-            //string[] allvideos = GetAllVideosFromFolder();
-            //int n = 0; 
+
             string swidth, sheight;
-            int width, height;
-            //while (n < allvideos.Length)
-            //{
-            
-            var inputFile = new MediaToolkit.Model.MediaFile { Filename = allvideos[position] };
-            using (var engine = new Engine())
+            int width = 640, height = 640;
+            try
             {
-                engine.GetMetadata(inputFile);
+
+                var inputFile = new MediaToolkit.Model.MediaFile { Filename = allvideos[position] };
+
+                using (var engine = new Engine())
+                {
+                    engine.GetMetadata(inputFile);
+                }
+                var framesize = inputFile.Metadata.VideoData.FrameSize;
+                swidth = framesize.Substring(0, framesize.IndexOf("x")).TrimEnd();
+                sheight = framesize.Substring(framesize.IndexOf("x") + 1).Trim();
+
+                width = Int32.Parse(swidth);
+                height = Int32.Parse(sheight);
+
             }
-            //Console.WriteLine(inputFile.Metadata.VideoData.FrameSize);
-            var framesize = inputFile.Metadata.VideoData.FrameSize;
-            swidth = framesize.Substring(0, framesize.IndexOf("x")).TrimEnd();
-            sheight = framesize.Substring(framesize.IndexOf("x") + 1).Trim();
-            //}
-            width = Int32.Parse(swidth);
-            height = Int32.Parse(sheight);
+            catch (FileNotFoundException fe)
+            {
+                using (StreamWriter sr = new StreamWriter(Directory.GetCurrentDirectory() + "\\MediaToolKitError.txt", true, Encoding.UTF8))
+                {
+                    sr.WriteLine(fe.Message.ToString() + fe.Message);
+                }
+            }
             return Tuple.Create(width, height);
+
         }
 
         private static double GetDurationOfVideos(string[] filepath, int n)
         {
-            // string[] allvideos = GetAllVideosFromFolder();
-            //int n = 0;
-            //while (n < allvideos.Length)
-            //{
-            //GondoAssist_Tags.Program gat = new GondoAssist_Tags.Program();
-            //   var inputFile = new MediaFile { Filename = @"C:\Users\Agrre\Desktop\testproject\_waifi_ - B8u7kJ7Fn8f.mp4" };
             var inputFile = new MediaToolkit.Model.MediaFile { Filename = filepath[n] };
             double duration;
             int minute = 0;
@@ -144,36 +170,121 @@ namespace GondoAssist.Klassen
 
         }
 
-        private static string[] GetLikeability()
+        private static double GetDurationOfVideos(string filepath)
+        {
+            // string[] allvideos = GetAllVideosFromFolder();
+            //int n = 0;
+            //while (n < allvideos.Length)
+            //{
+            //GondoAssist_Tags.Program gat = new GondoAssist_Tags.Program();
+            //   var inputFile = new MediaFile { Filename = @"C:\Users\Agrre\Desktop\testproject\_waifi_ - B8u7kJ7Fn8f.mp4" };
+            var inputFile = new MediaToolkit.Model.MediaFile { Filename = filepath };
+            double duration;
+            int minute = 0;
+            using (var engine = new Engine())
+            {
+                engine.GetMetadata(inputFile);
+            }
+
+            //Console.WriteLine(inputFile.Metadata.Duration);
+            var mediaDuration = inputFile.Metadata.Duration;
+            // Console.WriteLine(inputFile.Metadata.VideoData.FrameSize);
+
+            string mediaDurationstring = mediaDuration.ToString();
+            if (mediaDurationstring.Substring(0, mediaDurationstring.IndexOf(":")).TrimEnd() == "00")
+            {
+                mediaDurationstring = mediaDurationstring.Substring(3).Trim();
+
+                if (mediaDurationstring.Substring(0, mediaDurationstring.IndexOf(":")).TrimEnd() == "00")
+                {
+                    mediaDurationstring = mediaDurationstring.Substring(3).Trim();
+                }
+                else
+                {
+                    var zwminute = mediaDurationstring.Substring(0, mediaDurationstring.IndexOf(":")).TrimEnd();
+                    minute = Int32.Parse(zwminute);
+                    mediaDurationstring = mediaDurationstring.Substring(3).TrimEnd();
+                }
+                if (mediaDurationstring.Substring(0).TrimEnd() != "00")
+                {
+
+                    duration = double.Parse(mediaDurationstring, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB"));
+                    if (minute != 0)
+                    {
+                        minute = minute * 60;
+                        duration = Math.Round(duration + minute, 2);
+                        return duration;
+                    }
+                }
+
+            }
+            else
+            {
+                return double.Parse(mediaDurationstring);
+            }
+            // 00:00:08.1700000
+            //  CreateBlankProjekt();
+
+            return double.Parse(mediaDurationstring, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB"));
+
+            //}
+            //return 0.00;
+
+
+
+        }
+
+        private string[] GetLikeability()
         {
             string[] filePath = null;
             SortedList<int, LikeabilityQuellen> slClips = new SortedList<int, LikeabilityQuellen>();
             List<double> ld = new List<double>();
             List<LikeabilityQuellen> lg = new List<LikeabilityQuellen>();
-
+            string line;
+            string likestringValue;
+            double likeValue;
+            double tenMinDuration = 750;
+            double twentyMinDuration = 1200;
+            double duration = 0;
+            string profilename = "";
+            //  File.WriteAllText(speicherort + "\\Quellen.txt", String.Empty);
             List<LikeabilityQuellen> lgg = new List<LikeabilityQuellen>();
+
             //  using (StreamReader sr = new StreamReader("Quellen_Likeability.txt", Encoding.UTF8))
             using (StreamReader sr = new StreamReader("Quellen_Likeability.txt", Encoding.UTF8))
             {
-                string line;
-                string likestringValue;
-                double likeValue;
 
                 while ((line = sr.ReadLine()) != null)
                 {
 
                     //    likestringValue = line.Substring(line.IndexOf("/ - ") + 3).Trim();
                     likestringValue = line.Substring(line.IndexOf(".mp4 | ") + 7).Trim();
-                     likeValue = double.Parse(likestringValue, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("de-DE"));
-              //      likeValue = double.Parse(likestringValue, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB"));
+                    likeValue = double.Parse(likestringValue, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("de-DE"));
+                    //      likeValue = double.Parse(likestringValue, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB"));
                     //  line = line.Remove(line.IndexOf("/ - "));
+
+                    // Gets the ProfileName
+                    profilename = line.Substring(line.LastIndexOf("\\") + 1).Trim();
+                    profilename = profilename.Substring(0, profilename.IndexOf(" - ")).Trim();
+
+
+                    // Könnte Probleme machen?
                     line = line.Remove(line.IndexOf(".mp4 | ") + 4);
                     //line = line.Substring(3);
 
 
                     // uniquelist.ForEach()
-                    lg.Add(new LikeabilityQuellen(likeValue, line));
+                    if (File.Exists(line))
+                    {
+                        duration = GetDurationOfVideos(line);
 
+                        lg.Add(new LikeabilityQuellen(likeValue, line, duration, profilename));
+
+                    }
+                    else
+                    {
+                        // mach nichts
+                    }
 
 
                 }
@@ -183,9 +294,75 @@ namespace GondoAssist.Klassen
                 lgg = uniquelist.OrderBy(o => o.Likeability).ToList();
                 lgg.Reverse();
 
-                foreach (var file in lgg)
+                int n = 0;
+                duration = 0;
+                profilename = string.Empty;
+                // Zehn Minuten Episode
+                if (cbTen == true)
                 {
-                    filePath = lgg.Select(f => f.Link).ToArray();
+                    while (duration < tenMinDuration)
+                    {
+
+                        // 5 < 12
+
+                        duration += lgg.Select(d => d.Duration).Skip(n).First();
+                        profilename = lgg.Select(p => p.ProfileName).Skip(n).First();
+
+
+                        n++;
+
+                    }
+                    lgg.RemoveRange(n, lgg.Count - n);
+                    foreach (var file in lgg)
+                    {
+                        filePath = lgg.Select(f => f.Link).ToArray();
+                    }
+                    MakeProfileListQuellen(lgg, n);
+
+                    return filePath;
+                }
+
+                // Zwanzig Minuten episode
+                if (cbTwenty == true)
+                {
+
+                    while (duration < twentyMinDuration)
+                    {
+
+                        // 5 < 12
+                        var haha = lgg.Count;
+                        if (n < lgg.Count)
+                        {
+                            duration += lgg.Select(d => d.Duration).Skip(n).First();
+                            n++;
+                        }
+                        else
+                        {
+                            var diff = twentyMinDuration - duration;
+                            duration = duration + diff + 1;
+                        }
+
+                    }
+                    lgg.RemoveRange(n, lgg.Count - n);
+                    foreach (var file in lgg)
+                    {
+                        filePath = lgg.Select(f => f.Link).ToArray();
+                    }
+                    MakeProfileListQuellen(lgg, n);
+                    return filePath;
+                    // zwanzig minuten episode
+                }
+
+                // Alle Clips verwenden
+                if (cbAll == true)
+                {
+                    n = lgg.Count;
+                    foreach (var file in lgg)
+                    {
+                        filePath = lgg.Select(f => f.Link).ToArray();
+                    }
+                    MakeProfileListQuellen(lgg, n);
+                    return filePath;
                 }
 
 
@@ -193,8 +370,556 @@ namespace GondoAssist.Klassen
             return filePath;
         }
 
+        //private static List<LikeabilityQuellen> FillCategoryListWithProfiles(List<LikeabilityQuellen> list_Category)
+        //{
+        //    string line;
+        //    string profilename;
+
+        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Top.txt", Encoding.UTF8))
+        //    {
+        //        while ((line = sr.ReadLine()) != null)
+        //        {
+        //            //   profilename = line.Substring(26).Trim();
+        //            profilename = line.Substring(26);
+        //            profilename = profilename.Substring(0, profilename.Length - 1);
+        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+        //        }
+        //    }
+        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Better.txt", Encoding.UTF8))
+        //    {
+        //        while ((line = sr.ReadLine()) != null)
+        //        {
+        //            //   profilename = line.Substring(26).Trim();
+        //            profilename = line.Substring(26);
+        //            profilename = profilename.Substring(0, profilename.Length - 1);
+        //            //    list_Category.Add(profilename);
+        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+
+        //        }
+        //    }
+        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Good.txt", Encoding.UTF8))
+        //    {
+        //        while ((line = sr.ReadLine()) != null)
+        //        {
+        //            //   profilename = line.Substring(26).Trim();
+        //            profilename = line.Substring(26);
+        //            profilename = profilename.Substring(0, profilename.Length - 1);
+        //            //list_Category.Add(profilename);
+        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+
+        //        }
+        //    }
+        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Middle.txt", Encoding.UTF8))
+        //    {
+        //        while ((line = sr.ReadLine()) != null)
+        //        {
+        //            //   profilename = line.Substring(26).Trim();
+        //            profilename = line.Substring(26);
+        //            profilename = profilename.Substring(0, profilename.Length - 1);
+        //            //list_Category.Add(profilename);
+        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+
+        //        }
+        //    }
+        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Filler.txt", Encoding.UTF8))
+        //    {
+        //        while ((line = sr.ReadLine()) != null)
+        //        {
+        //            //   profilename = line.Substring(26).Trim();
+        //            profilename = line.Substring(26);
+        //            profilename = profilename.Substring(0, profilename.Length - 1);
+        //            //list_Category.Add(profilename);
+        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+
+        //        }
+        //    }
+        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\End.txt", Encoding.UTF8))
+        //    {
+        //        while ((line = sr.ReadLine()) != null)
+        //        {
+        //            //   profilename = line.Substring(26).Trim();
+        //            profilename = line.Substring(26);
+        //            profilename = profilename.Substring(0, profilename.Length - 1);
+        //            //list_Category.Add(profilename);
+        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+
+        //        }
+        //    }
+        //    return list_Category;
+        //}
+
+        private static List<LikeabilityQuellen> FillCategoryListWithProfiles(int i, List<LikeabilityQuellen> lTop, List<LikeabilityQuellen> lBetter, List<LikeabilityQuellen> lGood, List<LikeabilityQuellen> lMiddle, List<LikeabilityQuellen> lFiller, List<LikeabilityQuellen> lEnd)
+        {
+            string line;
+            string profilename;
+            switch (i)
+            {
+                case 1:
+                    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Top.txt", Encoding.UTF8))
+                    {
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            //   profilename = line.Substring(26).Trim();
+                            profilename = line.Substring(26);
+                            profilename = profilename.Substring(0, profilename.Length - 1);
+                            lTop.Add(new LikeabilityQuellen(0, "", 0, profilename));
+                        }
+                    }
+                    return lTop;
+
+                case 2:
+                    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Better.txt", Encoding.UTF8))
+                    {
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            //   profilename = line.Substring(26).Trim();
+                            profilename = line.Substring(26);
+                            profilename = profilename.Substring(0, profilename.Length - 1);
+                            lBetter.Add(new LikeabilityQuellen(0, "", 0, profilename));
+                        }
+                    }
+                    return lBetter;
+                case 3:
+                    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Good.txt", Encoding.UTF8))
+                    {
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            //   profilename = line.Substring(26).Trim();
+                            profilename = line.Substring(26);
+                            profilename = profilename.Substring(0, profilename.Length - 1);
+                            lGood.Add(new LikeabilityQuellen(0, "", 0, profilename));
+                        }
+                    }
+                    return lGood;
+                case 4:
+                    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Middle.txt", Encoding.UTF8))
+                    {
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            //   profilename = line.Substring(26).Trim();
+                            profilename = line.Substring(26);
+                            profilename = profilename.Substring(0, profilename.Length - 1);
+                            lMiddle.Add(new LikeabilityQuellen(0, "", 0, profilename));
+                        }
+                    }
+                    return lMiddle;
+                case 5:
+                    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Filler.txt", Encoding.UTF8))
+                    {
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            //   profilename = line.Substring(26).Trim();
+                            profilename = line.Substring(26);
+                            profilename = profilename.Substring(0, profilename.Length - 1);
+                            lFiller.Add(new LikeabilityQuellen(0, "", 0, profilename));
+                        }
+                    }
+                    return lFiller;
+                case 6:
+                    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\End.txt", Encoding.UTF8))
+                    {
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            //   profilename = line.Substring(26).Trim();
+                            profilename = line.Substring(26);
+                            profilename = profilename.Substring(0, profilename.Length - 1);
+                            lEnd.Add(new LikeabilityQuellen(0, "", 0, profilename));
+                        }
+                    }
+                    return lEnd;
+            }
+            // nicht null returnen vl
+            return null;
+        }
+
+        List<LikeabilityQuellen> lTop = new List<LikeabilityQuellen>();
+       // List<string> lTop = new List<string>();
+        List<LikeabilityQuellen> lBetter = new List<LikeabilityQuellen>();
+        List<LikeabilityQuellen> lGood = new List<LikeabilityQuellen>();
+        List<LikeabilityQuellen> lMiddle = new List<LikeabilityQuellen>();
+        List<LikeabilityQuellen> lFiller = new List<LikeabilityQuellen>();
+        List<LikeabilityQuellen> lEnd = new List<LikeabilityQuellen>();
+
+        private string[] GetLikeabilityByCategory()
+        {
+            // List<string> list_Category = new List<string>();
+            List<LikeabilityQuellen> list_Category = new List<LikeabilityQuellen>();
+            string[] filePath = null;
+            SortedList<int, LikeabilityQuellen> slClips = new SortedList<int, LikeabilityQuellen>();
+            List<double> ld = new List<double>();
+            List<LikeabilityQuellen> lg = new List<LikeabilityQuellen>();
+            string line;
+            string likestringValue;
+            double likeValue;
+            double tenMinDuration = 750;
+            double twentyMinDuration = 1200;
+            double duration = 0;
+            string profilename = "";
+            // int n = 0;
+            List<LikeabilityQuellen> lgg = new List<LikeabilityQuellen>();
+
+            // Category Lists
+            // Top, Better, Good, Middle, Filler, End
+            for (int i = 1; i <= 6; i++)
+            {
+                // FillCategoryListWithProfiles(list_Category);
+                //FillCategoryListWithProfilez(list_Category);
+                FillCategoryListWithProfiles(i, lTop, lBetter, lGood, lMiddle, lFiller, lEnd);
+
+            }
 
 
+
+
+            using (StreamReader sr = new StreamReader("Quellen_Likeability.txt", Encoding.UTF8))
+            {
+
+                while ((line = sr.ReadLine()) != null)
+                {
+
+                    likestringValue = line.Substring(line.IndexOf(".mp4 | ") + 7).Trim();
+                    likeValue = double.Parse(likestringValue, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("de-DE"));
+
+
+                    // Gets the ProfileName
+                    profilename = line.Substring(line.LastIndexOf("\\") + 1).Trim();
+                    profilename = profilename.Substring(0, profilename.IndexOf(" - ")).Trim();
+
+
+                    // Könnte Probleme machen?
+                    line = line.Remove(line.IndexOf(".mp4 | ") + 4);
+                    //line = line.Substring(3);
+
+
+
+                    if (File.Exists(line))
+                    {
+                        duration = GetDurationOfVideos(line);
+
+                        lg.Add(new LikeabilityQuellen(likeValue, line, duration, profilename));
+
+                    }
+                    else
+                    {
+                        // mach nichts
+                    }
+
+
+                }
+
+                List<LikeabilityQuellen> uniquelist = lg.GroupBy(i => i.Link).Select(g => g.First()).ToList();
+                //uniquelist.OrderBy(i => i.Likeability);
+
+                var newListOfCategories = FillListByCategories(list_Category, uniquelist);
+
+
+
+
+                int n = 0;
+                duration = 0;
+                profilename = string.Empty;
+
+                // Zehn Minuten Episode
+                if (cbTen == true)
+                {
+                    while (duration < tenMinDuration)
+                    {
+
+                        // 5 < 12
+
+                        duration += newListOfCategories.Select(d => d.Duration).Skip(n).First();
+                        profilename = newListOfCategories.Select(p => p.ProfileName).Skip(n).First();
+
+
+                        n++;
+
+                    }
+                    newListOfCategories.RemoveRange(n, newListOfCategories.Count - n);
+                    foreach (var file in newListOfCategories)
+                    {
+                        filePath = newListOfCategories.Select(f => f.Link).ToArray();
+                    }
+                    MakeProfileListQuellen(newListOfCategories, n);
+
+                    return filePath;
+                }
+
+                // Zwanzig Minuten episode
+                if (cbTwenty == true)
+                {
+
+                    while (duration < twentyMinDuration)
+                    {
+
+                        // 5 < 12
+                        var haha = newListOfCategories.Count;
+                        if (n < newListOfCategories.Count)
+                        {
+                            duration += newListOfCategories.Select(d => d.Duration).Skip(n).First();
+                            n++;
+                        }
+                        else
+                        {
+                            var diff = twentyMinDuration - duration;
+                            duration = duration + diff + 1;
+                        }
+
+                    }
+                    newListOfCategories.RemoveRange(n, newListOfCategories.Count - n);
+                    foreach (var file in newListOfCategories)
+                    {
+                        filePath = newListOfCategories.Select(f => f.Link).ToArray();
+                    }
+                    MakeProfileListQuellen(newListOfCategories, n);
+                    return filePath;
+                    // zwanzig minuten episode
+                }
+
+                // Alle Clips verwenden
+                if (cbAll == true)
+                {
+                    n = newListOfCategories.Count;
+                    foreach (var file in newListOfCategories)
+                    {
+                        filePath = newListOfCategories.Select(f => f.Link).ToArray();
+                    }
+                    MakeProfileListQuellen(newListOfCategories, n);
+                    return filePath;
+                }
+
+
+
+            }
+
+            return null;
+
+        }
+
+        private List<LikeabilityQuellen> FillListByCategories(List<LikeabilityQuellen> list_Category, List<LikeabilityQuellen> uniquelist)
+        {
+            List<LikeabilityQuellen> likeList;
+
+            List<LikeabilityQuellen> fillerList = new List<LikeabilityQuellen>();
+            // Erster die Top auffüllen
+            for (int i = 0; i < lTop.Count; i++)
+            {
+                for (int n = 0; n < uniquelist.Count; n++)
+                {
+                    if (lTop.Skip(i).First().ProfileName == uniquelist.Skip(n).First().ProfileName)
+                    {
+                        // list_Category.Add(uniquelist.Skip(n).First());
+                        fillerList.Add(uniquelist.Skip(n).First());
+                    }
+                    else
+                    {
+                        // nix
+                    }
+                }
+
+            }
+            likeList = fillerList.OrderBy(l => l.Likeability).ToList();
+            likeList.Reverse();
+            list_Category.AddRange(likeList);
+            fillerList.Clear();
+            likeList.Clear();
+            // Better auffüllen
+            for (int i = 0; i < lBetter.Count; i++)
+            {
+                for (int n = 0; n < uniquelist.Count; n++)
+                {
+                    if (lBetter.Skip(i).First().ProfileName == uniquelist.Skip(n).First().ProfileName)
+                    {
+                        fillerList.Add(uniquelist.Skip(n).First());
+                    }
+                    else
+                    {
+                        // nix
+                    }
+                }
+
+            }
+            fillerList.OrderBy(l => l.Likeability);
+            list_Category.AddRange(fillerList);
+            fillerList.Clear();
+            // Good auffüllen
+            for (int i = 0; i < lGood.Count; i++)
+            {
+                for (int n = 0; n < uniquelist.Count; n++)
+                {
+                    if (lGood.Skip(i).First().ProfileName == uniquelist.Skip(n).First().ProfileName)
+                    {
+                        fillerList.Add(uniquelist.Skip(n).First());
+                    }
+                    else
+                    {
+                        // nix
+                    }
+                }
+
+            }
+            fillerList.OrderBy(l => l.Likeability);
+            list_Category.AddRange(fillerList);
+            fillerList.Clear();
+            // Middle auffüllen
+            for (int i = 0; i < lMiddle.Count; i++)
+            {
+                for (int n = 0; n < uniquelist.Count; n++)
+                {
+                    if (lMiddle.Skip(i).First().ProfileName == uniquelist.Skip(n).First().ProfileName)
+                    {
+                        fillerList.Add(uniquelist.Skip(n).First());
+                    }
+                    else
+                    {
+                        // nix
+                    }
+                }
+
+            }
+            fillerList.OrderBy(l => l.Likeability);
+            list_Category.AddRange(fillerList);
+            fillerList.Clear();
+            // Filler auffüllen
+            for (int i = 0; i < lFiller.Count; i++)
+            {
+                for (int n = 0; n < uniquelist.Count; n++)
+                {
+                    if (lFiller.Skip(i).First().ProfileName == uniquelist.Skip(n).First().ProfileName)
+                    {
+                        fillerList.Add(uniquelist.Skip(n).First());
+                    }
+                    else
+                    {
+                        // nix
+                    }
+                }
+
+            }
+            fillerList.OrderBy(l => l.Likeability);
+            list_Category.AddRange(fillerList);
+            fillerList.Clear();
+            // Ende auffüllen
+            for (int i = 0; i < lEnd.Count; i++)
+            {
+                for (int n = 0; n < uniquelist.Count; n++)
+                {
+                    if (lEnd.Skip(i).First().ProfileName == uniquelist.Skip(n).First().ProfileName)
+                    {
+                        fillerList.Add(uniquelist.Skip(n).First());
+                    }
+                    else
+                    {
+                        // nix
+                    }
+                }
+
+            }
+            fillerList.OrderBy(l => l.Likeability);
+            list_Category.AddRange(fillerList);
+            fillerList.Clear();
+            return list_Category;
+        }
+
+        private void FillCategoryListWithProfilez(List<LikeabilityQuellen> list_Category)
+        {
+            string line;
+            string profilename;
+
+            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Top.txt", Encoding.UTF8))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+                    //   profilename = line.Substring(26).Trim();
+                    profilename = line.Substring(26);
+                    profilename = profilename.Substring(0, profilename.Length - 1);
+                    // list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+                }
+            }
+            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Better.txt", Encoding.UTF8))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+                    //   profilename = line.Substring(26).Trim();
+                    profilename = line.Substring(26);
+                    profilename = profilename.Substring(0, profilename.Length - 1);
+                    //    list_Category.Add(profilename);
+                    //  list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+
+                }
+            }
+            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Good.txt", Encoding.UTF8))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+                    //   profilename = line.Substring(26).Trim();
+                    profilename = line.Substring(26);
+                    profilename = profilename.Substring(0, profilename.Length - 1);
+                    //list_Category.Add(profilename);
+                    //   list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+
+                }
+            }
+            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Middle.txt", Encoding.UTF8))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+                    //   profilename = line.Substring(26).Trim();
+                    profilename = line.Substring(26);
+                    profilename = profilename.Substring(0, profilename.Length - 1);
+                    //list_Category.Add(profilename);
+                    //  list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+
+                }
+            }
+            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Filler.txt", Encoding.UTF8))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+                    //   profilename = line.Substring(26).Trim();
+                    profilename = line.Substring(26);
+                    profilename = profilename.Substring(0, profilename.Length - 1);
+                    //list_Category.Add(profilename);
+                    //  list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+
+                }
+            }
+            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\End.txt", Encoding.UTF8))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+                    //   profilename = line.Substring(26).Trim();
+                    profilename = line.Substring(26);
+                    profilename = profilename.Substring(0, profilename.Length - 1);
+                    //list_Category.Add(profilename);
+                    // list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
+
+                }
+            }
+        }
+
+        private void MakeProfileListQuellen(List<LikeabilityQuellen> lgg, int n)
+        {
+            File.WriteAllText(Directory.GetCurrentDirectory() + "\\Quellen_Profile.txt", String.Empty);
+            SortedSet<string> hsl = new SortedSet<string>();
+
+            string profilename = "";
+
+            for (int i = 0; i < n; i++)
+            {
+                profilename = lgg.Select(p => p.ProfileName).Skip(i).First();
+                hsl.Add(profilename);
+            }
+
+            foreach (var pn in hsl)
+            {
+                // Wie timestamps
+                using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + "\\Quellen_Profile.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine("https://www.instagram.com/" + pn + @"/");
+                }
+            }
+
+        }
 
         private static void CreateProject(string newDirectiory, int amountOfMediaItems, XDocument doc, string[] filepath, string projektDatei)
         {
@@ -485,6 +1210,7 @@ namespace GondoAssist.Klassen
                     new XElement("BoundPropertyFloat", new XAttribute("Name", "transparency"), new XAttribute("Value", 1)))));
             return titleDocX;
         }
+
 
         private static string getFileNameFromMediaItem(int n, XDocument doc)
         {

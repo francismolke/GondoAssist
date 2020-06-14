@@ -7,15 +7,8 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800" Background="Wheat">
 
-    <!--<DockPanel>
-        <StackPanel>
-            <TextBlock x:Name="tbName" > hallo </TextBlock>
-            
-        </StackPanel>
-    </DockPanel>-->
-
     <DockPanel>
-        <StackPanel>
+        <StackPanel Width="294" HorizontalAlignment="Left">
             <Label Content="NAME DER EPISODE:" Foreground="Black" Width="200"/>
             <TextBox x:Name="episodeTitle" Width="200" Height="30" Text="" BorderBrush="Black" BorderThickness="1"/>
             <Label Content="SPEICHERORT" Foreground="Black" Width="200"/>
@@ -25,21 +18,37 @@
             <Separator Width="200" Height="33"/>
             <Label Content="Tags hinzufügen" Foreground="Black" Width="200"/>
 
-            <Label Height="30" Width="200"  Content="Hinweis: Das Projekt muss geöffnet," BorderThickness="2,2,2,0" BorderBrush="Black" Background="PaleVioletRed"/>
-            <Label Height="30" Width="200" Margin="0,0,0,5" Content="und einmal abgespeichert werden" BorderThickness="2,0,2,2" BorderBrush="Black" Background="PaleVioletRed"/>
+            <Label HorizontalContentAlignment="Center" Height="30"  Content="Hinweis: Über dem Button das Projekt öffnen," BorderThickness="2,2,2,0" BorderBrush="Black" Background="PaleVioletRed" Margin="5,0,10,0"/>
+            <Label HorizontalContentAlignment="Center" Height="30" Margin="5,0,10,5" Content="und einmal abspeichern und schließen" BorderThickness="2,0,2,2" BorderBrush="Black" Background="PaleVioletRed" />
 
             <Button x:Name="OpenAndSaveProject" Height="30" Width="200" Content="Wähle Speicherort des Projekts" Margin="0,0,0,5" Click="OpenAndSaveProjectFile"/>
 
-
-
-            <!--<Button Name="EpisodeLocationPath" Height="30" Content="Projekt auswählen..." Click="onEpisodeOpenPathClicked" Width="200" Margin="0,0,0,5"/>-->
-
-            <!--<CheckBox x:Name="memorizeEpisodeVideoLocationSavePath" Width="200" Content="Merken?" Foreground="Gray" IsEnabled="false"/>-->
             <Button Name="createTags" Height="30" Content="Tags erstellen" Click="InsertTagsIntoEpisode" Margin="0,5,0,0" Width="200"/>
             <Label Content="" Width="200" Foreground="Black"/>
-
         </StackPanel>
-
+        <Border BorderBrush="Silver" BorderThickness="1">
+            <StackPanel Width="300" HorizontalAlignment="Left" Margin="3,0,3,0">
+                <Label Name="lbSettings" Content="Einstellungen:"/>
+                <Label Name="lbEpisodenLaenge" Content="Episoden Länge:"/>
+                <CheckBox x:Name="cbTenmin" Content="10-15 Minuten Episode" />
+                <CheckBox x:Name="cbTwentymin" Content="20 Minuten Episode" />
+                <CheckBox x:Name="cbAll" Content="Alle Clips benutzen" />
+                <Separator Margin="0,5,0,5"/>
+                <Label Content="Sortierreihenfolge:"/>
+                <CheckBox Name="cbByLikeability" Content="Nach Likeability sortieren" Margin="0,0,0,5"/>
+                <CheckBox Name="cbByCategoryThenLikeability" Content="Nach Kategorien &amp; Likeability sortieren"/>
+            </StackPanel>
+        </Border>
+        <StackPanel Width="200" HorizontalAlignment="Left">
+            <Label x:Name="lbQuellen" Content="Quellenliste:" Margin="0,0,0,5"/>
+            <Button x:Name="bQuellen" Content="Quellen öffnen" Margin="0,0,0,5" Width="150" Click="onQuellenOpenClicked"/>
+            <Separator/>
+            <Label x:Name="lbQuellenProfile" Content="Profil-Quellenliste:" Margin="0,0,0,5" />
+            <Button x:Name="bQuellenProfile" Content="Profil-Quellen öffnen" Margin="0,0,0,5" Width="150" Click="onQuellenProfileOpenClicked"/>
+            <Separator/>
+            <Label x:Name="lbQuellenLike" Content="Likes-Quellen öffnen: " Margin="0,0,0,5"/>
+            <Button x:Name="bQuellenLike" Content="Likeability_Quellen öffnen" Margin="0,0,0,5" Width="150" Click="onQuellenLikeOpenClicked"/>
+            <Separator/>
+        </StackPanel>
     </DockPanel>
-
 </UserControl>

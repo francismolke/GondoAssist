@@ -3,16 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using YoutubeExtractor;
 
 namespace GondoAssist
@@ -22,7 +14,7 @@ namespace GondoAssist
     /// </summary>
     public partial class UCDownloader : UserControl
     {
-            
+
         public string link;
         List<VideoInfo> VInfos;
         // default speicherort
@@ -37,10 +29,11 @@ namespace GondoAssist
             {
                 lbVideoName.Text = "hier link einfügen";
             }
-            else { 
-            cBLinks.Items.Clear();
-            cBLinks.ItemsSource = FetchAvailableDownloadFormats(link);
-            cBLinks.SelectedIndex = 0;
+            else
+            {
+                cBLinks.Items.Clear();
+                cBLinks.ItemsSource = FetchAvailableDownloadFormats(link);
+                cBLinks.SelectedIndex = 0;
             }
         }
         // Überprüfe ob URL Valid ist
@@ -144,11 +137,11 @@ namespace GondoAssist
                 cBLinks.IsEnabled = (false);
             }
             else
-            { 
-            cBLinks.Items.Clear();
-            link = lbVideoName.Text;
-            cBLinks.ItemsSource = FetchAvailableDownloadFormats(link);
-            cBLinks.SelectedIndex = 0;
+            {
+                cBLinks.Items.Clear();
+                link = lbVideoName.Text;
+                cBLinks.ItemsSource = FetchAvailableDownloadFormats(link);
+                cBLinks.SelectedIndex = 0;
             }
         }
     }

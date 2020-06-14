@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
 
 namespace YoutubeExtractor
 {
@@ -310,7 +310,7 @@ namespace YoutubeExtractor
             request.CookieContainer = new CookieContainer();
             request.CookieContainer.Add(new Cookie(@"SID", @"mQeYOCtreiT0raIH_SripvZhFleJs091OyBwZNd3yW53hF9Z0bkfkevU6TDJ2egnUwpVUA") { Domain = "youtube.com" });
             request.CookieContainer.Add(new Cookie(@"SSID", @"ANg44Gu6IH_4a9krr") { Domain = "youtube.com" });
-            var response = (HttpWebResponse)request.GetResponse();            
+            var response = (HttpWebResponse)request.GetResponse();
             string pageSource;
             using (var stream = new StreamReader(response.GetResponseStream()))
                 pageSource = stream.ReadToEnd();

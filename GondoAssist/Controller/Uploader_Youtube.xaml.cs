@@ -5,7 +5,6 @@ using Google.Apis.Upload;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -30,7 +29,7 @@ namespace GondoAssist
         public Uploader_Youtube(MainWindow mw)
         {
             this.mw = mw;
-            string path = Path.Combine(Environment.CurrentDirectory, @"User\", fileName);      
+            string path = Path.Combine(Environment.CurrentDirectory, @"User\", fileName);
             InitializeComponent();
             DescriptionBox.Text = File.ReadAllText(path);
         }
@@ -169,7 +168,7 @@ namespace GondoAssist
             Pfad = pathbox.Text;
             try
             {
-              
+
                 Run().Wait();
             }
             catch (AggregateException ex)

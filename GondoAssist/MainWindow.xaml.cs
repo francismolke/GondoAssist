@@ -1,22 +1,9 @@
-﻿
-using GondoAssist;
-using GondoAssist;
-using GondoAssist.Controller;
+﻿using GondoAssist.Controller;
 using GondoAssist.EditForms;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GondoAssist
 {
@@ -36,8 +23,8 @@ namespace GondoAssist
         {
             InitializeComponent();
             maincontent.Children.Clear();
-         //   UCYTSearch ucyts = new UCYTSearch(this);
-          //  maincontent.Children.Add(ucyts);
+            //   UCYTSearch ucyts = new UCYTSearch(this);
+            //  maincontent.Children.Add(ucyts);
         }
 
         /// <summary>
@@ -47,7 +34,7 @@ namespace GondoAssist
         {
             maincontent.Children.Clear();
             UCYTSearch ucyts = new UCYTSearch(this);
-          //  Uploader_Youtube ucyts = new Uploader_Youtube(this);
+            //  Uploader_Youtube ucyts = new Uploader_Youtube(this);
             maincontent.Children.Add(ucyts);
         }
 
@@ -61,7 +48,7 @@ namespace GondoAssist
         // Button-Click Event: Öffnet das Upload-Interface 
         private void onUploaderClicked(object sender, RoutedEventArgs e)
         {
-            
+
             maincontent.Children.Clear();
             UCUploader ucu = new UCUploader();
             maincontent.Children.Add(ucu);
@@ -112,7 +99,7 @@ namespace GondoAssist
             maincontent.Children.Clear();
             string link = "";
             TestDownloader test = new TestDownloader();
-           // UCDownloader test = new UCDownloader(link);
+            // UCDownloader test = new UCDownloader(link);
 
             maincontent.Children.Add(test);
 
@@ -135,21 +122,21 @@ namespace GondoAssist
         // private void XonYoutubeSearchClicked(object sender, RoutedEventArgs e)
         private void onUploaderIconClicked(object sender, RoutedEventArgs e)
         {
-          
+
             var element = (UIElement)e.Source;
             int c = Grid.GetColumn(element);
             int r = Grid.GetRow(element);
-      //     if (e.Source.)
-                foreach (UIElement control in MenuGrid.Children)
+            //     if (e.Source.)
+            foreach (UIElement control in MenuGrid.Children)
             {
-                if (Grid.GetRow(control)==r && Grid.GetColumn(control) ==c)
+                if (Grid.GetRow(control) == r && Grid.GetColumn(control) == c)
                 {
                     control.Visibility = Visibility.Hidden;
-                        //Remove(control);
+                    //Remove(control);
                     break;
                 }
             }
-            AddSecondaryMenuGrid(c,r);
+            AddSecondaryMenuGrid(c, r);
 
         }
 
@@ -181,16 +168,16 @@ namespace GondoAssist
                     break;
                 }
             }
-            HideSecondaryMenuGrid(c,r);
+            HideSecondaryMenuGrid(c, r);
 
         }
 
         private void ThumbnailEditFormClicked(object sender, RoutedEventArgs e)
         {
-            
+
             ThumbnailSelectEditForm teF = new ThumbnailSelectEditForm(this);
             teF.Owner = this;
-            
+
 
             teF.Closed += TSEFWindow_Closed;
             teF.Show();
@@ -199,12 +186,12 @@ namespace GondoAssist
         private void TSEFWindow_Closed(object sender, EventArgs e)
         {
             MessageBox.Show("Mainwindow");
-           // MessageBox.Show("Something has happened" + selectedRow + "" + selectedColumn, "Parent");
+            // MessageBox.Show("Something has happened" + selectedRow + "" + selectedColumn, "Parent");
         }
 
         private void ThumbNailSelectedFormClicked(object sender, RoutedEventArgs e)
         {
-            
+
             maincontent.Children.Clear();
             ThumbnailSelector teF = new ThumbnailSelector(this);
             maincontent.Children.Add(teF);
@@ -221,7 +208,7 @@ namespace GondoAssist
             maincontent.Children.Clear();
             AutoModeVideo amv = new AutoModeVideo();
             maincontent.Children.Add(amv);
-            
+
         }
     }
 }

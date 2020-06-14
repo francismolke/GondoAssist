@@ -8,18 +8,11 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GondoAssist
 {
@@ -33,9 +26,11 @@ namespace GondoAssist
         // string TNSavePath, TNSaveFile;
         string speicherort, speicherortQuellenLikeability;
         string targetPath;
-        string sourcePath;
+        string sourcePath, destinationPath;
         bool isBotProfileBlocked = false;
         bool botProfileIsActive = false;
+        bool isOwnProfileIsActive = false;
+        string IGLogin, IGPW = "";
         // ÄNDERN
         // string savepath = @"C:\Users\E\Desktop\";
         //string sourcePath = @"C:\Users\Agrre\Desktop\JdownloadSlamdan";
@@ -46,11 +41,35 @@ namespace GondoAssist
         {
             InitializeComponent();
             CheckIfJDownloaderPathIsSaved();
+            CheckIfLoginIsSaved();
+        }
+
+        private void CheckIfLoginIsSaved()
+        {
+            string logintxt = "IGLogin.txt";
+            string[] logininfo = { "", "" };
+            int i = 0;
+            if (System.IO.File.Exists(logintxt))
+            {
+                foreach (string line in File.ReadLines(logintxt, Encoding.UTF8))
+                {
+                    logininfo[i] = line;
+                    i++;
+                }
+                if(logininfo[0] != "")
+                {
+                    IGLogin = logininfo[0];
+                    IGPW = logininfo[1];
+                    startWithOwnProfile.Content = "mit eigenem Profil angemeldet";
+                    spLogout.Visibility = Visibility.Visible;
+                }
+
+            }
         }
 
         private void CheckIfJDownloaderPathIsSaved()
         {
-            
+
 
             List<string> ljd = new List<string>();
             using (StreamReader sr = new StreamReader(JDSettingsPath))
@@ -225,6 +244,7 @@ namespace GondoAssist
             //  COOKIE MANAGEMENT !?
             if (isBotProfileBlocked == true)
             {
+                //  GetLoginInformation();
                 driver.Url = "https://www.instagram.com/accounts/login/";
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
                 driver.Manage().Cookies.AddCookie(new Cookie("scheißIG", "fickdeinemutter"));
@@ -233,6 +253,31 @@ namespace GondoAssist
                 username.SendKeys("slamdankbot@gmail.com");
                 var password = driver.FindElement(By.CssSelector("input[name='password']"));
                 password.SendKeys("qwertzu123!");
+                password.SendKeys(Keys.Enter);
+                var allCookies = driver.Manage().Cookies.AllCookies;
+                using (StreamWriter cookieWriter = new StreamWriter(speicherort + "\\Cookies.data", true, Encoding.UTF8))
+                {
+                    foreach (var cookie in allCookies)
+                    {
+                        //driver.Manage().Cookies.AddCookie(cookie);
+
+                        cookieWriter.Write(cookie.Name + ";" + cookie.Value + ";" + cookie.Domain + ";" + cookie.Path + ";" + cookie.Expiry + ";" + cookie.Secure);
+
+                    }
+                    cookieWriter.Close();
+                }
+            }
+
+            if (isOwnProfileIsActive == true)
+            {
+                driver.Url = "https://www.instagram.com/accounts/login/";
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
+                driver.Manage().Cookies.AddCookie(new Cookie("scheißIG", "fickdeinemutter"));
+
+                var username = driver.FindElement(By.CssSelector("input[name='username']"));
+                username.SendKeys(IGLogin);
+                var password = driver.FindElement(By.CssSelector("input[name='password']"));
+                password.SendKeys(IGPW);
                 password.SendKeys(Keys.Enter);
                 var allCookies = driver.Manage().Cookies.AllCookies;
                 using (StreamWriter cookieWriter = new StreamWriter(speicherort + "\\Cookies.data", true, Encoding.UTF8))
@@ -349,8 +394,10 @@ namespace GondoAssist
                                         isBotProfileBlocked = CheckIfInstagramBlockedBotProfile(htmlDoc);
 
                                         link = "https://www.instagram.com" + item.Attributes["href"].Value;
-                                        returnValue = LikeabilityExpress(link, driver);
+                                    //    returnValue = LikeabilityExpress(link, driver);
                                         returnValueDate = DateTimeExpress(link, driver);
+                                        returnValue = LikeabilityExpress(link, driver);
+
                                         // DateTime dt1 = new DateTime(2019, 8, 9, 20, 0, 0);
                                         if (returnValueDate > suggestedDate && returnValue != 0)
                                         {
@@ -362,7 +409,9 @@ namespace GondoAssist
                                             likeAbilityWriter.Write(targetPath + @"\" + creatorName + linkending + ".mp4" + " | " + returnValue + "\r\n");
                                         }
                                         else
-                                        { }
+                                        {
+                                            break;
+                                        }
                                         // writer.Write(profileList);
                                     }
                                     likeAbilityWriter.Close();
@@ -410,16 +459,29 @@ namespace GondoAssist
                     case MessageBoxResult.Yes:
                         botProfileIsActive = true;
                         CreateIGListAgain();
-                        break;                                            
+                        break;
                     case MessageBoxResult.No:
                         MessageBox.Show("Oh well, too bad!", "My App");
                         break;
-                    case MessageBoxResult.Cancel:                        
+                    case MessageBoxResult.Cancel:
                         break;
                 }
 
             }
+            CopyQuellenToDebugFolder(targetPath);
             MessageBox.Show("Videosuche beendet.");
+        }
+
+        private void GetLoginInformation()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void CopyQuellenToDebugFolder(string targetPath)
+        {
+            File.Copy(System.IO.Path.Combine(targetPath, "Quellen.txt"), System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Quellen.txt"), true);
+
+
         }
 
         private bool CheckIfInstagramBlockedBotProfile(HtmlDocument htmlDoc)
@@ -449,7 +511,7 @@ namespace GondoAssist
 
             string link = Link;
 
-            driver.Url = link;
+            //driver.Url = link;
 
 
             string aufrufeRoh, likesRoh = "";
@@ -623,61 +685,157 @@ namespace GondoAssist
 
         }
 
+        private void onIGSelectPathClicked(object sender, RoutedEventArgs e)
+        {
+            using (System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select your Path" })
+            {
+                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    destinationPath = fbd.SelectedPath;
+                }
+            }
+
+        }
+
         private void collectVideos(object sender, RoutedEventArgs e)
         {
 
-            if (memorizeIGVideoLocationSavePath.IsChecked == true)
+            if (destinationPath == null || destinationPath == "")
             {
-                File.WriteAllText(Directory.GetCurrentDirectory() + "\\JDownloaderLocation.txt", String.Empty);
-                using (StreamWriter writer = new StreamWriter(Directory.GetCurrentDirectory() + "\\JDownloaderLocation.txt", true, Encoding.UTF8))
-                {
-                    writer.WriteLine(sourcePath);
-                }
-
+                MessageBox.Show("Kein SPEICHERORT für die Episode ausgewählt, bitte wähle den Episoden Ordner");
             }
-
-            //string sourcePath = @"C:\Users\E\Desktop\JdownloadSlamdan";
-            if (igtitle.Text == "")
+            else
             {
-                igtitle.Text = "Heute";
-            }
-            string targetPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\" + igtitle.Text;
-            //  string targetPath = speicherort + @"\" + igtitle.Text;
-            string directoryName;
-            string destDirectory;
-            string fileName;
-            string destFile;
-            Directory.CreateDirectory(targetPath);
-            // check if directory exists
-            if (Directory.Exists(sourcePath))
-            {
-                Directory.CreateDirectory(targetPath);
-                // get directories into arrays
-                string[] directory = Directory.GetDirectories(sourcePath);
 
-                foreach (string s in directory)
+                if (memorizeIGVideoLocationSavePath.IsChecked == true)
                 {
-                    // get files firom directories into arrays
-                    string[] files = Directory.GetFiles(s);
-
-                    directoryName = System.IO.Path.GetDirectoryName(s);
-                    foreach (string c in files)
+                    File.WriteAllText(Directory.GetCurrentDirectory() + "\\JDownloaderLocation.txt", String.Empty);
+                    using (StreamWriter writer = new StreamWriter(Directory.GetCurrentDirectory() + "\\JDownloaderLocation.txt", true, Encoding.UTF8))
                     {
-                        // move files to destination
-                        fileName = System.IO.Path.GetFileName(c);
-                        //destDirectory = JD+filename
-                        destDirectory = System.IO.Path.Combine(s, fileName);
-                        // der neue pfad und name für die datei wo sie gespeichert werden soll
-
-                        // combine targetpath und filename
-                        // destFile = Desktop+Filename
-                        destFile = System.IO.Path.Combine(targetPath, fileName);
-                        File.Move(destDirectory, destFile);
+                        writer.WriteLine(sourcePath);
                     }
 
+                }
+                using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\JDownloaderLocation.txt"))
+                {
+                    sourcePath = sr.ReadLine();
+                }
 
+
+
+                //string sourcePath = @"C:\Users\E\Desktop\JdownloadSlamdan";
+                //if (igtitle.Text == "")
+                //{
+                //    igtitle.Text = "Heute";
+                //}
+                string targetPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\" + igtitle.Text;
+                //  string targetPath = speicherort + @"\" + igtitle.Text;
+                string directoryName;
+                string destDirectory;
+                string fileName;
+                string destFile;
+                Directory.CreateDirectory(targetPath);
+                // check if directory exists
+
+                if (Directory.Exists(sourcePath))
+                {
+                    //  Directory.CreateDirectory(targetPath);
+                    // get directories into arrays
+                    string[] directory = Directory.GetDirectories(sourcePath);
+
+                    foreach (string s in directory)
+                    {
+                        // get files firom directories into arrays
+                        string[] files = Directory.GetFiles(s);
+
+                        directoryName = System.IO.Path.GetDirectoryName(s);
+                        foreach (string c in files)
+                        {
+                            // move files to destination
+                            fileName = System.IO.Path.GetFileName(c);
+                            //destDirectory = JD+filename
+                            destDirectory = System.IO.Path.Combine(s, fileName);
+                            // der neue pfad und name für die datei wo sie gespeichert werden soll
+
+                            // combine targetpath und filename
+                            // destFile = Desktop+Filename
+                            destFile = System.IO.Path.Combine(targetPath, fileName);
+                            File.Move(destDirectory, destFile);
+                        }
+
+
+                    }
                 }
             }
+        }
+
+        private void onLoginWithOwnProfileClicked(object sender, RoutedEventArgs e)
+        {
+            if (IGLogin != "" && IGPW != "")
+            {
+
+            }
+            else
+            {
+                spIGLogin.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void onIGLoginClicked(object sender, RoutedEventArgs e)
+        {
+            // check for login merken?
+            isOwnProfileIsActive = true;
+            IGLogin = tbLogin.Text;
+            IGPW = tbPW.Password;
+            
+
+
+
+            if (cbIGLogin.IsChecked == true)
+            {
+                //string hashedIGLogin = EncryptLoginInfo(IGLogin);
+                //string hashedIGPW = EncryptLoginInfo(IGPW);
+
+                using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + "\\IGLogin.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(IGLogin);
+                    sw.WriteLine(IGPW);
+                }
+            }
+            MessageBox.Show("Logindaten wurden gespeichert");
+            spIGLogin.Visibility = Visibility.Collapsed;
+            spLogout.Visibility = Visibility.Visible;
+        }
+
+        private void RetrieveIGLoginInfo()
+        {
+
+        }
+
+        private void onLogoutClicked(object sender, RoutedEventArgs e)
+        {
+            IGLogin = "";
+            IGPW = "";
+            File.WriteAllText(Directory.GetCurrentDirectory() + "\\IGLogin.txt", String.Empty);
+            spLogout.Visibility = Visibility.Collapsed;
+            spIGLogin.Visibility = Visibility.Visible;
+            tbLogin.Text = "";
+            tbPW.Password = "";
+        }
+
+        private string EncryptLoginInfo(string value)
+        {
+            SHA256 sha256 = SHA256.Create();
+
+            byte[] hashData = sha256.ComputeHash(Encoding.Default.GetBytes(value));
+            StringBuilder returnValue = new StringBuilder();
+
+            for (int i = 0; i < hashData.Length; i++)
+            {
+                returnValue.Append(hashData[i].ToString());
+            }
+
+            return returnValue.ToString();
         }
 
         //private async void onPostClicked(object sender, RoutedEventArgs e)

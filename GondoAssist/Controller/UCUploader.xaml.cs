@@ -1,5 +1,20 @@
-﻿using System;
+﻿using GondoAssist.Klassen;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
+using Google.Apis.Services;
+using Google.Apis.Upload;
+using Google.Apis.Util.Store;
+using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
+using HtmlAgilityPack;
+//using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,35 +23,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Drive.v3;
-using Google.Apis.Services;
-using Google.Apis.Upload;
-using Google.Apis.Util.Store;
-using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
-
 using WordPressPCL;
 using WordPressPCL.Models;
-using WordPressPCL.Utility;
-
-using GondoAssist.Klassen;
-using System.Diagnostics;
-//using NUnit.Framework;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WordPressPCL.Tests.Selfhosted.Utility;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
-using HtmlAgilityPack;
-using System.ComponentModel;
 
 namespace GondoAssist
 {
@@ -62,14 +51,14 @@ namespace GondoAssist
             DataContext = this;
             backgroundWorker1.WorkerReportsProgress = true;
             backgroundWorker1.WorkerSupportsCancellation = true;
-            
+
             //IGPB.Height = 300;
             //IGPB.Width = 400;
             //IGPB.Name = "IGProgressBar";
             //IGPB.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
 
-            
+
 
         }
         [ClassInitialize]
@@ -107,7 +96,7 @@ namespace GondoAssist
             video.Snippet = new VideoSnippet();
             video.Snippet.Title = Titel;
             video.Snippet.Description = Beschreibung;
-            video.Snippet.Tags = new string[] { Tags };     
+            video.Snippet.Tags = new string[] { Tags };
             video.Snippet.CategoryId = "22"; // See https://developers.google.com/youtube/v3/docs/videoCategories/list
             video.Status = new VideoStatus();
             video.Status.PrivacyStatus = privacystatus; // "unlisted"; // or "private" or "public"
@@ -579,7 +568,7 @@ namespace GondoAssist
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
 
             //
-            
+
 
             //IGPB.Show();
             //
@@ -685,10 +674,10 @@ namespace GondoAssist
                 {
                     profileList.Add(line);
                 }
-               // startBackGroundWOrker(profileList.Count, profileList, suggestedDate);
+                // startBackGroundWOrker(profileList.Count, profileList, suggestedDate);
 
 
-                   GetHTMLInfo(profileList, suggestedDate);
+                GetHTMLInfo(profileList, suggestedDate);
             }
             return profilecount = profileList.Count;
         }
@@ -711,7 +700,7 @@ namespace GondoAssist
             // open dialog
             // mit pg hier erstellen dynamisch
             GetHTMLInfo(profileList, suggestedDate);
-          //  ShowProgressHandler(count, profileList, suggestedDate);
+            //  ShowProgressHandler(count, profileList, suggestedDate);
             //}
         }
 
@@ -719,17 +708,17 @@ namespace GondoAssist
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
-            
-            for (int i=0; i<= profilecount; i++)
+
+            for (int i = 0; i <= profilecount; i++)
             {
                 if (worker.CancellationPending == true)
                 {
                     e.Cancel = true;
-                    break;                    
+                    break;
                 }
                 else
                 {
-                    if (i!=0)
+                    if (i != 0)
                     {
                         int percentage = profilecount / i;
                         worker.ReportProgress(percentage);
@@ -766,7 +755,7 @@ namespace GondoAssist
             IGPB.Name = "IGProgressBar";
             IGPB.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-           
+
             ProgressBar IGPBar = new ProgressBar()
             {
                 Minimum = 0,

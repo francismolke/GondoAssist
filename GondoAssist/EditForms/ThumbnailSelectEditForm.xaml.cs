@@ -1,19 +1,11 @@
 ﻿using GondoAssist.Klassen;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using YoutubeSearch;
 
 namespace GondoAssist.EditForms
@@ -30,7 +22,7 @@ namespace GondoAssist.EditForms
         string titleElement = "Title";
         string UrlElement = "Url";
         string buttonname = "";
-        public int c,r;
+        public int c, r;
         MainWindow mw_parent;
         BitmapImage superbmp;
 
@@ -58,16 +50,16 @@ namespace GondoAssist.EditForms
             GetTNPos(c, r);
         }
 
-        static (int,int) GetTNPos(int c, int r)
+        static (int, int) GetTNPos(int c, int r)
         {
-            return (c,r);            
+            return (c, r);
         }
 
 
         private void AddToTNBoard(object sender, RoutedEventArgs e)
         {
-          //  c = c + c;
-        //    r = r + 1 + r;
+            //  c = c + c;
+            //    r = r + 1 + r;
             MessageBoxResult result = MessageBox.Show("Wollen Sie dieses Video zum Board hinzufügen?", "Thumbnail Selector", MessageBoxButton.YesNo);
             switch (result)
             {
@@ -96,11 +88,11 @@ namespace GondoAssist.EditForms
                     mw_parent.tnUrl = lburl.Content as string;
                     this.Close();
                     break;
-                case MessageBoxResult.No:           
+                case MessageBoxResult.No:
                     // Abort Mission, will get them next itme...
                     break;
             }
-           
+
 
 
         }
@@ -214,7 +206,7 @@ namespace GondoAssist.EditForms
                 if (gridRow < 2)
                 {
                     if (columnPos <= 4)
-                    {                        
+                    {
                         if (columnPos <= 3)
                         {
                             Image imgx = this.FindName(imageElement) as Image;
@@ -247,8 +239,8 @@ namespace GondoAssist.EditForms
             gridRow -= gridRow;
             rowPos -= rowPos;
 
-        //    mw_parent.selectedColumn = c;
-        //    mw_parent.selectedRow = r;
+            //    mw_parent.selectedColumn = c;
+            //    mw_parent.selectedRow = r;
         }
 
     }

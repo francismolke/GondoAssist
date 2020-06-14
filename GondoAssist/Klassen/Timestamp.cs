@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace GondoAssist.Klassen
@@ -16,10 +15,10 @@ namespace GondoAssist.Klassen
         string xmlfilepath;
         public Timestamp()
         {
-            
+
             GetXMLInformation(so, xmlfilepath);
             File.CreateText(so + "\\Timestamp.txt");
-         //   DeleteExtension();
+            //   DeleteExtension();
         }
 
         private void DeleteExtension()
@@ -67,9 +66,9 @@ namespace GondoAssist.Klassen
             //  in eine variable gepackt und später verarbeitet.
             while (n < 100)
             {
-                
+
                 double mediaDurDouble;
-                
+
                 // Speicherort wird hier verarbeitet
                 var filename = xmlfilepath;
                 var currentDirectory = Directory.GetCurrentDirectory();
@@ -134,7 +133,7 @@ namespace GondoAssist.Klassen
                 }
 
                 //  verpackt die erhaltenen daten in der schleife zugreifbare variablen
-                string mediafilePath = MediaItemFilepathElement.FirstOrDefault();           
+                string mediafilePath = MediaItemFilepathElement.FirstOrDefault();
                 string mediaFileName = Path.GetFileName(mediafilePath);
 
                 // Gibt die id der Länge des Videos
@@ -143,13 +142,13 @@ namespace GondoAssist.Klassen
                 foreach (XElement al in MediaItemDur)
                 {
                     MediaItemDurElement.Add(al.Attribute("duration").Value);
-                }                
+                }
 
                 // Gibt die Länge in englischer culture info aus
                 string mediaDuration = MediaItemDurElement.FirstOrDefault();
                 if (mediaDuration != null)
                 {
-                    mdD = double.Parse(mediaDuration, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB"));                   
+                    mdD = double.Parse(mediaDuration, NumberStyles.AllowDecimalPoint, CultureInfo.CreateSpecificCulture("en-GB"));
                 }
                 else
                 {
@@ -252,7 +251,7 @@ namespace GondoAssist.Klassen
 
                         }
                         else if (xresult > 60)
-                        {                            
+                        {
                             sekunde = plusresult % 60;
                             minute = Math.Floor(plusresult / 60);
                             //xresult
@@ -276,7 +275,7 @@ namespace GondoAssist.Klassen
                             if (VideoinTimeDouble != 0)
                             {
                                 plusresult -= VideoinTimeDouble;
-                                
+
                             }
                             sekunde = plusresult % 60;
                             minute = Math.Floor(plusresult / 60);
@@ -294,7 +293,7 @@ namespace GondoAssist.Klassen
                                     ende += 1;
                                 }
                                 file.Write(string.Format(" - " + "{0:00}:{1:00}", ende, start));
-                          
+
                             }
 
                             if (mr1.IsMatch(mediaFileName))

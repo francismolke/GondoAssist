@@ -5,16 +5,17 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GondoAssist"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="500" Background="WhiteSmoke" FontFamily="Bahnschrift SemiCondensed" FontSize="20">
+      d:DesignHeight="450" d:DesignWidth="800" Background="Wheat" FontFamily="Bahnschrift SemiCondensed" FontSize="20">
 
     <DockPanel>
-        <StackPanel>
+        <StackPanel Width="500" HorizontalAlignment="Left">
             <Label Content="NAME DER EPISODE:" Foreground="Black" Width="200"/>
             <TextBox x:Name="igtitle" Width="200" Height="30" Text="" BorderBrush="Black" BorderThickness="1"/>
             <Label Content="SPEICHERORT" Foreground="Black" Width="200"/>
             <Button Name="igSavePath" Height="30" Content="auswählen..." Click="onIGSavePathClicked" Width="200" Margin="0,0,0,5"/>
             <!--<CheckBox x:Name="memorizeSavePath" Width="200" Content="Speicherort merken?" Foreground="Gray" Margin="0,5,0,0"/>-->
             <CheckBox x:Name="startWithBotProfile" Width="200" Content="Mit Bot-Profil?" Foreground="Gray" Margin="0,5,0,0"/>
+            <CheckBox x:Name="startWithOwnProfile" Content="Mit eigenem-Profil?" Foreground="Gray" Margin="150,5,100,0" Click="onLoginWithOwnProfileClicked"/>
             <DatePicker Name="IGDatePicker" SelectedDate="{Binding Path = SuggestedDateX, StringFormat = {}{0:dd-MM-yyyy}}" Margin="0,5,0,0" Width="200">
                 <DatePicker.Resources>
                     <Style TargetType="DatePickerTextBox">
@@ -33,15 +34,36 @@
             </DatePicker>
             <Button x:Name="igThumbnail" Content="IG-LINKS ERSTELLEN..." Margin="0,5,0,5" Height="30" Width="200" Click="onCreateIGListClicked"/>
             <!--<DatePicker Name="IGDatePicker"/>-->
-            <Label x:Name="igVideoLocationLabel" Content="                               SPEICHERORT" Foreground="Black" Width="500" />
+            <Label x:Name="igVideoLocationLabel" Content="                           SPEICHERORT von JDownloader" Foreground="Black" Width="500" />
             <Button Name="igVideoLocationPath" Height="30" Content="auswählen..." Click="onIGOpenPathClicked" Width="200" Margin="0,0,0,5"/>
             <CheckBox x:Name="memorizeIGVideoLocationSavePath" Width="200" Content="Merken?" Foreground="Gray"/>
+
+            <Label x:Name="igVideoDestinationLabel" Content="                   SPEICHERORT des Ordners für die Episode" Foreground="Black" Width="500" />
+            <Button Name="igVideoDestinationPath" Height="30" Content="auswählen..." Click="onIGSelectPathClicked" Width="200" Margin="0,0,0,5"/>
+
 
             <Button Name="folderbutton" Height="30" Content="COLLECT VIDEOS" Click="collectVideos" Margin="0,5,0,0" Width="200"/>
             <Label Content="" Width="200" Foreground="Black"/>
 
             <ProgressBar Name="pbStatus" />
             <!--<Button Name="igstartUpload" Content="wie immer...noch nicht fertig" Click="onPostClicked" Margin="0,50,0,0"/>-->
+        </StackPanel>
+        <StackPanel x:Name="spIGLogin" Visibility="Collapsed">
+            <!--Visibility="Collapsed"-->
+            <Label Name="LBLoginIG" Content="Instagram-Login" Width="200"/>
+            <!--Wenn eingeloggt soll das Fenster anders werden-->
+            <Label Name="lbBenutzer" Content="Benutzer" Width="200"/>
+            <TextBox x:Name="tbLogin" Width="200" Height="30" Text="" BorderBrush="Black" BorderThickness="1"/>
+            <Label Name="lbPW" Content="Passwort" Width="200"/>
+            <PasswordBox x:Name="tbPW" Width="200" Height="30" BorderBrush="Black" BorderThickness="1" Margin="0,0,0,5" />
+            <!--<TextBox x:Name="tbPW" Width="200" Height="30" Text="" BorderBrush="Black" BorderThickness="1" Margin="0,0,0,5" />-->
+            <CheckBox x:Name="cbIGLogin" Content="Login merken?" Margin="50,0,0,5" />
+            <Button x:Name="btnIGLogin" Content="Logindaten speichern..." Width="200" Click="onIGLoginClicked"/>
+            <Separator Margin="0,15,0,0"/>
+        </StackPanel>
+        <StackPanel x:Name="spLogout" Visibility="Collapsed">
+            <Label x:Name="lbLogout" Content="Ausloggen?" Margin="50,5,0,5"/>
+            <Button x:Name="btnLogout" Content="Ausloggen" Click="onLogoutClicked" Width="200"/>
         </StackPanel>
 
     </DockPanel>

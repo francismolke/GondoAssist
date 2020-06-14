@@ -1,20 +1,11 @@
 ﻿using GondoAssist.Klassen;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using YoutubeSearch;
 
 
@@ -25,8 +16,8 @@ namespace GondoAssist
     /// </summary>public 
     public partial class UCYTSearch : UserControl
     {
-        
-        string link;        
+
+        string link;
         VideoSearch items = new VideoSearch();
         List<Youtube> list = new List<Youtube>();
         MainWindow mw;
@@ -40,7 +31,7 @@ namespace GondoAssist
         // Sucht nach dem eingegeben Suchwort und gibt diese im Datagrid aus
         private void OnSearchClicked(object sender, RoutedEventArgs e)
         {
-            
+
             foreach (var item in items.SearchQuery(Searchbox.Text, 1))
             {
                 Youtube video = new Youtube();
@@ -71,7 +62,7 @@ namespace GondoAssist
 
         private void openInBrowser(object sender, RoutedEventArgs e)
         {
-            
+
             browseSite(link);
         }
         // Event für das Selektieren eines Items im Datagrid
@@ -97,7 +88,7 @@ namespace GondoAssist
         {
             UCDownloader ucd = new UCDownloader(link);
             mw.maincontent.Children.Add(new UCDownloader(link));
-      
+
 
         }
         // Tasten Event (Enter) für die Ausgabe der Videodetails im Datagrid
@@ -117,7 +108,7 @@ namespace GondoAssist
                     BitmapImage bmp = new BitmapImage();
                     bmp.BeginInit();
                     bmp.StreamSource = new MemoryStream(imageBytes);
-                    bmp.EndInit();                    
+                    bmp.EndInit();
                     video.Image = bmp;
                     video.Thumbnail = bmp;
                     list.Add(video);
@@ -142,7 +133,7 @@ namespace GondoAssist
         // Kopiert den Link des gewähltem Item in Datagrid
         private void onYTVideoRightClicked(object sender, MouseButtonEventArgs e)
         {
-         
+
             System.Windows.Forms.Clipboard.SetDataObject(link, true);
         }
     }

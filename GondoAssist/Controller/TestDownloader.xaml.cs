@@ -1,19 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using YoutubeExtractor;
-using System.IO;
-using System.Text.RegularExpressions;
 
 namespace GondoAssist
 {
@@ -137,10 +128,10 @@ namespace GondoAssist
                 if (iterationCount == 0)
                     if (video.Title == "")
                     { }
-                else
-                    lbVideoName.Text = video.Title;
-                
-                                    
+                    else
+                        lbVideoName.Text = video.Title;
+
+
                 strVideos[iterationCount++] = string.Format("Resolution: {0}, Format: {1}",
                         video.Resolution, video.VideoExtension);
                 VInfos.Add(video);

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace GondoAssist.Klassen
@@ -18,7 +16,7 @@ namespace GondoAssist.Klassen
         }
         public void RunTags(string projektDatei, string currentDirectory)
         {
-          //  var currentDirectory = @"C:\Users\Agrre\Desktop\alte\InsertTitleOnVideo\AutoModeLikeability\bin\Debug\" + projektDatei;
+            //  var currentDirectory = @"C:\Users\Agrre\Desktop\alte\InsertTitleOnVideo\AutoModeLikeability\bin\Debug\" + projektDatei;
             int lastExtentRefNumber = 0;
 
             currentDirectory = projektDatei;

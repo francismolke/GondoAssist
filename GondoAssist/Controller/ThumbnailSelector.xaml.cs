@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace GondoAssist
 {
@@ -222,7 +221,7 @@ namespace GondoAssist
         string TNfromPC, TNfromPCtoo;
         private void onAddfromPcClicked(object sender, RoutedEventArgs e)
         {
-            using (System.Windows.Forms.OpenFileDialog opd = new System.Windows.Forms.OpenFileDialog() )
+            using (System.Windows.Forms.OpenFileDialog opd = new System.Windows.Forms.OpenFileDialog())
             {
                 if (opd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {

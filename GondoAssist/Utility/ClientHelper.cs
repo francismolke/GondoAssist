@@ -10,7 +10,7 @@ namespace WordPressPCL.Tests.Selfhosted.Utility
 
         public static async Task<WordPressClient> GetAuthenticatedWordPressClient(AuthMethod method = AuthMethod.JWT)
         {
-            if(_clientAuth == null)
+            if (_clientAuth == null)
             {
                 _clientAuth = new WordPressClient("http://www.slamdank31.com/wp-json/")
                 {
@@ -24,7 +24,7 @@ namespace WordPressPCL.Tests.Selfhosted.Utility
 
         public static WordPressClient GetWordPressClient()
         {
-            if(_client == null)
+            if (_client == null)
                 _client = new WordPressClient("http://www.slamdank31.com/wp-json/");
             return _client;
         }

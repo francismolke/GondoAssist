@@ -57,7 +57,7 @@
                 <!--youtube_PNG15.png-->
             </Grid>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Right" x:Name="maincontent" Background="LightPink" Width="800">
+        <StackPanel Margin="50,0,0,0" DockPanel.Dock="Right" x:Name="maincontent" Background="LightPink" Width="850">
             <!--CONTROLLER FÜR WINDWOS HIER-->
         </StackPanel>
 
