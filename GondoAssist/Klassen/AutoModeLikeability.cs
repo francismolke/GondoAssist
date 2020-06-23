@@ -1,7 +1,9 @@
 ﻿using MediaToolkit;
+using NuGet;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -67,12 +69,20 @@ namespace GondoAssist.Klassen
 
                 CreateProject(newDirectiory, filepath.Length, doc, filepath, projektDatei);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 using (StreamWriter sr = new StreamWriter(Directory.GetCurrentDirectory() + "\\ErrorProject.txt", true, Encoding.UTF8))
                 {
-                    MessageBox.Show("Da gab es ein Problem:" + e.Message);
-                    sr.WriteLine(e.Message.ToString() + e.Message);
+                
+                        sr.WriteLine(ex.Message + ex.ToString());
+                        // Get stack trace for the exception with source file information
+                        var st = new StackTrace(ex, true);
+                        // Get the top stack frame
+                        var frame = st.GetFrame(0);
+                        // Get the line number from the stack frame
+                        var line = frame.GetFileLineNumber();
+                        sr.WriteLine(st + " " + frame + " " + line + " ");
+                    
                 }
             }
         }
@@ -370,83 +380,6 @@ namespace GondoAssist.Klassen
             return filePath;
         }
 
-        //private static List<LikeabilityQuellen> FillCategoryListWithProfiles(List<LikeabilityQuellen> list_Category)
-        //{
-        //    string line;
-        //    string profilename;
-
-        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Top.txt", Encoding.UTF8))
-        //    {
-        //        while ((line = sr.ReadLine()) != null)
-        //        {
-        //            //   profilename = line.Substring(26).Trim();
-        //            profilename = line.Substring(26);
-        //            profilename = profilename.Substring(0, profilename.Length - 1);
-        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-        //        }
-        //    }
-        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Better.txt", Encoding.UTF8))
-        //    {
-        //        while ((line = sr.ReadLine()) != null)
-        //        {
-        //            //   profilename = line.Substring(26).Trim();
-        //            profilename = line.Substring(26);
-        //            profilename = profilename.Substring(0, profilename.Length - 1);
-        //            //    list_Category.Add(profilename);
-        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-
-        //        }
-        //    }
-        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Good.txt", Encoding.UTF8))
-        //    {
-        //        while ((line = sr.ReadLine()) != null)
-        //        {
-        //            //   profilename = line.Substring(26).Trim();
-        //            profilename = line.Substring(26);
-        //            profilename = profilename.Substring(0, profilename.Length - 1);
-        //            //list_Category.Add(profilename);
-        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-
-        //        }
-        //    }
-        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Middle.txt", Encoding.UTF8))
-        //    {
-        //        while ((line = sr.ReadLine()) != null)
-        //        {
-        //            //   profilename = line.Substring(26).Trim();
-        //            profilename = line.Substring(26);
-        //            profilename = profilename.Substring(0, profilename.Length - 1);
-        //            //list_Category.Add(profilename);
-        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-
-        //        }
-        //    }
-        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Filler.txt", Encoding.UTF8))
-        //    {
-        //        while ((line = sr.ReadLine()) != null)
-        //        {
-        //            //   profilename = line.Substring(26).Trim();
-        //            profilename = line.Substring(26);
-        //            profilename = profilename.Substring(0, profilename.Length - 1);
-        //            //list_Category.Add(profilename);
-        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-
-        //        }
-        //    }
-        //    using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\End.txt", Encoding.UTF8))
-        //    {
-        //        while ((line = sr.ReadLine()) != null)
-        //        {
-        //            //   profilename = line.Substring(26).Trim();
-        //            profilename = line.Substring(26);
-        //            profilename = profilename.Substring(0, profilename.Length - 1);
-        //            //list_Category.Add(profilename);
-        //            list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-
-        //        }
-        //    }
-        //    return list_Category;
-        //}
 
         private static List<LikeabilityQuellen> FillCategoryListWithProfiles(int i, List<LikeabilityQuellen> lTop, List<LikeabilityQuellen> lBetter, List<LikeabilityQuellen> lGood, List<LikeabilityQuellen> lMiddle, List<LikeabilityQuellen> lFiller, List<LikeabilityQuellen> lEnd)
         {
@@ -612,26 +545,46 @@ namespace GondoAssist.Klassen
 
                 var newListOfCategories = FillListByCategories(list_Category, uniquelist);
 
+                using (StreamWriter srx = new StreamWriter(Directory.GetCurrentDirectory() + "\\ErrorProject.txt", true, Encoding.UTF8))
+                {
+                    foreach( var item in newListOfCategories)
+                    {
+
+                    srx.WriteLine(item.Duration + " | " + item.ProfileName + " | " + item.Link + " | " + item.Likeability);
+                    }
+
+
+                }
 
 
 
                 int n = 0;
                 duration = 0;
                 profilename = string.Empty;
+                try
+                {
 
                 // Zehn Minuten Episode
                 if (cbTen == true)
                 {
                     while (duration < tenMinDuration)
                     {
+                        if (n < newListOfCategories.Count)
+                        {
 
                         // 5 < 12
+
 
                         duration += newListOfCategories.Select(d => d.Duration).Skip(n).First();
                         profilename = newListOfCategories.Select(p => p.ProfileName).Skip(n).First();
 
 
                         n++;
+                        }
+                        else
+                            {
+                                break;
+                            }
 
                     }
                     newListOfCategories.RemoveRange(n, newListOfCategories.Count - n);
@@ -642,6 +595,21 @@ namespace GondoAssist.Klassen
                     MakeProfileListQuellen(newListOfCategories, n);
 
                     return filePath;
+                }
+                }
+                catch (Exception ex)
+                {
+                    using (StreamWriter srx = new StreamWriter(Directory.GetCurrentDirectory() + "\\ErrorTest.txt", true, Encoding.UTF8))
+                    {
+                        srx.WriteLine(ex.Message);
+                        // Get stack trace for the exception with source file information
+                        var st = new StackTrace(ex, true);
+                        // Get the top stack frame
+                        var frame = st.GetFrame(0);
+                        // Get the line number from the stack frame
+                        var lines = frame.GetFileLineNumber();
+                        srx.WriteLine(st + " " + frame + " " + lines + " ");
+                    }
                 }
 
                 // Zwanzig Minuten episode
@@ -738,9 +706,11 @@ namespace GondoAssist.Klassen
                 }
 
             }
-            fillerList.OrderBy(l => l.Likeability);
-            list_Category.AddRange(fillerList);
+            likeList = fillerList.OrderBy(l => l.Likeability).ToList();
+            likeList.Reverse();
+            list_Category.AddRange(likeList);
             fillerList.Clear();
+            likeList.Clear();
             // Good auffüllen
             for (int i = 0; i < lGood.Count; i++)
             {
@@ -757,9 +727,11 @@ namespace GondoAssist.Klassen
                 }
 
             }
-            fillerList.OrderBy(l => l.Likeability);
-            list_Category.AddRange(fillerList);
+            likeList = fillerList.OrderBy(l => l.Likeability).ToList();
+            likeList.Reverse();
+            list_Category.AddRange(likeList);
             fillerList.Clear();
+            likeList.Clear();
             // Middle auffüllen
             for (int i = 0; i < lMiddle.Count; i++)
             {
@@ -776,9 +748,11 @@ namespace GondoAssist.Klassen
                 }
 
             }
-            fillerList.OrderBy(l => l.Likeability);
-            list_Category.AddRange(fillerList);
+            likeList = fillerList.OrderBy(l => l.Likeability).ToList();
+            likeList.Reverse();
+            list_Category.AddRange(likeList);
             fillerList.Clear();
+            likeList.Clear();
             // Filler auffüllen
             for (int i = 0; i < lFiller.Count; i++)
             {
@@ -795,9 +769,11 @@ namespace GondoAssist.Klassen
                 }
 
             }
-            fillerList.OrderBy(l => l.Likeability);
-            list_Category.AddRange(fillerList);
+            likeList = fillerList.OrderBy(l => l.Likeability).ToList();
+            likeList.Reverse();
+            list_Category.AddRange(likeList);
             fillerList.Clear();
+            likeList.Clear();
             // Ende auffüllen
             for (int i = 0; i < lEnd.Count; i++)
             {
@@ -814,88 +790,14 @@ namespace GondoAssist.Klassen
                 }
 
             }
-            fillerList.OrderBy(l => l.Likeability);
-            list_Category.AddRange(fillerList);
+            likeList = fillerList.OrderBy(l => l.Likeability).ToList();
+            likeList.Reverse();
+            list_Category.AddRange(likeList);
             fillerList.Clear();
+            likeList.Clear();
             return list_Category;
         }
 
-        private void FillCategoryListWithProfilez(List<LikeabilityQuellen> list_Category)
-        {
-            string line;
-            string profilename;
-
-            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Top.txt", Encoding.UTF8))
-            {
-                while ((line = sr.ReadLine()) != null)
-                {
-                    //   profilename = line.Substring(26).Trim();
-                    profilename = line.Substring(26);
-                    profilename = profilename.Substring(0, profilename.Length - 1);
-                    // list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-                }
-            }
-            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Better.txt", Encoding.UTF8))
-            {
-                while ((line = sr.ReadLine()) != null)
-                {
-                    //   profilename = line.Substring(26).Trim();
-                    profilename = line.Substring(26);
-                    profilename = profilename.Substring(0, profilename.Length - 1);
-                    //    list_Category.Add(profilename);
-                    //  list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-
-                }
-            }
-            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Good.txt", Encoding.UTF8))
-            {
-                while ((line = sr.ReadLine()) != null)
-                {
-                    //   profilename = line.Substring(26).Trim();
-                    profilename = line.Substring(26);
-                    profilename = profilename.Substring(0, profilename.Length - 1);
-                    //list_Category.Add(profilename);
-                    //   list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-
-                }
-            }
-            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Middle.txt", Encoding.UTF8))
-            {
-                while ((line = sr.ReadLine()) != null)
-                {
-                    //   profilename = line.Substring(26).Trim();
-                    profilename = line.Substring(26);
-                    profilename = profilename.Substring(0, profilename.Length - 1);
-                    //list_Category.Add(profilename);
-                    //  list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-
-                }
-            }
-            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\Filler.txt", Encoding.UTF8))
-            {
-                while ((line = sr.ReadLine()) != null)
-                {
-                    //   profilename = line.Substring(26).Trim();
-                    profilename = line.Substring(26);
-                    profilename = profilename.Substring(0, profilename.Length - 1);
-                    //list_Category.Add(profilename);
-                    //  list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-
-                }
-            }
-            using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\ProfilListen\\End.txt", Encoding.UTF8))
-            {
-                while ((line = sr.ReadLine()) != null)
-                {
-                    //   profilename = line.Substring(26).Trim();
-                    profilename = line.Substring(26);
-                    profilename = profilename.Substring(0, profilename.Length - 1);
-                    //list_Category.Add(profilename);
-                    // list_Category.Add(new LikeabilityQuellen(0, null, 0, profilename));
-
-                }
-            }
-        }
 
         private void MakeProfileListQuellen(List<LikeabilityQuellen> lgg, int n)
         {
@@ -946,6 +848,7 @@ namespace GondoAssist.Klassen
 
             // Insert ExtentRefs id=1
             int extent4ID = MakeExtentRefForExtentRefs1(newDirectiory, letzteZahl, amountOfMediaItems);
+            MessageBox.Show("Projekt wurde erstellt");
 
             //  string currentDirectory = Directory.GetCurrentDirectory();
             // Startet das Tag Program

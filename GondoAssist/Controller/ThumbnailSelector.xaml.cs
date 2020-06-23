@@ -1,4 +1,5 @@
 ﻿using GondoAssist.EditForms;
+using InstagramApiSharp.Classes.Models;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,13 +24,20 @@ namespace GondoAssist
         int gridRow = 0;
         int rowPos, columnPos, n = 0;
         private Brush _previousFill = null;
-        string buttonname = "";
+        string buttonname, dButtonName = "";
         public int c, r;
+        string currentSelectedTN;
         // Point startPoint;
         int iteratorR, iteratorC;
 
         public Button DragSource { get; set; }
         public Image ImageDragSource { get; set; }
+
+        public ThumbnailSelector(MainWindow mw)
+        {
+            InitializeComponent();
+            mw_parent = mw;
+        }
 
         private void SelectedThumbnail(object sender, RoutedEventArgs e)
         {
@@ -46,54 +54,80 @@ namespace GondoAssist
             return (c, r);
         }
 
+
+        Image selectedImage;
+        Button selectedButton;
+        Label selectedlbTitle, selectedlbUrl;
         private void btnMouseleftdown(object sender, MouseButtonEventArgs e)
         {
 
-
-            Button TButton = sender as Button;
-            buttonname = TButton.Name;
-            string ganzeposition = buttonname.Substring(6, 3);
-            r = int.Parse(ganzeposition.Substring(0, 1));
-            c = int.Parse(ganzeposition.Substring(2, 1));
-            GetTNPos(c, r);
-
-            imageElement = "Image";
-            imageElement = imageElement + r.ToString() + "x" + c.ToString();
-
-            // String Builder für Title
-            titleElement = "Title";
-            titleElement = titleElement + r.ToString() + "x" + c.ToString();
-            // String Builder für Url
-            UrlElement = "Url";
-            UrlElement = UrlElement + r.ToString() + "x" + c.ToString();
-
-            Image imgx = this.FindName(imageElement) as Image;
-            Label lbtitle = this.FindName(titleElement) as Label;
-            Label lburl = this.FindName(UrlElement) as Label;
-
-            //imgx.Source = mw_parent.tnThumbnail;
-            //lbtitle.Content = mw_parent.tnTitle;
-            //lburl.Content = mw_parent.tnUrl;
-
-
-            Image TImage = sender as Image;
-            DragSource = TButton;
-            ImageDragSource = imgx;
-
-            DataObject dataObj = new DataObject();
-            dataObj.SetData("Title", lbtitle.Content);
-            dataObj.SetData("Image", imgx.Source);
-            dataObj.SetData("Url", lburl.Content);
-
-            lbtitle.Content = "";
-            imgx.Source = null;
-            lburl.Content = "";
-            if (TButton != null && e.LeftButton == MouseButtonState.Pressed)
+            try
             {
-                DragDrop.DoDragDrop(TButton, dataObj, DragDropEffects.Move);
+
+                // buttonname = alter button?
+                Button TButton = sender as Button;
+                string newButtonname = TButton.Name;
+                string ganzeposition = newButtonname.Substring(6, 3);
+                r = int.Parse(ganzeposition.Substring(0, 1));
+                c = int.Parse(ganzeposition.Substring(2, 1));
+                GetTNPos(c, r);
+
+                imageElement = "Image";
+                imageElement = imageElement + r.ToString() + "x" + c.ToString();
+
+                // String Builder für Title
+                titleElement = "Title";
+                titleElement = titleElement + r.ToString() + "x" + c.ToString();
+                // String Builder für Url
+                UrlElement = "Url";
+                UrlElement = UrlElement + r.ToString() + "x" + c.ToString();
+
+                selectedImage = this.FindName(imageElement) as Image;
+                selectedlbTitle = this.FindName(titleElement) as Label;
+                selectedlbUrl = this.FindName(UrlElement) as Label;
+
+                // Original -v
+                //Image imgx = this.FindName(imageElement) as Image;
+                //Label lbtitle = this.FindName(titleElement) as Label;
+                //Label lburl = this.FindName(UrlElement) as Label;
+
+                FindElementOnDroppedField();
+                //imgx.Source = mw_parent.tnThumbnail;
+                //lbtitle.Content = mw_parent.tnTitle;
+                //lburl.Content = mw_parent.tnUrl;
+
+
+                Image TImage = sender as Image;
+                DragSource = TButton;
+                ImageDragSource = selectedImage;
+               // selectedImage.Source = TImage.Source;
+                DataObject dataObj = new DataObject();
+                dataObj.SetData("Title", selectedlbTitle.Content);
+                dataObj.SetData("Image", selectedImage.Source);
+                dataObj.SetData("Url", selectedlbUrl.Content);
+
+                //imgx.Source = (ImageSource)e.Data.GetData("Image");
+                //lbtitle.Content = (String)e.Data.GetData("Title");
+                //lburl.Content = mw_parent.tnUrl;
+
+                selectedlbTitle.Content = "";
+                selectedImage.Source = null;
+                selectedlbUrl.Content = "";
+                if (TButton != null && e.LeftButton == MouseButtonState.Pressed)
+                {
+                    DragDrop.DoDragDrop(TButton, dataObj, DragDropEffects.Move);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
+        private void FindElementOnDroppedField()
+        {
+
+        }
 
         private void DragOver(object sender, DragEventArgs e)
         {
@@ -110,9 +144,25 @@ namespace GondoAssist
 
         }
 
-        private void DragEnter(object sender, DragEventArgs e)
+        string oButtonName;
+
+        
+        private new void DragEnter(object sender, DragEventArgs e)
         {
             Button TButton = sender as Button;
+            // originButtonName (von wo der Button kommt)
+            oButtonName = TButton.Name;
+
+
+            if (currentSelectedTN == null)
+            {
+                currentSelectedTN = oButtonName;
+            }
+
+
+
+
+
             if (TButton != null)
             {
                 _previousFill = TButton.Background;
@@ -135,7 +185,8 @@ namespace GondoAssist
 
         private void Item_DragLeave(object sender, DragEventArgs e)
         {
-
+            Button TButton = sender as Button;
+            buttonname = TButton.Name;
         }
 
         private void Item_Dropped(object sender, DragEventArgs e)
@@ -143,6 +194,39 @@ namespace GondoAssist
             // var button = (Button)sender;
             Button TButton = sender as Button;
             buttonname = TButton.Name;
+            
+
+            //Image selectedImage;
+            //Button selectedButton;
+            //Label selectedlbTitle, selectedlbUrl;
+            if (currentSelectedTN != buttonname)
+            {
+                string ganzepositionOrigin = currentSelectedTN.Substring(6, 3);
+                r = int.Parse(ganzepositionOrigin.Substring(0, 1));
+                c = int.Parse(ganzepositionOrigin.Substring(2, 1));
+                GetTNPos(c, r);
+
+                // Border TButton = (Border)sender;
+                // Button TButton = sender as Button;
+                imageElement = "Image";
+                imageElement = imageElement + r.ToString() + "x" + c.ToString();
+
+                // String Builder für Title
+                titleElement = "Title";
+                titleElement = titleElement + r.ToString() + "x" + c.ToString();
+                // String Builder für Url
+                UrlElement = "Url";
+                UrlElement = UrlElement + r.ToString() + "x" + c.ToString();
+
+                selectedImage = this.FindName(imageElement) as Image;
+                selectedlbTitle = this.FindName(titleElement) as Label;
+                selectedlbUrl = this.FindName(UrlElement) as Label;
+
+                
+                currentSelectedTN = null;
+            }
+
+            //selectedImage.Source =(ImageSource)
             string ganzeposition = buttonname.Substring(6, 3);
             r = int.Parse(ganzeposition.Substring(0, 1));
             c = int.Parse(ganzeposition.Substring(2, 1));
@@ -164,9 +248,15 @@ namespace GondoAssist
             Label lbtitle = this.FindName(titleElement) as Label;
             Label lburl = this.FindName(UrlElement) as Label;
 
+
             if (TButton != null)
             {
+
                 string dataString = (string)e.Data.GetData(DataFormats.StringFormat);
+                // Fill 
+                selectedImage.Source = imgx.Source;
+                selectedlbTitle.Content = lbtitle.Content;
+                selectedlbUrl.Content = lburl.Content;
 
                 imgx.Source = (ImageSource)e.Data.GetData("Image");
                 lbtitle.Content = (String)e.Data.GetData("Title");
@@ -176,11 +266,7 @@ namespace GondoAssist
 
 
         //    YouTubeService youtubeservice = new YouTubeService();
-        public ThumbnailSelector(MainWindow mw)
-        {
-            InitializeComponent();
-            mw_parent = mw;
-        }
+
 
 
 
@@ -230,14 +316,14 @@ namespace GondoAssist
                 }
             }
 
-            using (System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog())
-            {
-                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    //  TNfromPC = fbd.;
-                    TNfromPCtoo = fbd.SelectedPath;
-                }
-            }
+            //using (System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog())
+            //{
+            //    if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            //    {
+            //        //  TNfromPC = fbd.;
+            //        TNfromPCtoo = fbd.SelectedPath;
+            //    }
+            //}
 
             TNfromPC = TNfromPC + TNfromPCtoo;
 

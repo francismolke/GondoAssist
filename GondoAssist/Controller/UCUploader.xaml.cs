@@ -629,7 +629,6 @@ namespace GondoAssist
 
                         string link = "";
                         DateTime returnValue;
-                        string error;
                         foreach (var item in node1)
                         {
                             link = "https://www.instagram.com" + item.Attributes["href"].Value;

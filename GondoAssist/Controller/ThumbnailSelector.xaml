@@ -38,7 +38,7 @@
                             <Label Content="Aufrufzahlen" Width="100" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </StackPanel>-->
-                    <Button Click="SelectedThumbnail" Name="Button0x0" Drop="Item_Dropped" AllowDrop="True" DragOver="DragOver" PreviewMouseLeftButtonDown="btnMouseleftdown" DragEnter="DragEnter" DragLeave="Item_DragLeave">
+                    <Button Click="SelectedThumbnail" Name="Button0x0" Drop="Item_Dropped" AllowDrop="True" DragOver="DragOver" PreviewMouseLeftButtonDown="btnMouseleftdown" DragEnter="DragEnter" DragLeave="Item_DragLeave" >
                         <StackPanel>
                             <Image x:Name="Image0x0" Height="140"/>
                             <Label x:Name="Title0x0" Content=""/>

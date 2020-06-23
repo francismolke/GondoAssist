@@ -3,6 +3,7 @@ using Google.Apis.Drive.v3.Data;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -56,7 +57,7 @@ namespace GondoAssist.Controller
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -92,16 +93,12 @@ namespace GondoAssist.Controller
 
         private void onCreateEpisodeClicked(object sender, RoutedEventArgs e)
         {
+            try
+            {
             if (cbTwentymin.IsChecked == false && cbTenmin.IsChecked == false && cbAll.IsChecked == false)
             {
                 MessageBox.Show("Bitte die Dauer des Episode auswählen: ");
             }
-
-            //else
-            //{
-            //    AutoModeLikeability aml = new AutoModeLikeability(cbTenmin.IsChecked, cbTwentymin.IsChecked, cbAll.IsChecked);
-            //    aml.CreateBlankProjekt(episodeTitle.Text, speicherort);
-            //}
 
             if (cbByLikeability.IsChecked == false && cbByCategoryThenLikeability.IsChecked == false)
             {
@@ -119,6 +116,22 @@ namespace GondoAssist.Controller
                 AutoModeLikeability aml = new AutoModeLikeability(cbTenmin.IsChecked, cbTwentymin.IsChecked, cbAll.IsChecked, 1);
                 aml.CreateBlankProjekt(episodeTitle.Text, speicherort);
             }
+
+            }
+            catch(Exception ex)
+            {
+                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(ex.Message + ex.ToString());
+                    // Get stack trace for the exception with source file information
+                    var st = new StackTrace(ex, true);
+                    // Get the top stack frame
+                    var frame = st.GetFrame(0);
+                    // Get the line number from the stack frame
+                    var line = frame.GetFileLineNumber();
+                    sw.WriteLine(st + " " + frame + " " + line + " ");
+                }
+            }
         }
 
         private void onEpisodeOpenPathClicked(object sender, RoutedEventArgs e)
@@ -128,7 +141,6 @@ namespace GondoAssist.Controller
 
         private void InsertTagsIntoEpisode(object sender, RoutedEventArgs e)
         {
-            bool notfinished = false;
             try
             {
                 if (speicherort == "")

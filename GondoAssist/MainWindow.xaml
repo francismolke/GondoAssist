@@ -12,7 +12,9 @@
         </Style>
     </Window.Resources>-->
     <DockPanel>
+        
         <StackPanel DockPanel.Dock="Left" Margin="25" Width="425">
+            <Button Content="Update" Name="btnUpdate" Click="CheckIfUpdate"/>
             <Grid x:Name="MenuGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200"/>
@@ -46,7 +48,7 @@
                     <Button Background="#FF5852DE" Height="36" Foreground="BlanchedAlmond" Click="onWordpressClicked">Wordpress</Button>
                     <Button Background="#FF5852DE" Height="36" Foreground="BlanchedAlmond" Click="onGoogleDriveClicked">Google Drive</Button>
                     <Button Background="#FF8B8B8B" Height="36" Foreground="BlanchedAlmond" Click="ThumbnailEditFormClicked">Instagram</Button>
-                    <Button Height="36" Foreground="BlanchedAlmond" Background="#FF8B8B8B" Click="ThumbNailSelectedFormClicked">Amino</Button>
+                    <Button Height="36" Foreground="BlanchedAlmond" Background="#FF5852DE" Click="ThumbNailSelectedFormClicked">Thumbnail Selector</Button>
                 </StackPanel>
 
                 <!--<Button Background="Transparent" Grid.Column="1" Grid.Row="2">

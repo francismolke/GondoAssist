@@ -1,13 +1,16 @@
-﻿using HtmlAgilityPack;
+﻿using GondoAssist.Klassen;
+using HtmlAgilityPack;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -37,12 +40,44 @@ namespace GondoAssist
         string sourcepath = "InstagramProfileList.txt";
         string JDSettingsPath = "JDownloaderLocation.txt";
         string TimeStopRaw;
+        List<string> list_returnDownloadLink = new List<string>();
         public InstagramGrabber()
         {
             InitializeComponent();
             CheckIfJDownloaderPathIsSaved();
             CheckIfLoginIsSaved();
+            GetDateForQuellen();
         }
+
+        private void GetDateForQuellen()
+        {
+            try
+            {
+
+                string[] filename = { "Quellen.txt", "Quellen_Profile.txt", "Quellen_Likeability.txt" };
+                for (int i = 0; i < filename.Length; i++)
+                {
+                    if (System.IO.File.Exists(filename[i]))
+                    {
+                        FileInfo fi = new FileInfo(filename[i]);
+                        //  DateTime dt = fi.CreationTime;
+                        DateTime dt = fi.LastWriteTime;
+
+                        if (filename[i] == filename[0])
+                        {
+                            lbQuellen.Content += "(" + dt + ")";
+                        }
+
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
 
         private void CheckIfLoginIsSaved()
         {
@@ -56,7 +91,7 @@ namespace GondoAssist
                     logininfo[i] = line;
                     i++;
                 }
-                if(logininfo[0] != "")
+                if (logininfo[0] != "")
                 {
                     IGLogin = logininfo[0];
                     IGPW = logininfo[1];
@@ -69,21 +104,28 @@ namespace GondoAssist
 
         private void CheckIfJDownloaderPathIsSaved()
         {
-
+            var sdfse = Directory.GetCurrentDirectory();
 
             List<string> ljd = new List<string>();
-            using (StreamReader sr = new StreamReader(JDSettingsPath))
+            if (System.IO.File.Exists(sdfse + "\\" + JDSettingsPath))
             {
+                using (StreamReader sr = new StreamReader(JDSettingsPath))
+                {
 
-                foreach (string line in File.ReadLines(JDSettingsPath, Encoding.UTF8))
-                {
-                    ljd.Add(line);
-                }
-                if (ljd.First().ToString() != null || ljd.First().ToString() != "")
-                {
-                    igVideoLocationLabel.Content = "Ordner gefunden: " + ljd.First().ToString();
-                    igVideoLocationPath.Content = "Ordner ändern?";
-                    memorizeIGVideoLocationSavePath.Content = "Gemerkt!";
+                    foreach (string line in File.ReadLines(JDSettingsPath, Encoding.UTF8))
+                    {
+                        ljd.Add(line);
+                    }
+                    if (ljd.Count != 0)
+                    {
+
+                    if (ljd.First().ToString() != null || ljd.First().ToString() != "")
+                    {
+                        igVideoLocationLabel.Content = "Ordner gefunden: " + ljd.First().ToString();
+                        igVideoLocationPath.Content = "Ordner ändern?";
+                        memorizeIGVideoLocationSavePath.Content = "Gemerkt!";
+                    }
+                    }
                 }
             }
         }
@@ -123,6 +165,7 @@ namespace GondoAssist
 
                 DateTimeCheck();
             }
+            GetDateForQuellen();
         }
 
         private void CreateIGListAgain()
@@ -228,7 +271,7 @@ namespace GondoAssist
             string creatorName = "";
             File.WriteAllText(speicherort + "\\Quellen.txt", String.Empty);
             File.WriteAllText(speicherortQuellenLikeability + "\\Quellen_Likeability.txt", String.Empty);
-
+            File.WriteAllText(speicherortQuellenLikeability + "\\DownloadLinksFürGondoAssist.txt", String.Empty);
 
             ChromeOptions options = new ChromeOptions();
             options.AddArguments(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Local\Google\Chrome\User Data\Default");
@@ -242,12 +285,14 @@ namespace GondoAssist
 
 
             //  COOKIE MANAGEMENT !?
-            if (isBotProfileBlocked == true)
+            if (isBotProfileBlocked == true || botProfileIsActive == true)
             {
                 //  GetLoginInformation();
                 driver.Url = "https://www.instagram.com/accounts/login/";
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
-                driver.Manage().Cookies.AddCookie(new Cookie("scheißIG", "fickdeinemutter"));
+             //   driver.Manage().Cookies.AddCookie(Cookie("scheißIG", "fickdeinemutter"));
+
+                driver.Manage().Cookies.AddCookie(new OpenQA.Selenium.Cookie("scheißIG", "fickdeinemutter"));
 
                 var username = driver.FindElement(By.CssSelector("input[name='username']"));
                 username.SendKeys("slamdankbot@gmail.com");
@@ -272,7 +317,8 @@ namespace GondoAssist
             {
                 driver.Url = "https://www.instagram.com/accounts/login/";
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
-                driver.Manage().Cookies.AddCookie(new Cookie("scheißIG", "fickdeinemutter"));
+                //driver.Manage().Cookies.AddCookie(new Cookie("scheißIG", "fickdeinemutter"));
+                driver.Manage().Cookies.AddCookie(new OpenQA.Selenium.Cookie("scheißIG", "fickdeinemutter"));
 
                 var username = driver.FindElement(By.CssSelector("input[name='username']"));
                 username.SendKeys(IGLogin);
@@ -384,35 +430,45 @@ namespace GondoAssist
                                 using (StreamWriter likeAbilityWriter = new StreamWriter(speicherortQuellenLikeability + "\\Quellen_Likeability.txt", true, Encoding.UTF8))
 
                                 {
-                                    string link = "";
-                                    DateTime returnValueDate;
-                                    double returnValue;
-                                    string linkending = "";
+                                    using (StreamWriter igDownloaderWriter = new StreamWriter(speicherortQuellenLikeability + "\\DownloadLinksFürGondoAssist.txt", true, Encoding.UTF8))
 
-                                    foreach (var item in node1)
                                     {
-                                        isBotProfileBlocked = CheckIfInstagramBlockedBotProfile(htmlDoc);
+                                        string link = "";
+                                        DateTime returnValueDate;
+                                        double returnValue;
+                                        string linkending = "";
+                                        string returnDownloadLink = "";
 
-                                        link = "https://www.instagram.com" + item.Attributes["href"].Value;
-                                    //    returnValue = LikeabilityExpress(link, driver);
-                                        returnValueDate = DateTimeExpress(link, driver);
-                                        returnValue = LikeabilityExpress(link, driver);
+                                        foreach (var item in node1)
+                                        {
+                                            isBotProfileBlocked = CheckIfInstagramBlockedBotProfile(htmlDoc);
 
-                                        // DateTime dt1 = new DateTime(2019, 8, 9, 20, 0, 0);
-                                        if (returnValueDate > suggestedDate && returnValue != 0)
-                                        {
-                                            writer.Write("https://www.instagram.com" + item.Attributes["href"].Value + "\r\n");
-                                            linkending = item.Attributes["href"].Value;
-                                            linkending = linkending.Substring(3).Trim();
-                                            linkending = linkending.Remove(linkending.IndexOf("/"));
-                                            // likeAbilityWriter.Write(@"C:\Users\Agrre\Desktop\testproject\" + creatorName + linkending + ".mp4" + " | " + returnValue + "\r\n");
-                                            likeAbilityWriter.Write(targetPath + @"\" + creatorName + linkending + ".mp4" + " | " + returnValue + "\r\n");
+                                            link = "https://www.instagram.com" + item.Attributes["href"].Value;
+                                            //    returnValue = LikeabilityExpress(link, driver);
+                                            returnValueDate = DateTimeExpress(link, driver);
+                                            returnValue = LikeabilityExpress(link, driver);
+
+                                            // DateTime dt1 = new DateTime(2019, 8, 9, 20, 0, 0);
+                                            if (returnValueDate > suggestedDate && returnValue != 0)
+                                            {
+                                                returnDownloadLink = DownloadLinkExpress(driver);
+                                               
+                                                
+                                                writer.Write("https://www.instagram.com" + item.Attributes["href"].Value + "\r\n");
+                                                linkending = item.Attributes["href"].Value;
+                                                linkending = linkending.Substring(3).Trim();
+                                                linkending = linkending.Remove(linkending.IndexOf("/"));
+                                                igDownloaderWriter.WriteLine(returnDownloadLink + " | " + creatorName + linkending + ".mp4");
+                                                likeAbilityWriter.Write(targetPath + @"\" + creatorName + linkending + ".mp4" + " | " + returnValue + "\r\n");
+
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                            // writer.Write(profileList);
                                         }
-                                        else
-                                        {
-                                            break;
-                                        }
-                                        // writer.Write(profileList);
+                                        igDownloaderWriter.Close();
                                     }
                                     likeAbilityWriter.Close();
                                 }
@@ -470,6 +526,22 @@ namespace GondoAssist
             }
             CopyQuellenToDebugFolder(targetPath);
             MessageBox.Show("Videosuche beendet.");
+        }
+
+        private string DownloadLinkExpress(IWebDriver driver)
+        {
+            string downloadLink = "";
+            if(IsElementPresent(By.XPath("//meta[@property='og:video']"), driver))
+            {
+            downloadLink = driver.FindElement(By.XPath("//meta[@property='og:video']")).GetAttribute("content");
+
+            }
+            else if (IsElementPresent(By.XPath("//video[@class='tWeCl']"), driver))
+            {
+                downloadLink = driver.FindElement(By.XPath("//video[@class='tWeCl']")).GetAttribute("src");
+
+            }
+            return downloadLink;
         }
 
         private void GetLoginInformation()
@@ -787,7 +859,7 @@ namespace GondoAssist
             isOwnProfileIsActive = true;
             IGLogin = tbLogin.Text;
             IGPW = tbPW.Password;
-            
+
 
 
 
@@ -821,6 +893,74 @@ namespace GondoAssist
             spIGLogin.Visibility = Visibility.Visible;
             tbLogin.Text = "";
             tbPW.Password = "";
+        }
+
+        private void onQuellenOpenClicked(object sender, RoutedEventArgs e)
+        {
+            string filename = "Quellen.txt";
+            FileInfo fi = new FileInfo(filename);
+            DateTime dt = fi.CreationTime;
+            if (System.IO.File.Exists(filename))
+            {
+                Process.Start(filename);
+            }
+            else
+            {
+                MessageBox.Show("Es ist keine Quellen Datei verfügbar");
+            }
+        }
+
+        private void onDownloadIGVideosClicked(object sender, RoutedEventArgs e)
+        {
+            string line;
+            string link;
+            string name;
+            try
+            {
+
+            using (StreamReader sr = new StreamReader("DownloadLinksFürGondoAssist.txt"))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+
+                    // asdfjkaoskjdf | notkinghill - CBYuA_bnUKi.mp4
+                    name = line.Substring(line.IndexOf("|") + 2).Trim();
+                    link = line.Remove(line.IndexOf("|") - 1);
+                    //name = line
+                    string videoSpeicherort = FindEpisodeFolder();
+                    //string name = "video" + n + ".mp4";
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.DownloadFile(link, videoSpeicherort + "\\" + name);
+                    }
+
+                }
+                sr.Close();
+            }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter writer = new StreamWriter("\\DownloadError.txt", true, Encoding.UTF8))
+
+                {
+                    writer.Write(ex + " und " + ex.Message);
+                }
+            }
+            MessageBox.Show("Download abgeschlossen");
+        }
+
+        private string FindEpisodeFolder()
+        {
+            string line;
+            using (StreamReader sr = new StreamReader("Quellen_Likeability.txt", Encoding.UTF8))
+            {
+
+                line = sr.ReadLine();
+                line = line.Remove(line.LastIndexOf("\\"));
+               
+            sr.Close();
+            }
+            return line;
         }
 
         private string EncryptLoginInfo(string value)

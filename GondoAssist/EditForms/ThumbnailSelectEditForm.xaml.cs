@@ -92,9 +92,6 @@ namespace GondoAssist.EditForms
                     // Abort Mission, will get them next itme...
                     break;
             }
-
-
-
         }
 
         private void onSearchEntered(object sender, KeyEventArgs e)

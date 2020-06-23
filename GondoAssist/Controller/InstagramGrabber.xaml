@@ -33,7 +33,16 @@
                 </DatePicker.Resources>
             </DatePicker>
             <Button x:Name="igThumbnail" Content="IG-LINKS ERSTELLEN..." Margin="0,5,0,5" Height="30" Width="200" Click="onCreateIGListClicked"/>
+            <Label x:Name="lbQuellen" Content="Quellenliste:" Margin="150,0,50,5" Height="30"/>
+
+            <Button Name="btnQuellen" Content="Öffne QuellenListe" Height="30" Width="200" Click="onQuellenOpenClicked"/>
             <!--<DatePicker Name="IGDatePicker"/>-->
+            <Label x:Name="lbigDownloader" Content="                           Download über Gondoassist" Foreground="Black" Width="500" />
+            <Button Name="btnIGDownloader" Height="30" Content="Download" Click="onDownloadIGVideosClicked" Width="200" Margin="0,0,0,5"/>
+
+            <Separator/>
+            <Label x:Name="igsaVideoLocationLabel" Content="                           Download über JDownloader" Foreground="Black" Width="500" />
+
             <Label x:Name="igVideoLocationLabel" Content="                           SPEICHERORT von JDownloader" Foreground="Black" Width="500" />
             <Button Name="igVideoLocationPath" Height="30" Content="auswählen..." Click="onIGOpenPathClicked" Width="200" Margin="0,0,0,5"/>
             <CheckBox x:Name="memorizeIGVideoLocationSavePath" Width="200" Content="Merken?" Foreground="Gray"/>

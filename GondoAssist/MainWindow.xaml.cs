@@ -1,6 +1,11 @@
 ﻿using GondoAssist.Controller;
 using GondoAssist.EditForms;
+using Squirrel;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -25,56 +30,181 @@ namespace GondoAssist
             maincontent.Children.Clear();
             //   UCYTSearch ucyts = new UCYTSearch(this);
             //  maincontent.Children.Add(ucyts);
+            AddVersionNumber();
+            // CheckForUpdates();
+            
         }
 
+        private async void CheckIfUpdate(object sender, RoutedEventArgs e)
+        {
+            await UpdateIfAvailable();
+        }
+
+        private void AddVersionNumber()
+        {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            this.Title += $" v.{ versionInfo.FileVersion}";
+
+            
+        }
+
+        //private async Task CheckForUpdates()
+        //{
+
+        //    using (var manager = new UpdateManager(@"C:\Users\Agrre\Desktop\Releases"))
+        //    {
+        //        await manager.UpdateApp();
+        //    }
+        //    //MessageBox.Show("Updated.");
+        //}
+
+        public async Task UpdateIfAvailable()
+        {
+            updateInProgress = RealUpdateIfAvailable();
+            await updateInProgress;
+        }
+
+        public async Task WaitForUpdatesOnShutdown()
+        {
+            // We don't actually care about errors here, only completion
+            await updateInProgress.ContinueWith(ex => { });
+        }
+
+        Task updateInProgress = Task.FromResult(true);
+        private DateTime lastUpdateCheck;
+
+        private async Task RealUpdateIfAvailable()
+        {
+            lastUpdateCheck = DateTime.Now;
+            try
+            {
+                using (var mgr = new UpdateManager(@"C:\Users\Agrre\Desktop\Releases"))
+                {
+                    await mgr.UpdateApp();
+                }
+                MessageBox.Show("Updated.");
+            }
+
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(ex.Message);
+                }
+            }
+        }
         /// <summary>
         /// Button: Öffnet im Fenster das Youtube Such Interface auf
         /// </summary>
         private void onYoutubeSearchClicked(object sender, RoutedEventArgs e)
         {
+            try
+            {
             maincontent.Children.Clear();
             UCYTSearch ucyts = new UCYTSearch(this);
             //  Uploader_Youtube ucyts = new Uploader_Youtube(this);
             maincontent.Children.Add(ucyts);
+
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(ex.Message);
+                }
+            }
         }
 
         private void onYoutubeUploaderClicked(object sender, RoutedEventArgs e)
         {
+            try
+            {
             maincontent.Children.Clear();
             Uploader_Youtube ucyts = new Uploader_Youtube(this);
             maincontent.Children.Add(ucyts);
+
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(ex.Message);
+                }
+            }
         }
 
         // Button-Click Event: Öffnet das Upload-Interface 
         private void onUploaderClicked(object sender, RoutedEventArgs e)
         {
-
-            maincontent.Children.Clear();
-            UCUploader ucu = new UCUploader();
-            maincontent.Children.Add(ucu);
+            try
+            {
+                maincontent.Children.Clear();
+                UCUploader ucu = new UCUploader();
+                maincontent.Children.Add(ucu);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(ex.Message);
+                }
+            }
         }
 
         // Button-Click Event: Öffnet das Download-Interface 
         private void onDownloaderClicked(object sender, RoutedEventArgs e)
         {
-            maincontent.Children.Clear();
-            string link = "";
-            UCDownloader ucd = new UCDownloader(link);
-            maincontent.Children.Add(ucd);
+            try
+            {
+                maincontent.Children.Clear();
+                string link = "";
+                UCDownloader ucd = new UCDownloader(link);
+                maincontent.Children.Add(ucd);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(ex.Message);
+                }
+            }
         }
 
         private void onWordpressClicked(object sender, RoutedEventArgs e)
         {
-            maincontent.Children.Clear();
-            Uploader_Wordpress uwp = new Uploader_Wordpress();
-            maincontent.Children.Add(uwp);
+            try
+            {
+                maincontent.Children.Clear();
+                Uploader_Wordpress uwp = new Uploader_Wordpress();
+                maincontent.Children.Add(uwp);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(ex.Message);
+                }
+            }
         }
 
         private void onGoogleDriveClicked(object sender, RoutedEventArgs e)
         {
+            try
+            {
+
             maincontent.Children.Clear();
             Uploader_GoogleDrive ugd = new Uploader_GoogleDrive();
             maincontent.Children.Add(ugd);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(ex.Message);
+                }
+            }
 
         }
 
@@ -90,18 +220,45 @@ namespace GondoAssist
         // Button-Click Event: cleared das Interface 
         private void onTest1Clicked(object sender, RoutedEventArgs e)
         {
+            try
+            {
+
             maincontent.Children.Clear();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(ex.Message);
+                }
+            }
 
         }
 
         private void onNewDownloaderClicked(object sender, RoutedEventArgs e)
         {
+            try
+            {
             maincontent.Children.Clear();
-            string link = "";
             TestDownloader test = new TestDownloader();
             // UCDownloader test = new UCDownloader(link);
 
             maincontent.Children.Add(test);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(ex.Message + ex.ToString());
+                    // Get stack trace for the exception with source file information
+                    var st = new StackTrace(ex, true);
+                    // Get the top stack frame
+                    var frame = st.GetFrame(0);
+                    // Get the line number from the stack frame
+                    var line = frame.GetFileLineNumber();
+                    sw.WriteLine(st + " " + frame + " " + line + " ");
+                }
+            }
 
 
         }
@@ -114,9 +271,26 @@ namespace GondoAssist
 
         private void onInstagramGrabberClicked(object sender, RoutedEventArgs e)
         {
-            maincontent.Children.Clear();
-            InstagramGrabber igu = new InstagramGrabber();
-            maincontent.Children.Add(igu);
+            try
+            {
+                maincontent.Children.Clear();
+                InstagramGrabber igu = new InstagramGrabber();
+                maincontent.Children.Add(igu);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                {
+                    sw.WriteLine(ex.Message + ex.ToString());
+                    // Get stack trace for the exception with source file information
+                    var st = new StackTrace(ex, true);
+                    // Get the top stack frame
+                    var frame = st.GetFrame(0);
+                    // Get the line number from the stack frame
+                    var line = frame.GetFileLineNumber();
+                    sw.WriteLine(st + " " + frame + " " + line + " ");
+                }
+            }
         }
 
         // private void XonYoutubeSearchClicked(object sender, RoutedEventArgs e)
@@ -210,5 +384,7 @@ namespace GondoAssist
             maincontent.Children.Add(amv);
 
         }
+
+
     }
 }
