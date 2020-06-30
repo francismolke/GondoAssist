@@ -6,7 +6,9 @@
              xmlns:local="clr-namespace:GondoAssist"
              mc:Ignorable="d" d:DesignWidth="800" Background="WhiteSmoke" FontFamily="Bahnschrift SemiCondensed" FontSize="20" Height="474.793">
     <DockPanel>
-        <StackPanel>
+        <StackPanel DockPanel.Dock="Left" Width="300" Background="WhiteSmoke">
+            <Label Name="lbyt" Content="Youtube Downloader"/>
+            <Label Content="+18 Videos können nicht heruntergeladen werden momentan" FontSize="15"/>
             <Label Content="LINK EINFÜGEN:" Height="30" Width="200" HorizontalAlignment="Center"/>
             <TextBox x:Name="lbVideoName" Height="30" Width="200" LostFocus="onLinkTextChanged"/>
             <!--<ListBox Height="25" Width="200" Margin="5,5,5,5" Name="lbLinks"/>-->
@@ -17,6 +19,17 @@
             <Label x:Name="lblTotalDW" Height="30" Width="200" Margin="0,5,0,5" BorderBrush="#FF65B4F9"/>
             <ProgressBar x:Name="progressBar" Height="30" Width="200" Margin="0,5,0,0" BorderBrush="#FF65B4F9"/>
             <TextBox x:Name="urlbox" Height="30" Margin="37,5" Visibility="Collapsed"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Left" Width="250" Background="Wheat">
+            <Label Name="lbigdl" Content="IG Downloader"/>
+
+            <Label Content="IG Link einfügen:" Height="30" Width="200" HorizontalAlignment="Center"/>
+            <TextBox x:Name="lbVidseoName" Height="30" Width="200" LostFocus="onLinkTextChanged" Margin="0,5,0,5"/>
+
+            <Button x:Name="IGWhereToSave" Height="30" Width="200" Content="Save..." Click="onSaveFolderClicked"/>
+            <Button x:Name="btnIGDownload" Content="Download" Height="30" Width="200" Margin="0,30, 0, 0" Click="onIGDownloadClicked"/>
+
+            <Button x:Name="btnDownloadFolder" Click="onOpenDownloadFolderClicked" Content="Speicherort öffnen" Height="30" Width="200" Margin="0,30,0,0"/>
         </StackPanel>
     </DockPanel>
 </UserControl>

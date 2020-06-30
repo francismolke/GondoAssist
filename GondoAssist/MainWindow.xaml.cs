@@ -4,6 +4,7 @@ using Squirrel;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,7 +33,7 @@ namespace GondoAssist
             //  maincontent.Children.Add(ucyts);
             AddVersionNumber();
             // CheckForUpdates();
-            
+
         }
 
         private async void CheckIfUpdate(object sender, RoutedEventArgs e)
@@ -47,7 +48,7 @@ namespace GondoAssist
 
             this.Title += $" v.{ versionInfo.FileVersion}";
 
-            
+
         }
 
         //private async Task CheckForUpdates()
@@ -77,23 +78,66 @@ namespace GondoAssist
 
         private async Task RealUpdateIfAvailable()
         {
-            lastUpdateCheck = DateTime.Now;
-            try
+            
+            //using (var mgr = new UpdateManager("https://github.com/francismolke/GondoAssist"))
+            using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/francismolke/GondoAssist"))  
             {
-                using (var mgr = new UpdateManager(@"C:\Users\Agrre\Desktop\Releases"))
+                // this.logger.Info("Checking for updates");
+                try
                 {
-                    await mgr.UpdateApp();
-                }
-                MessageBox.Show("Updated.");
-            }
+                    var updateInfo = await mgr.CheckForUpdate();
 
-            catch (Exception ex)
-            {
-                using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+                    if (updateInfo.ReleasesToApply.Any())
+                    {
+                        var versionCount = updateInfo.ReleasesToApply.Count;
+
+                        var versionWord = versionCount > 1 ? "versions" : "version";
+                        var message = new StringBuilder().AppendLine($"Die App ist {versionCount} {versionWord} zurück.").
+                                                          AppendLine("Wenn Sie sich für eine Aktualisierung entscheiden, werden Änderungen erst nach einem Neustart der App wirksam.").
+                                                          AppendLine("Möchten Sie sie herunterladen und installieren?").
+                                                          ToString();
+
+                        var result = MessageBox.Show(message, "App Update", MessageBoxButton.YesNo);
+                        if (result != MessageBoxResult.Yes)
+                        {
+                            return;
+                        }
+
+                        var updateResult = await mgr.UpdateApp();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Die App ist auf den neuesten Stand.");
+                    }
+                }
+                catch (Exception ex)
                 {
-                    sw.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Message);
+                    //       this.logger.Warn($"There was an issue during the update process! {ex.Message}");
                 }
             }
+            //lastUpdateCheck = DateTime.Now;
+            //try
+            //{
+            //    using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/francismolke/GondoAssist"))
+            //    {
+            //        await mgr.Result.UpdateApp();
+            //        MessageBox.Show("Updated.");
+            //    }
+            //    //using (var mgr = new UpdateManager(@"C:\Users\Agrre\Desktop\Releases"))
+            //    //{
+            //    //    await mgr.UpdateApp();
+            //    //}
+
+            //}
+
+            //catch (Exception ex)
+            //{
+            //    using (StreamWriter sw = new StreamWriter("Error.txt", true, Encoding.UTF8))
+            //    {
+            //        sw.WriteLine(ex.Message);
+            //    }
+            //}
         }
         /// <summary>
         /// Button: Öffnet im Fenster das Youtube Such Interface auf
@@ -102,10 +146,10 @@ namespace GondoAssist
         {
             try
             {
-            maincontent.Children.Clear();
-            UCYTSearch ucyts = new UCYTSearch(this);
-            //  Uploader_Youtube ucyts = new Uploader_Youtube(this);
-            maincontent.Children.Add(ucyts);
+                maincontent.Children.Clear();
+                UCYTSearch ucyts = new UCYTSearch(this);
+                //  Uploader_Youtube ucyts = new Uploader_Youtube(this);
+                maincontent.Children.Add(ucyts);
 
             }
             catch (Exception ex)
@@ -121,9 +165,9 @@ namespace GondoAssist
         {
             try
             {
-            maincontent.Children.Clear();
-            Uploader_Youtube ucyts = new Uploader_Youtube(this);
-            maincontent.Children.Add(ucyts);
+                maincontent.Children.Clear();
+                Uploader_Youtube ucyts = new Uploader_Youtube(this);
+                maincontent.Children.Add(ucyts);
 
             }
             catch (Exception ex)
@@ -194,9 +238,9 @@ namespace GondoAssist
             try
             {
 
-            maincontent.Children.Clear();
-            Uploader_GoogleDrive ugd = new Uploader_GoogleDrive();
-            maincontent.Children.Add(ugd);
+                maincontent.Children.Clear();
+                Uploader_GoogleDrive ugd = new Uploader_GoogleDrive();
+                maincontent.Children.Add(ugd);
             }
             catch (Exception ex)
             {
@@ -223,7 +267,7 @@ namespace GondoAssist
             try
             {
 
-            maincontent.Children.Clear();
+                maincontent.Children.Clear();
             }
             catch (Exception ex)
             {
@@ -239,11 +283,11 @@ namespace GondoAssist
         {
             try
             {
-            maincontent.Children.Clear();
-            TestDownloader test = new TestDownloader();
-            // UCDownloader test = new UCDownloader(link);
+                maincontent.Children.Clear();
+                TestDownloader test = new TestDownloader();
+                // UCDownloader test = new UCDownloader(link);
 
-            maincontent.Children.Add(test);
+                maincontent.Children.Add(test);
             }
             catch (Exception ex)
             {

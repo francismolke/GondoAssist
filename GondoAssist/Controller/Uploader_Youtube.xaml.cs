@@ -31,7 +31,11 @@ namespace GondoAssist
             this.mw = mw;
             string path = Path.Combine(Environment.CurrentDirectory, @"User\", fileName);
             InitializeComponent();
+            if (File.Exists(path))
+            {
             DescriptionBox.Text = File.ReadAllText(path);
+            }
+
         }
 
         private void onSelectFileButtonClicked(object sender, RoutedEventArgs e)

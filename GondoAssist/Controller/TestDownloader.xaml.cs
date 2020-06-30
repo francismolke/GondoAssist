@@ -1,6 +1,12 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +29,7 @@ namespace GondoAssist
             InitializeComponent();
 
         }
-
+        #region YoutubeDownloader
         //es war static
         private static void DownloadVideo(IEnumerable<VideoInfo> videoInfos)
         {    /*
@@ -137,6 +143,114 @@ namespace GondoAssist
                 VInfos.Add(video);
             }
             return strVideos;
+        }
+
+        #endregion
+
+        #region IGDownloader
+
+        public void IGDL(string downloadLink, string savepath)
+        {
+            try
+            {
+
+                ChromeOptions options = new ChromeOptions();
+                options.AddArgument("--headless");
+                var service = ChromeDriverService.CreateDefaultService();
+                service.HideCommandPromptWindow = true;
+                IWebDriver driver = new ChromeDriver(service, options);
+                driver.Url = downloadLink;
+                string fetchedDLLink = DownloadLinkExpress(driver);
+                string creatorName = GetProfileName(driver);
+                string creatorLink = MakeLinkName(downloadLink);
+                string filename = creatorName + " - " + creatorLink;
+                using (WebClient wc = new WebClient())
+                {
+                    wc.DownloadFile(fetchedDLLink, savepath + "\\" + filename + ".mp4");
+                }
+                MessageBox.Show("Download abgeschlossen");
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter writer = new StreamWriter("\\DownloadError.txt", true, Encoding.UTF8))
+
+                {
+                    writer.Write(ex + " und " + ex.Message);
+                }
+
+            }
+        }
+
+        #endregion
+        string savepath;
+        private void onIGDownloadClicked(object sender, RoutedEventArgs e)
+        {
+            string downloadLink = lbVidseoName.Text;
+            savepath = urlbox.Text;
+            IGDL(downloadLink, savepath);
+
+        }
+
+
+
+        private string GetProfileName(IWebDriver driver)
+        {
+            string profilename = "";
+            if (IsElementPresent(By.CssSelector("a.sqdOP.yWX7d._8A5w5.ZIAjV"), driver))
+            {
+                profilename = driver.FindElement(By.CssSelector("a.sqdOP.yWX7d._8A5w5.ZIAjV")).Text;
+
+            }
+            return profilename;
+        }
+
+        private string MakeLinkName(string creatorlink)
+        {
+            // string neuerstring = v.Substring(v.LastIndexOf(@"/") - 11).Trim();
+            string neuerstring = creatorlink.Substring(28).Trim();
+            neuerstring = neuerstring.Remove(11).Trim();
+            return neuerstring;
+        }
+
+
+        private string DownloadLinkExpress(IWebDriver driver)
+        {
+            string downloadLink = "";
+            if (IsElementPresent(By.XPath("//meta[@property='og:video']"), driver))
+            {
+                downloadLink = driver.FindElement(By.XPath("//meta[@property='og:video']")).GetAttribute("content");
+
+            }
+            else if (IsElementPresent(By.XPath("//video[@class='tWeCl']"), driver))
+            {
+                downloadLink = driver.FindElement(By.XPath("//video[@class='tWeCl']")).GetAttribute("src");
+
+            }
+            return downloadLink;
+        }
+
+        private bool IsElementPresent(By by, IWebDriver driver)
+        {
+            try
+            {
+                driver.FindElement(by);
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        private void onOpenDownloadFolderClicked(object sender, RoutedEventArgs e)
+        {
+            savepath = urlbox.Text;
+
+            if (savepath != "" && savepath != null)
+            {
+            Process.Start(savepath);
+
+            }
         }
     }
 }
