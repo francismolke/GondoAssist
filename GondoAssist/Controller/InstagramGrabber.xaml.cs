@@ -4,7 +4,9 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -47,6 +49,7 @@ namespace GondoAssist
             CheckIfJDownloaderPathIsSaved();
             CheckIfLoginIsSaved();
             GetDateForQuellen();
+
         }
 
         private void GetDateForQuellen()
@@ -119,12 +122,12 @@ namespace GondoAssist
                     if (ljd.Count != 0)
                     {
 
-                    if (ljd.First().ToString() != null || ljd.First().ToString() != "")
-                    {
-                        igVideoLocationLabel.Content = "Ordner gefunden: " + ljd.First().ToString();
-                        igVideoLocationPath.Content = "Ordner ändern?";
-                        memorizeIGVideoLocationSavePath.Content = "Gemerkt!";
-                    }
+                        if (ljd.First().ToString() != null || ljd.First().ToString() != "")
+                        {
+                            igVideoLocationLabel.Content = "Ordner gefunden: " + ljd.First().ToString();
+                            igVideoLocationPath.Content = "Ordner ändern?";
+                            memorizeIGVideoLocationSavePath.Content = "Gemerkt!";
+                        }
                     }
                 }
             }
@@ -162,10 +165,33 @@ namespace GondoAssist
                 {
                     botProfileIsActive = true;
                 }
-
+                if (cbRemoveTags.IsChecked == true)
+                { 
+                FillBlackListForTags();
+                }
                 DateTimeCheck();
             }
             GetDateForQuellen();
+        }
+
+
+
+        private void FillBlackListForTags()
+        {
+            File.WriteAllText("BlackListforTags.txt", String.Empty);
+            using (StreamWriter blackListWriter = new StreamWriter("BlackListforTags.txt", true, Encoding.UTF8))
+            {
+
+                //driver.Manage().Cookies.AddCookie(cookie);
+                foreach (var element in lBBlackList.Items)
+                {
+
+                    blackListWriter.WriteLine(element);
+                }
+
+
+                blackListWriter.Close();
+            }
         }
 
         private void CreateIGListAgain()
@@ -243,16 +269,32 @@ namespace GondoAssist
         private int GetInstagramList(DateTime suggestedDate)
         {
             List<string> profileList = new List<string>();
-            using (StreamReader filereader = new StreamReader(sourcepath))
+            string instagramprefix = "https://www.instagram.com/";
+            if (cbRemoveCreator.IsChecked == true)
             {
-                foreach (string line in File.ReadLines(sourcepath, Encoding.UTF8))
+                foreach (var item in lBProfileList.Items)
                 {
-                    profileList.Add(line);
+                    profileList.Add(instagramprefix + item.ToString() + "/");
                 }
-                // startBackGroundWOrker(profileList.Count, profileList, suggestedDate);
 
 
+                //  var myOtherList = lBProfileList.Items.Cast<String>().ToList();
                 GetHTMLInfo(profileList, suggestedDate);
+            }
+            else
+            {
+
+                using (StreamReader filereader = new StreamReader(sourcepath))
+                {
+                    foreach (string line in File.ReadLines(sourcepath, Encoding.UTF8))
+                    {
+                        profileList.Add(line);
+                    }
+                    // startBackGroundWOrker(profileList.Count, profileList, suggestedDate);
+
+
+                    GetHTMLInfo(profileList, suggestedDate);
+                }
             }
             return profilecount = profileList.Count;
         }
@@ -290,7 +332,7 @@ namespace GondoAssist
                 //  GetLoginInformation();
                 driver.Url = "https://www.instagram.com/accounts/login/";
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
-             //   driver.Manage().Cookies.AddCookie(Cookie("scheißIG", "fickdeinemutter"));
+                //   driver.Manage().Cookies.AddCookie(Cookie("scheißIG", "fickdeinemutter"));
 
                 driver.Manage().Cookies.AddCookie(new OpenQA.Selenium.Cookie("scheißIG", "fickdeinemutter"));
 
@@ -452,8 +494,8 @@ namespace GondoAssist
                                             if (returnValueDate > suggestedDate && returnValue != 0)
                                             {
                                                 returnDownloadLink = DownloadLinkExpress(driver);
-                                               
-                                                
+
+
                                                 writer.Write("https://www.instagram.com" + item.Attributes["href"].Value + "\r\n");
                                                 linkending = item.Attributes["href"].Value;
                                                 linkending = linkending.Substring(3).Trim();
@@ -531,9 +573,9 @@ namespace GondoAssist
         private string DownloadLinkExpress(IWebDriver driver)
         {
             string downloadLink = "";
-            if(IsElementPresent(By.XPath("//meta[@property='og:video']"), driver))
+            if (IsElementPresent(By.XPath("//meta[@property='og:video']"), driver))
             {
-            downloadLink = driver.FindElement(By.XPath("//meta[@property='og:video']")).GetAttribute("content");
+                downloadLink = driver.FindElement(By.XPath("//meta[@property='og:video']")).GetAttribute("content");
 
             }
             else if (IsElementPresent(By.XPath("//video[@class='tWeCl']"), driver))
@@ -851,6 +893,10 @@ namespace GondoAssist
             {
                 spIGLogin.Visibility = Visibility.Visible;
             }
+            if (startWithOwnProfile.IsChecked == false)
+            {
+                spIGLogin.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void onIGLoginClicked(object sender, RoutedEventArgs e)
@@ -918,25 +964,25 @@ namespace GondoAssist
             try
             {
 
-            using (StreamReader sr = new StreamReader("DownloadLinksFürGondoAssist.txt"))
-            {
-                while ((line = sr.ReadLine()) != null)
+                using (StreamReader sr = new StreamReader("DownloadLinksFürGondoAssist.txt"))
                 {
-
-                    // asdfjkaoskjdf | notkinghill - CBYuA_bnUKi.mp4
-                    name = line.Substring(line.IndexOf("|") + 2).Trim();
-                    link = line.Remove(line.IndexOf("|") - 1);
-                    //name = line
-                    string videoSpeicherort = FindEpisodeFolder();
-                    //string name = "video" + n + ".mp4";
-                    using (WebClient wc = new WebClient())
+                    while ((line = sr.ReadLine()) != null)
                     {
-                        wc.DownloadFile(link, videoSpeicherort + "\\" + name);
-                    }
 
+                        // asdfjkaoskjdf | notkinghill - CBYuA_bnUKi.mp4
+                        name = line.Substring(line.IndexOf("|") + 2).Trim();
+                        link = line.Remove(line.IndexOf("|") - 1);
+                        //name = line
+                        string videoSpeicherort = FindEpisodeFolder();
+                        //string name = "video" + n + ".mp4";
+                        using (WebClient wc = new WebClient())
+                        {
+                            wc.DownloadFile(link, videoSpeicherort + "\\" + name);
+                        }
+
+                    }
+                    sr.Close();
                 }
-                sr.Close();
-            }
             }
             catch (Exception ex)
             {
@@ -957,11 +1003,69 @@ namespace GondoAssist
 
                 line = sr.ReadLine();
                 line = line.Remove(line.LastIndexOf("\\"));
-               
-            sr.Close();
+
+                sr.Close();
             }
             return line;
         }
+
+
+        private void onBlackListClicked(object sender, RoutedEventArgs e)
+        {
+            List<string> profileListRoh = new List<string>();
+            using (StreamReader filereader = new StreamReader(sourcepath))
+            {
+                foreach (string line in File.ReadLines(sourcepath, Encoding.UTF8))
+                {
+                    profileListRoh.Add(line);
+                }
+                filereader.Close();
+            }
+            List<string> profileList = new List<string>();
+            //ObservableCollection<string> profileList = new ObservableCollection<string>();
+            foreach (var name in profileListRoh)
+            {
+                string profileName = name.Substring(26).Trim();
+                profileName = profileName.Remove(profileName.Length - 1);
+                profileList.Add(profileName);
+            }
+            profileList.Sort();
+            // "Der Vorgang ist während der Verwendung von "ItemsSource" ungültig. 
+            //Verwenden Sie stattdessen "ItemsControl.ItemsSource", um auf Elemente zuzugreifen und diese zu ändern."
+            mylist = profileList;
+            lBProfileList.ItemsSource = profileList;
+            BlackListPanel.Visibility = Visibility.Visible;
+        }
+        List<string> mylist;
+        private void onBtnLeftToRightClicked(object sender, RoutedEventArgs e)
+        {
+
+            var currentItems = lBProfileList.SelectedValue.ToString();
+            var index = lBProfileList.SelectedIndex;
+            lBBlackList.Items.Add(currentItems);
+            if (mylist != null)
+            {
+                mylist.RemoveAt(index);
+            }
+            BindNewList();
+        }
+
+        private void BindNewList()
+        {
+            lBProfileList.ItemsSource = null;
+            lBProfileList.ItemsSource = mylist;
+        }
+
+        private void onBtnRightToLeftClicked(object sender, RoutedEventArgs e)
+        {
+            var currentItems = lBBlackList.SelectedValue.ToString();
+            var index = lBBlackList.SelectedIndex;
+            mylist.Add(currentItems);
+            lBBlackList.Items.RemoveAt(lBBlackList.Items.IndexOf(lBBlackList.SelectedItem));
+            BindNewList();
+        }
+
+
 
         private string EncryptLoginInfo(string value)
         {

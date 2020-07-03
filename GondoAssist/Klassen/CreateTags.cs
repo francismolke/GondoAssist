@@ -14,7 +14,7 @@ namespace GondoAssist.Klassen
         {
 
         }
-        public void RunTags(string projektDatei, string currentDirectory)
+        public void RunTags(string projektDatei, string currentDirectory, List<string> blackList)
         {
             //  var currentDirectory = @"C:\Users\Agrre\Desktop\alte\InsertTitleOnVideo\AutoModeLikeability\bin\Debug\" + projektDatei;
             int lastExtentRefNumber = 0;
@@ -46,7 +46,7 @@ namespace GondoAssist.Klassen
             MakeOneExtentRefWithOneNode(doc, currentDirectory, lastExtentRefNumber, amountOfMediaItems);
 
 
-            MakeExtentSelectorForText(doc, lastExtentRefNumber, currentDirectory, amountOfMediaItems);
+            MakeExtentSelectorForText(doc, lastExtentRefNumber, currentDirectory, amountOfMediaItems, blackList);
 
         }
 
@@ -120,7 +120,7 @@ namespace GondoAssist.Klassen
 
 
 
-        private static void MakeExtentSelectorForText(XDocument docX, int letzteZahl, string currentDirectoryC, int amountOfMediaItems)
+        private static void MakeExtentSelectorForText(XDocument docX, int letzteZahl, string currentDirectoryC, int amountOfMediaItems, List<string> blackList)
         {
             XDocument docY = XDocument.Load(currentDirectoryC);
 
@@ -179,6 +179,18 @@ namespace GondoAssist.Klassen
                 {
                     // Hier noch Prüfen ob das ein Instagram / Youtube etc Video ist
                     string checkedFileName = CheckFileNameForSource(fileName);
+                    if (blackList.Count != 0)
+                    {
+
+                        foreach (var blfilename in blackList)
+                        {
+                            if (blfilename == checkedFileName)
+                            {
+                                checkedFileName = "";
+                            }
+                        }
+                    }
+
                     var docTitleClip = CreateTitleClipXElement(letzteZahl, checkedFileName, n, currentDirectoryC);
                     docY.Root.Descendants("Extents").FirstOrDefault().AddFirst(docTitleClip);
 
@@ -224,6 +236,7 @@ namespace GondoAssist.Klassen
 
         private static string CheckFileNameForSource(string fileName)
         {
+
             Regex mr1 = new Regex(@"^[a-z._A-Z0-9]+\s-\s.{11}\.mp4$");
             Regex mr2 = new Regex(@"^[a-z._A-Z0-9]+\s-\s.{23}\.mp4$");
             if (mr1.IsMatch(fileName))
@@ -251,6 +264,11 @@ namespace GondoAssist.Klassen
 
         private static XElement CreateTitleClipXElement(int idIterator, string fileName, int n, string currentDirectory)
         {
+            if (fileName != "")
+            {
+                fileName = "@" + fileName;
+
+            }
             idIterator -= 1;
             // var currentDirectory = Directory.GetCurrentDirectory() + @"\Slamdank1.wlmp";
             // var currentDirectory = @"C:\Users\Agrre\Desktop\alte\InsertTitleOnVideo\GondoAssist_AutoVideo\bin\Debug\SD284.wlmp";
@@ -289,7 +307,7 @@ namespace GondoAssist.Klassen
                     new XElement("BoundPropertyFloat", new XAttribute("Name", "size"), new XAttribute("Value", 0.4)),
                     new XElement("BoundPropertyStringSet", new XAttribute("Name", "string"),
                     // HIER IST DIE NAMENS / TEXT VARIABLE
-                    new XElement("BoundPropertyStringElement", new XAttribute("Value", "@" + fileName))),
+                    new XElement("BoundPropertyStringElement", new XAttribute("Value", fileName))),
                     new XElement("BoundPropertyString", new XAttribute("Name", "style"), new XAttribute("Value", "Plain")),
                     new XElement("BoundPropertyFloat", new XAttribute("Name", "transparency"), new XAttribute("Value", 0))))),
                     new XElement("Transitions"),

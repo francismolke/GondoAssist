@@ -1,4 +1,7 @@
-﻿using OpenQA.Selenium;
+﻿using GondoAssist.Klassen;
+using Google.Apis.YouTube.v3.Data;
+using Microsoft.Win32;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
@@ -6,12 +9,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using Xabe.FFmpeg;
 using YoutubeExtractor;
-
 namespace GondoAssist
 {
     /// <summary>
@@ -81,6 +87,7 @@ namespace GondoAssist
             DownloadVideo(videoInfos);
         }
 
+        
         private void onSaveFolderClicked(object sender, RoutedEventArgs e)
         {
             using (System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select your Path" })
@@ -88,6 +95,7 @@ namespace GondoAssist
                 if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     urlbox.Text = fbd.SelectedPath;
+                    videospeicherort = fbd.SelectedPath;
                 }
             }
 
@@ -151,6 +159,11 @@ namespace GondoAssist
 
         public void IGDL(string downloadLink, string savepath)
         {
+            string kindOfDownloadLink = downloadLink.Substring(downloadLink.Length - 5).Trim();
+                
+            if (kindOfDownloadLink != ".webm")
+            {
+
             try
             {
 
@@ -168,6 +181,7 @@ namespace GondoAssist
                 {
                     wc.DownloadFile(fetchedDLLink, savepath + "\\" + filename + ".mp4");
                 }
+                    driver.Close();
                 MessageBox.Show("Download abgeschlossen");
             }
             catch (Exception ex)
@@ -179,18 +193,80 @@ namespace GondoAssist
                 }
 
             }
+            }
+            else
+            {
+                //https://gondola.stravers.net/MondoDrag.webm
+                // zu
+                //https://gondola.stravers.net/files/video/MondoDrag.webm
+                string connectstring = "files/video/";
+                // MondoDrag.webm
+                string filename = downloadLink.Substring(29).Trim();
+                //https://gondola.stravers.net/
+                string linkname = downloadLink.Substring(0, 29);
+                //https://gondola.stravers.net/files/video/MondoDrag.webm
+                string newDownloadLink = linkname + connectstring + filename;
+
+               // filename = downloadLink.Substring(41).Trim();
+                try
+                {
+
+                using (WebClient wc = new WebClient())
+                {
+                   wc.DownloadFile(new Uri(newDownloadLink), savepath + "\\" + filename);
+                }
+                  //  System.Threading.Thread.Sleep(10000);
+                // Convert
+                if (cBconverter.IsChecked == true)
+                    {
+                        lfn.Clear();
+                        lfn.Add(savepath);
+                        ConvertWebmToMp4(lfn, filename, ".mp4", true);
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    using (StreamWriter writer = new StreamWriter("\\DownloadError.txt", true, Encoding.UTF8))
+
+                    {
+                        writer.Write(ex + " und " + ex.Message);
+                    }
+                }
+            }
         }
 
-        #endregion
+        private void ConvertWebmToMp4(List<string> savepath, string filename, string selectedFormat, bool isAutoConvert)
+        {   
+             VideoConverter vc = new VideoConverter();
+            vc.RunConversion(savepath, filename, videospeicherort, selectedFormat, isAutoConvert);
+            //WebmConverter webmConverter = new WebmConverter();
+            // vc.
+        }
+
+
+
         string savepath;
-        private void onIGDownloadClicked(object sender, RoutedEventArgs e)
+
+        private  void OnIGDownloadClicked(object sender, RoutedEventArgs e)
         {
-            string downloadLink = lbVidseoName.Text;
-            savepath = urlbox.Text;
-            IGDL(downloadLink, savepath);
+            try
+            {
 
+                string downloadLink = lbVidseoName.Text;
+                savepath = urlbox.Text;
+                IGDL(downloadLink, savepath);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter writer = new StreamWriter("\\DownloadError.txt", true, Encoding.UTF8))
+
+                {
+                    writer.Write(ex + " und " + ex.Message);
+                }
+            }
         }
-
 
 
         private string GetProfileName(IWebDriver driver)
@@ -250,6 +326,51 @@ namespace GondoAssist
             {
             Process.Start(savepath);
 
+            }
+        }
+
+        private void onConvertClicked(object sender, RoutedEventArgs e)
+        {
+            string filename = "";
+            string selectedFormat = "";
+            selectedFormat = ((ComboBoxItem)cBVidFormats.SelectedItem).Content.ToString();
+            ConvertWebmToMp4(lfn, filename, selectedFormat, false);
+        }
+        #endregion
+
+        List<string> lfn = new List<string>();
+        private void onFindVideoClicked(object sender, RoutedEventArgs e)
+        {
+            
+            try
+            {
+
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Videos | *.mp4; *.avi; *.amv; *.flv; *.mkv; *.mpeg; *.webm; *.wmv;";
+            ofd.Multiselect = true;
+            ofd.ShowDialog();
+                lfn.Clear();
+            foreach (string file in ofd.FileNames)
+            {
+                    lfn.Add(file);
+            }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+        }
+        string videospeicherort = "";
+        private void onConvertSaveFolderClicked(object sender, RoutedEventArgs e)
+        {
+            using (System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog() { Description = "Select your Path" })
+            {
+                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    videospeicherort = fbd.SelectedPath;
+                }
             }
         }
     }

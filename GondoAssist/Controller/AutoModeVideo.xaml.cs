@@ -1,11 +1,13 @@
 ﻿using GondoAssist.Klassen;
 using Google.Apis.Drive.v3.Data;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace GondoAssist.Controller
 {
@@ -139,9 +141,22 @@ namespace GondoAssist.Controller
 
         }
 
+        List<string> blackList = new List<string>();
         private void InsertTagsIntoEpisode(object sender, RoutedEventArgs e)
         {
-            try
+            string sourcepath = "BlackListforTags.txt";
+            if (System.IO.File.Exists(sourcepath))
+            {
+                using (StreamReader filereader = new StreamReader(sourcepath))
+                {
+                    foreach (string line in System.IO.File.ReadLines(sourcepath, Encoding.UTF8))
+                    {
+                        blackList.Add(line);
+                    }
+
+                }
+            }
+                try
             {
                 if (speicherort == "")
                 {
@@ -155,8 +170,9 @@ namespace GondoAssist.Controller
                 }
                 if (speicherort != "" && speicherordner != "")
                 {
+                    
                     CreateTags createTags = new CreateTags();
-                    createTags.RunTags(speicherort, speicherordner);
+                    createTags.RunTags(speicherort, speicherordner, blackList);
                 }
             }
             catch (Exception ex)
