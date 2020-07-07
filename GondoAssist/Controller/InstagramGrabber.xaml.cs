@@ -1219,6 +1219,7 @@ namespace GondoAssist
                 if (dialogResult == System.Windows.Forms.DialogResult.Yes)
                 {
                     File.Delete(sourcepath);
+                    spProfileList.Visibility = Visibility.Collapsed;
                 }
                 else if (dialogResult == System.Windows.Forms.DialogResult.No)
                 {
