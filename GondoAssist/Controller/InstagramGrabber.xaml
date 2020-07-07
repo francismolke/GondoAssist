@@ -8,15 +8,21 @@
       d:DesignHeight="700" d:DesignWidth="800" Background="Wheat" FontFamily="Bahnschrift SemiCondensed" FontSize="20">
 
     <DockPanel>
-        <StackPanel Width="300" HorizontalAlignment="Left">
+        <StackPanel Width="285" HorizontalAlignment="Left">
             <Label Content="NAME DER EPISODE:" Foreground="Black" Width="200"/>
-            <TextBox x:Name="igtitle" Width="200" Height="30" Text="" BorderBrush="Black" BorderThickness="1"/>
-            <Label Content="SPEICHERORT" Foreground="Black" Width="200"/>
-            <Button Name="igSavePath" Height="30" Content="auswählen..." Click="onIGSavePathClicked" Width="200" Margin="0,0,0,5"/>
+            <TextBox x:Name="igtitle" Width="200" Height="30" Margin="0,0,0,5" Text="" BorderBrush="Black" BorderThickness="1"/>
+            <Button Name="igSavePath" Height="30" Content="Speicherort auswählen..." Click="onIGSavePathClicked" Width="200" Margin="0,5,0,5"/>
+            <Separator/>
+            <Label Content="Liste wählen:" Foreground="Black" Width="200"/>
+            <Button x:Name="btnCreateList" Content="neue Liste erstellen" Width="200" Margin="0,0,0,5" Click="onCreateNewListClicked"/>
+            <ComboBox x:Name="cBShowList" Width="200" Margin="0,0,0,5"/>
+            <Button x:Name="btnEditList" Content="Liste bearbeiten" Width="200" Click="onEditListClicked"/>
+            <Button x:Name="btnDeleteList" Content="Liste löschen" Width="200" Click="onDeleteListClicked" Margin="0,5,0,5"/>
+            <Separator/>
             <!--<CheckBox x:Name="memorizeSavePath" Width="200" Content="Speicherort merken?" Foreground="Gray" Margin="0,5,0,0"/>-->
             <CheckBox x:Name="cbBlackList" Content="Blacklist benutzen?"  Margin="0,5,0,0" Width="200" Click="onBlackListClicked"/>
             <CheckBox x:Name="startWithBotProfile" Width="200" Content="Mit Bot-Profil?" Foreground="Gray" Margin="0,5,0,0"/>
-            <CheckBox x:Name="startWithOwnProfile" Content="Mit eigenem-Profil?" Foreground="Gray" Margin="150,5,100,0" Click="onLoginWithOwnProfileClicked"/>
+            <CheckBox x:Name="startWithOwnProfile" Content="Mit eigenem-Profil?" Foreground="Gray" Margin="42,5,43,0" Click="onLoginWithOwnProfileClicked"/>
             <DatePicker Name="IGDatePicker" SelectedDate="{Binding Path = SuggestedDateX, StringFormat = {}{0:dd-MM-yyyy}}" Margin="0,5,0,0" Width="200">
                 <DatePicker.Resources>
                     <Style TargetType="DatePickerTextBox">
@@ -41,22 +47,26 @@
             <Label x:Name="lbigDownloader" Content="Download über Gondoassist" Foreground="Black" Margin="50,0,10,0" />
             <Button Name="btnIGDownloader" Height="30" Content="Download" Click="onDownloadIGVideosClicked" Width="200" Margin="0,0,0,5"/>
             <Separator/>
-            <Label x:Name="igsaVideoLocationLabel" Content="Download über JDownloader" Foreground="Black" Margin="45,0,10,0" />
+            
+                <!--<Label x:Name="igsaVideoLocationLabel" Content="Download über JDownloader" Foreground="Black" Margin="45,0,10,0" />-->
+                <CheckBox x:Name="cbShowJdownloader" Content="Download über JDownloader" Margin="29,0,10,0" Click="onCbShowJdownloader"/>
+            <Separator/>
+            <StackPanel Visibility="Collapsed" x:Name="spJdownloader">
+                <Label x:Name="igVideoLocationLabel" Content="SPEICHERORT von JDownloader" Foreground="Black" Margin="29,0,10,0" />
+                <Button x:Name="igVideoLocationPath" Height="30" Content="auswählen..." Click="onIGOpenPathClicked" Width="200" Margin="0,0,0,5"/>
+                <CheckBox x:Name="memorizeIGVideoLocationSavePath" Width="200" Content="Merken?" Foreground="Gray"/>
 
-            <Label x:Name="igVideoLocationLabel" Content="SPEICHERORT von JDownloader" Foreground="Black" Margin="29,0,10,0"/>
-            <Button Name="igVideoLocationPath" Height="30" Content="auswählen..." Click="onIGOpenPathClicked" Width="200" Margin="0,0,0,5"/>
-            <CheckBox x:Name="memorizeIGVideoLocationSavePath" Width="200" Content="Merken?" Foreground="Gray"/>
+                <Label x:Name="igVideoDestinationLabel" Content="SPEICHERORT des Ordners" Foreground="Black" Margin="45,0,0,0" />
+                <Label x:Name="igVideoDestinationLabel2" Content=" für die Episode" Foreground="Black" Width="200" Margin="0,-5,0,0"/>
 
-            <Label x:Name="igVideoDestinationLabel" Content="SPEICHERORT des Ordners" Foreground="Black" Margin="45,0,0,0" />
-            <Label x:Name="igVideoDestinationLabel2" Content=" für die Episode" Foreground="Black" Width="200" Margin="0,-5,0,0"/>
-
-            <Button Name="igVideoDestinationPath" Height="30" Content="auswählen..." Click="onIGSelectPathClicked" Width="200" Margin="0,0,0,5"/>
+                <Button x:Name="igVideoDestinationPath" Height="30" Content="auswählen..." Click="onIGSelectPathClicked" Width="200" Margin="0,0,0,5"/>
 
 
-            <Button Name="folderbutton" Height="30" Content="COLLECT VIDEOS" Click="collectVideos" Margin="0,5,0,0" Width="200"/>
-            <Label Content="" Width="200" Foreground="Black"/>
+                <Button x:Name="folderbutton" Height="30" Content="COLLECT VIDEOS" Click="collectVideos" Margin="0,5,0,0" Width="200"/>
+                <Label Content="" Width="200" Foreground="Black"/>
 
-            <ProgressBar Name="pbStatus" />
+            </StackPanel>
+            <!--<ProgressBar Name="pbStatus" />-->
             <!--<Button Name="igstartUpload" Content="wie immer...noch nicht fertig" Click="onPostClicked" Margin="0,50,0,0"/>-->
         </StackPanel>
         <StackPanel x:Name="spIGLogin" Visibility="Collapsed">
@@ -76,10 +86,10 @@
             <Label x:Name="lbLogout" Content="Ausloggen?" Margin="50,5,0,5"/>
             <Button x:Name="btnLogout" Content="Ausloggen" Click="onLogoutClicked" Width="200"/>
         </StackPanel>
-        
-        <StackPanel x:Name="BlackListPanel" Visibility="Visible" DockPanel.Dock="Left" Orientation="Horizontal">
+
+        <StackPanel x:Name="BlackListPanel" Visibility="Collapsed" DockPanel.Dock="Left" Orientation="Horizontal">
             <Border Width="200" Height="500" BorderBrush="Black" BorderThickness="2" Margin="0,0,0,200">
-                <ListBox  x:Name="lBProfileList" Height="500" Width="200" SelectionMode="Single"/>
+                <ListBox  x:Name="lBProfileList" Height="500" Width="200" SelectionMode="Single" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
             </Border>
             <StackPanel Orientation="Vertical" Margin="5,100,0,0">
                 <CheckBox x:Name="cbRemoveCreator" Content="Creator entfernen" FontSize="15"/>
@@ -88,9 +98,14 @@
                 <Button x:Name="btnRightToLeft" Content="&lt;&lt;" Width="54" Click="onBtnRightToLeftClicked"/>
             </StackPanel>
             <Border Width="200" Height="500" BorderBrush="Black" BorderThickness="2" Margin="7,0,0,200">
-                <ListBox x:Name="lBBlackList" Height="500" Width="200"  SelectionMode="Single"/>
+                <ListBox x:Name="lBBlackList" Height="500" Width="200"  SelectionMode="Single" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
             </Border>
-            
+
+        </StackPanel>
+        <StackPanel x:Name="spProfileList" Visibility="Collapsed">
+            <TextBox x:Name="tbProfileListName" Width="200" Height="30" Margin="0,5,0,5"/>
+            <TextBox x:Name="tbProfileList" Width="400" Height="600" Margin="0,5,0,0" AcceptsReturn="True"  ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+            <Button x:Name="btnSaveProfileList" Content="Liste speichern" Click="onSaveProfileListClicked" Width="200" Margin="0,5,0,0"/>
         </StackPanel>
     </DockPanel>
 </UserControl>

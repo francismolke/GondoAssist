@@ -39,7 +39,7 @@ namespace GondoAssist
         // ÄNDERN
         // string savepath = @"C:\Users\E\Desktop\";
         //string sourcePath = @"C:\Users\Agrre\Desktop\JdownloadSlamdan";
-        string sourcepath = "InstagramProfileList.txt";
+        //string sourcepath = "InstagramProfileList.txt";
         string JDSettingsPath = "JDownloaderLocation.txt";
         string TimeStopRaw;
         List<string> list_returnDownloadLink = new List<string>();
@@ -49,7 +49,24 @@ namespace GondoAssist
             CheckIfJDownloaderPathIsSaved();
             CheckIfLoginIsSaved();
             GetDateForQuellen();
+            FillListinCB();
 
+        }
+
+        private void FillListinCB()
+        {
+            cBShowList.ItemsSource = null;
+            List<string> profileLists = new List<string>();
+
+
+            string[] profileListsArray = Directory.GetFiles("InstagramProfileLists");
+            foreach (var profile in profileListsArray)
+            {
+                profileLists.Add(Path.GetFileNameWithoutExtension(profile));
+            }
+            profileLists.Add("");
+            cBShowList.ItemsSource = profileLists;
+            cBShowList.SelectedItem = "InstagramProfileList";
         }
 
         private void GetDateForQuellen()
@@ -147,31 +164,38 @@ namespace GondoAssist
 
         private void onCreateIGListClicked(object sender, RoutedEventArgs e)
         {
-            if (speicherort == "" || speicherort == null)
+            if ((string)cBShowList.SelectedItem == "")
             {
-                MessageBox.Show("Kein Speicherort ausgewählt, bitte wähle den Episoden Ordner");
+                MessageBox.Show("Liste auswählen");
             }
             else
             {
-                if (igtitle.Text == "")
+                if (speicherort == "" || speicherort == null)
                 {
-                    igtitle.Text = "Heute";
+                    MessageBox.Show("Kein Speicherort ausgewählt, bitte wähle den Episoden Ordner");
                 }
-                //       string targetPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\" + igtitle.Text;
-                speicherortQuellenLikeability = Directory.GetCurrentDirectory();
-                targetPath = speicherort + @"\" + igtitle.Text;
-                Directory.CreateDirectory(targetPath);
-                if (startWithBotProfile.IsChecked == true)
+                else
                 {
-                    botProfileIsActive = true;
+                    if (igtitle.Text == "")
+                    {
+                        igtitle.Text = "Heute";
+                    }
+                    //       string targetPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\" + igtitle.Text;
+                    speicherortQuellenLikeability = Directory.GetCurrentDirectory();
+                    targetPath = speicherort + @"\" + igtitle.Text;
+                    Directory.CreateDirectory(targetPath);
+                    if (startWithBotProfile.IsChecked == true)
+                    {
+                        botProfileIsActive = true;
+                    }
+                    if (cbRemoveTags.IsChecked == true)
+                    {
+                        FillBlackListForTags();
+                    }
+                    DateTimeCheck();
                 }
-                if (cbRemoveTags.IsChecked == true)
-                { 
-                FillBlackListForTags();
-                }
-                DateTimeCheck();
+                GetDateForQuellen();
             }
-            GetDateForQuellen();
         }
 
 
@@ -268,6 +292,7 @@ namespace GondoAssist
 
         private int GetInstagramList(DateTime suggestedDate)
         {
+            string sourcepath = cBShowList.SelectedItem.ToString();
             List<string> profileList = new List<string>();
             string instagramprefix = "https://www.instagram.com/";
             if (cbRemoveCreator.IsChecked == true)
@@ -284,9 +309,9 @@ namespace GondoAssist
             else
             {
 
-                using (StreamReader filereader = new StreamReader(sourcepath))
+                using (StreamReader filereader = new StreamReader("InstagramProfileLists\\" + sourcepath))
                 {
-                    foreach (string line in File.ReadLines(sourcepath, Encoding.UTF8))
+                    foreach (string line in File.ReadLines("InstagramProfileLists\\" + sourcepath, Encoding.UTF8))
                     {
                         profileList.Add(line);
                     }
@@ -297,6 +322,8 @@ namespace GondoAssist
                 }
             }
             return profilecount = profileList.Count;
+
+
         }
 
         protected void WaitForPageLoad(IWebDriver driver)
@@ -1012,29 +1039,37 @@ namespace GondoAssist
 
         private void onBlackListClicked(object sender, RoutedEventArgs e)
         {
-            List<string> profileListRoh = new List<string>();
-            using (StreamReader filereader = new StreamReader(sourcepath))
+            if ((string)cBShowList.SelectedItem == "")
             {
-                foreach (string line in File.ReadLines(sourcepath, Encoding.UTF8))
+                MessageBox.Show("Liste auswählen");
+            }
+            else
+            {
+                string sourcepath = cBShowList.SelectedItem.ToString() + ".txt";
+                List<string> profileListRoh = new List<string>();
+                using (StreamReader filereader = new StreamReader("InstagramProfileLists\\" + sourcepath))
                 {
-                    profileListRoh.Add(line);
+                    foreach (string line in File.ReadLines("InstagramProfileLists\\" + sourcepath, Encoding.UTF8))
+                    {
+                        profileListRoh.Add(line);
+                    }
+                    filereader.Close();
                 }
-                filereader.Close();
+                List<string> profileList = new List<string>();
+                //ObservableCollection<string> profileList = new ObservableCollection<string>();
+                foreach (var name in profileListRoh)
+                {
+                    string profileName = name.Substring(26).Trim();
+                    profileName = profileName.Remove(profileName.Length - 1);
+                    profileList.Add(profileName);
+                }
+                profileList.Sort();
+                // "Der Vorgang ist während der Verwendung von "ItemsSource" ungültig. 
+                //Verwenden Sie stattdessen "ItemsControl.ItemsSource", um auf Elemente zuzugreifen und diese zu ändern."
+                mylist = profileList;
+                lBProfileList.ItemsSource = profileList;
+                BlackListPanel.Visibility = Visibility.Visible;
             }
-            List<string> profileList = new List<string>();
-            //ObservableCollection<string> profileList = new ObservableCollection<string>();
-            foreach (var name in profileListRoh)
-            {
-                string profileName = name.Substring(26).Trim();
-                profileName = profileName.Remove(profileName.Length - 1);
-                profileList.Add(profileName);
-            }
-            profileList.Sort();
-            // "Der Vorgang ist während der Verwendung von "ItemsSource" ungültig. 
-            //Verwenden Sie stattdessen "ItemsControl.ItemsSource", um auf Elemente zuzugreifen und diese zu ändern."
-            mylist = profileList;
-            lBProfileList.ItemsSource = profileList;
-            BlackListPanel.Visibility = Visibility.Visible;
         }
         List<string> mylist;
         private void onBtnLeftToRightClicked(object sender, RoutedEventArgs e)
@@ -1065,7 +1100,138 @@ namespace GondoAssist
             BindNewList();
         }
 
+        private void onCbShowJdownloader(object sender, RoutedEventArgs e)
+        {
+            if (cbShowJdownloader.IsChecked == true)
+            {
+                spJdownloader.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                spJdownloader.Visibility = Visibility.Collapsed;
+            }
+        }
 
+        private void onCreateNewListClicked(object sender, RoutedEventArgs e)
+        {
+            tbProfileList.Clear();
+            tbProfileListName.Clear();
+            spProfileList.Visibility = Visibility.Visible;
+        }
+
+        private void onSaveProfileListClicked(object sender, RoutedEventArgs e)
+        {
+            spProfileList.Visibility = Visibility.Visible;
+            if (tbProfileListName.Text == "")
+            {
+                MessageBox.Show("Die Liste benötigt einen Namen");
+            }
+            else
+            {
+                if (File.Exists("InstagramProfileLists\\" + tbProfileListName.Text + ".txt"))
+                {
+                    System.Windows.Forms.DialogResult dialogResult = System.Windows.Forms.MessageBox.Show("Das Profil existiert schon, möchten Sie überschreiben?", "Profil existiert schon", System.Windows.Forms.MessageBoxButtons.YesNoCancel);
+                    if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        File.WriteAllText("InstagramProfileLists\\" + tbProfileListName.Text + ".txt", String.Empty);
+
+                        WriteProfileList();
+                    }
+                    else if (dialogResult == System.Windows.Forms.DialogResult.No)
+                    {
+                        //do something else
+                    }
+                    else if (dialogResult == System.Windows.Forms.DialogResult.Cancel)
+                    {
+                        // CANCEL
+                    }
+                }
+                else
+                {
+                    WriteProfileList();
+                }
+            }
+        }
+
+        private void WriteProfileList()
+        {
+            int i = tbProfileList.LineCount;
+
+            using (StreamWriter profileListWriter = new StreamWriter("InstagramProfileLists\\" + tbProfileListName.Text + ".txt", true, Encoding.UTF8))
+            {
+                for (int line = 0; line < i; line++)
+                {
+                    var newLine = tbProfileList.GetLineText(line);
+                    profileListWriter.Write(newLine);
+                }
+
+            }
+            MessageBox.Show("Liste wurde gespeichert & hinzugefügt");
+            spProfileList.Visibility = Visibility.Collapsed;
+            FillListinCB();
+        }
+
+        private void onEditListClicked(object sender, RoutedEventArgs e)
+        {
+
+            string sourcepath = cBShowList.SelectedItem.ToString() + ".txt";
+            if ((string)cBShowList.SelectedItem == "")
+            {
+                MessageBox.Show("eine Liste auswählen");
+            }
+            else
+            {
+                tbProfileList.Clear();
+                tbProfileListName.Clear();
+                spProfileList.Visibility = Visibility.Visible;
+                tbProfileListName.Text = cBShowList.SelectedItem.ToString();
+                List<string> profileListRoh = new List<string>();
+                using (StreamReader filereader = new StreamReader("InstagramProfileLists\\" + sourcepath))
+                {
+                    foreach (string line in File.ReadLines("InstagramProfileLists\\" + sourcepath, Encoding.UTF8))
+                    {
+                        profileListRoh.Add(line);
+                    }
+                    filereader.Close();
+                }
+                List<string> profileList = new List<string>();
+                profileListRoh.Sort();
+                foreach (var profile in profileListRoh)
+                {
+                    tbProfileList.Text += profile + "\r\n";
+                }
+            }
+        }
+
+
+
+        private void onDeleteListClicked(object sender, RoutedEventArgs e)
+        {
+            string sourcepath = "InstagramProfileLists\\" + cBShowList.SelectedItem.ToString() + ".txt";
+
+            if ((string)cBShowList.SelectedItem == "")
+            {
+                MessageBox.Show("eine Liste auswählen");
+            }
+            else
+            {
+                System.Windows.Forms.DialogResult dialogResult = System.Windows.Forms.MessageBox.Show("Wollen Sie wirklich" + cBShowList.SelectedItem.ToString() + "löschen?", "Profil wirklich löschen?", System.Windows.Forms.MessageBoxButtons.YesNoCancel);
+                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                {
+                    File.Delete(sourcepath);
+                }
+                else if (dialogResult == System.Windows.Forms.DialogResult.No)
+                {
+                    //do something else
+                }
+                else if (dialogResult == System.Windows.Forms.DialogResult.Cancel)
+                {
+                    // CANCEL
+                }
+                FillListinCB();
+            }
+            
+        }
 
         private string EncryptLoginInfo(string value)
         {
@@ -1116,7 +1282,7 @@ namespace GondoAssist
         void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
 
-            pbStatus.Value = e.ProgressPercentage;
+            //pbStatus.Value = e.ProgressPercentage;
         }
 
 

@@ -144,12 +144,12 @@ namespace GondoAssist.Controller
         List<string> blackList = new List<string>();
         private void InsertTagsIntoEpisode(object sender, RoutedEventArgs e)
         {
-            string sourcepath = "BlackListforTags.txt";
-            if (System.IO.File.Exists(sourcepath))
+            string sourcepathBL = "BlackListforTags.txt";
+            if (System.IO.File.Exists(sourcepathBL))
             {
-                using (StreamReader filereader = new StreamReader(sourcepath))
+                using (StreamReader filereader = new StreamReader(sourcepathBL))
                 {
-                    foreach (string line in System.IO.File.ReadLines(sourcepath, Encoding.UTF8))
+                    foreach (string line in System.IO.File.ReadLines(sourcepathBL, Encoding.UTF8))
                     {
                         blackList.Add(line);
                     }

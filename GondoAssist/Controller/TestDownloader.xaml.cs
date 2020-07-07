@@ -168,7 +168,7 @@ namespace GondoAssist
             {
 
                 ChromeOptions options = new ChromeOptions();
-                options.AddArgument("--headless");
+           //     options.AddArgument("--headless");
                 var service = ChromeDriverService.CreateDefaultService();
                 service.HideCommandPromptWindow = true;
                 IWebDriver driver = new ChromeDriver(service, options);
