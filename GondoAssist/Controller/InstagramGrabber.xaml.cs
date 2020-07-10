@@ -309,9 +309,9 @@ namespace GondoAssist
             else
             {
 
-                using (StreamReader filereader = new StreamReader("InstagramProfileLists\\" + sourcepath))
+                using (StreamReader filereader = new StreamReader("InstagramProfileLists\\" + sourcepath + ".txt"))
                 {
-                    foreach (string line in File.ReadLines("InstagramProfileLists\\" + sourcepath, Encoding.UTF8))
+                    foreach (string line in File.ReadLines("InstagramProfileLists\\" + sourcepath + ".txt", Encoding.UTF8))
                     {
                         profileList.Add(line);
                     }

@@ -51,16 +51,6 @@ namespace GondoAssist
 
         }
 
-        //private async Task CheckForUpdates()
-        //{
-
-        //    using (var manager = new UpdateManager(@"C:\Users\Agrre\Desktop\Releases"))
-        //    {
-        //        await manager.UpdateApp();
-        //    }
-        //    //MessageBox.Show("Updated.");
-        //}
-
         public async Task UpdateIfAvailable()
         {
             updateInProgress = RealUpdateIfAvailable();
