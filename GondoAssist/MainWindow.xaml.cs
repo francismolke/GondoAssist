@@ -55,6 +55,7 @@ namespace GondoAssist
         {
             updateInProgress = RealUpdateIfAvailable();
             await updateInProgress;
+            MessageBox.Show("Update fertig, bitte App neustarten.");
         }
 
         public async Task WaitForUpdatesOnShutdown()
