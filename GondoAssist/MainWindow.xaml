@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GondoAssist"
         mc:Ignorable="d"
-        Title="GondoAssist" Height="750" Width="1380" Background="Lavender" FontFamily="Bahnschrift SemiCondensed">
+        Title="GondoAssist" Height="800" Width="1380" Background="Lavender" FontFamily="Bahnschrift SemiCondensed">
     <!--<Window.Resources>
         <Style x:Key="MenuButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
