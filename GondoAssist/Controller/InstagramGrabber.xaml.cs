@@ -45,11 +45,13 @@ namespace GondoAssist
         List<string> list_returnDownloadLink = new List<string>();
         public InstagramGrabber()
         {
+
             InitializeComponent();
             CheckIfJDownloaderPathIsSaved();
             CheckIfLoginIsSaved();
             GetDateForQuellen();
             FillListinCB();
+
 
         }
 
@@ -164,6 +166,9 @@ namespace GondoAssist
 
         private void onCreateIGListClicked(object sender, RoutedEventArgs e)
         {
+            try
+            {
+
             if ((string)cBShowList.SelectedItem == "")
             {
                 MessageBox.Show("Liste auswählen");
@@ -195,6 +200,16 @@ namespace GondoAssist
                     DateTimeCheck();
                 }
                 GetDateForQuellen();
+            }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter writer = new StreamWriter(speicherort + "\\InstagramgrabberError.txt", true, Encoding.UTF8))
+
+                {
+                    writer.Write(ex.Message);
+                }
+
             }
         }
 
