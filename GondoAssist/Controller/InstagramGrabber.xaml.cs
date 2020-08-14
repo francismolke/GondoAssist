@@ -94,9 +94,14 @@ namespace GondoAssist
 
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
+                using (StreamWriter writer = new StreamWriter(speicherort + "\\InstagramgrabberError.txt", true, Encoding.UTF8))
+
+                {
+                    writer.Write(ex.Message);
+                }
+
             }
         }
 
@@ -217,6 +222,9 @@ namespace GondoAssist
 
         private void FillBlackListForTags()
         {
+            try
+            {
+
             File.WriteAllText("BlackListforTags.txt", String.Empty);
             using (StreamWriter blackListWriter = new StreamWriter("BlackListforTags.txt", true, Encoding.UTF8))
             {
@@ -230,6 +238,16 @@ namespace GondoAssist
 
 
                 blackListWriter.Close();
+            }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter writer = new StreamWriter(speicherort + "\\InstagramgrabberError.txt", true, Encoding.UTF8))
+
+                {
+                    writer.Write(ex.Message);
+                }
+
             }
         }
 
@@ -256,6 +274,8 @@ namespace GondoAssist
         private void DateTimeCheck()
         {
 
+            try
+            {
 
             int counter = 1;
 
@@ -299,6 +319,16 @@ namespace GondoAssist
 
 
             GetInstagramList(insertDate);
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter writer = new StreamWriter(speicherort + "\\InstagramgrabberError.txt", true, Encoding.UTF8))
+
+                {
+                    writer.Write(ex.Message);
+                }
+
+            }
 
 
         }
