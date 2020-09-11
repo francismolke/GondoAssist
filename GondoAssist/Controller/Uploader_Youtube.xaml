@@ -7,7 +7,7 @@
       mc:Ignorable="d" d:DesignWidth="800" Background="WhiteSmoke" FontFamily="Bahnschrift SemiCondensed" FontSize="20" Height="720.769">
 
     <DockPanel>
-        <StackPanel Width="350" DockPanel.Dock="Left" Margin="10,0,0,0">
+        <StackPanel Width="350" >
             <Label Content="Wählen Sie Ihre Datei aus:" Foreground="Black"/>
             <Button x:Name="selectFileB" Content="Datei wählen..." Click="onSelectFileButtonClicked"/>
             <TextBox x:Name="pathbox" Text="" Width="350"/>
@@ -17,6 +17,8 @@
             <TextBox x:Name="DescriptionBox" Height="150" Text="" FontSize="14"/>
             <Label Content="Wo soll Timestamp gespeichert werden?" Foreground="Black"/>
             <Button Name="sfTSbutton" Content="Speicherort..." Click="onSelectFolderTSClicked" Margin="0,0,0,5"/>
+            <Button Name="asdSbutton" Content="wähle .xml" Click="onXMLClicked" Margin="0,0,0,5"/>
+            <Button Name="tsbutton" Content="create Timestamps" Click="onTimestampCreatedClicked" />
 
             <Label  Content="Tags" Foreground="Black"/>
             <TextBox x:Name="TagBox" Text=""/>
@@ -27,17 +29,6 @@
                 <ListBoxItem Name="unlisted" Content="Nicht gelistet"/>
             </ListBox>
             <Button Name="startUpload" Content="Upload starten" Click="onUploadClicked"/>
-            <Separator/>
-            <Label Content="Timestamps erstellen:"/>
-            <Button Name="asdSbutton" Content="wähle .xml" Click="onXMLClicked" Margin="0,5,0,5"/>
-            <Button Name="tsbutton" Content="create Timestamps" Click="onTimestampCreatedClicked" />
-        </StackPanel>
-        <!--<StackPanel Orientation="Vertical" DockPanel.Dock="Left">
-            
-        <Separator BorderThickness="2" BorderBrush="Black" DockPanel.Dock="Left"/>
-        </StackPanel>-->
-        <StackPanel DockPanel.Dock="Left">
-            <Button x:Name="btnGetCRInfo" Content="Check Copyright"  Width="200" Height="30" Click="onCheckCRInfoClicked"/>
         </StackPanel>
     </DockPanel>
 </UserControl>

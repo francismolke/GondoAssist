@@ -33,7 +33,7 @@ namespace GondoAssist
             InitializeComponent();
             if (File.Exists(path))
             {
-                DescriptionBox.Text = File.ReadAllText(path);
+            DescriptionBox.Text = File.ReadAllText(path);
             }
 
         }
@@ -133,7 +133,7 @@ namespace GondoAssist
             video.Status = new VideoStatus();
             video.Status.PrivacyStatus = privacystatus; // "unlisted"; // or "private" or "public"
             var filePath = Pfad; // Replace with path to actual movie file.
-            
+
             using (var fileStream = new FileStream(filePath, FileMode.Open))
             {
                 var videosInsertRequest = youtubeService.Videos.Insert(video, "snippet,status", fileStream, "video/*");
@@ -141,68 +141,6 @@ namespace GondoAssist
                 videosInsertRequest.ResponseReceived += videosInsertRequest_ResponseReceived;
 
                 videosInsertRequest.UploadAsync().Wait();
-            }
-            
-        }
-
-        private void onCheckCRInfoClicked(object sender, RoutedEventArgs e)
-        {
-            CopyrightRun().Wait();
-        }
-
-        private async Task CopyrightRun()
-        {
-            // Die Login-Daten für den Youtube-Kanal werden hier behandelt
-            UserCredential credential;
-            using (var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read))
-            {
-                credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    // This OAuth 2.0 access scope allows an application to upload files to the
-                    // authenticated user's YouTube channel, but doesn't allow other types of access.
-                    new[] { YouTubeService.Scope.YoutubeUpload },
-                    "user",
-                    CancellationToken.None
-                );
-            }
-            var youtubeService = new YouTubeService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = Assembly.GetExecutingAssembly().GetName().Name
-            });
-
-            var channelsListRequest = youtubeService.Channels.List("contentDetails");
-            channelsListRequest.Mine = true;
-
-            var channelsListResponse = await channelsListRequest.ExecuteAsync();
-
-            foreach (var channel in channelsListResponse.Items)
-            {
-                // From the API response, extract the playlist ID that identifies the list
-                // of videos uploaded to the authenticated user's channel.
-                var uploadsListId = channel.ContentDetails.RelatedPlaylists.Uploads;
-
-                Console.WriteLine("Videos in list {0}", uploadsListId);
-
-                var nextPageToken = "";
-                while (nextPageToken != null)
-                {
-                    var playlistItemsListRequest = youtubeService.PlaylistItems.List("snippet");
-                    playlistItemsListRequest.PlaylistId = uploadsListId;
-                    playlistItemsListRequest.MaxResults = 50;
-                    playlistItemsListRequest.PageToken = nextPageToken;
-
-                    // Retrieve the list of videos uploaded to the authenticated user's channel.
-                    var playlistItemsListResponse = await playlistItemsListRequest.ExecuteAsync();
-
-                    foreach (var playlistItem in playlistItemsListResponse.Items)
-                    {
-                        // Print information about each video.
-                        Console.WriteLine("{0} ({1})", playlistItem.Snippet.Title, playlistItem.Snippet.ResourceId.VideoId);
-                    }
-
-                    nextPageToken = playlistItemsListResponse.NextPageToken;
-                }
             }
         }
 
@@ -215,7 +153,7 @@ namespace GondoAssist
                     break;
 
                 case UploadStatus.Failed:
-                    MessageBox.Show("An error prevented the upload from completing.\n{0}", progress.Status.ToString());
+                    MessageBox.Show("An error prevented the upload from completing.\n{0}", progress.ToString());
                     break;
             }
         }

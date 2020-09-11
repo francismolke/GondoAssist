@@ -16,17 +16,16 @@ namespace GondoAssist.Klassen
 {
     public class AutoModeLikeability
     {
-        bool? cbTen, cbTwenty, cbAll = false;
-        int sortSequence, episodeLength;
+        bool? cbTen, cbTwenty, cbAll;
+        int sortSequence;
 
-        public AutoModeLikeability(bool? _cbTen, bool? _cbTwenty, bool? _cbAll, int _sortSequence, int _episodeLength)
+        public AutoModeLikeability(bool? _cbTen, bool? _cbTwenty, bool? _cbAll, int _sortSequence)
         {
             //CheckBox _cbTen, CheckBox _cbTwenty, CheckBox _cbAll
             this.cbTen = _cbTen;
             this.cbTwenty = _cbTwenty;
             this.cbAll = _cbAll;
             this.sortSequence = _sortSequence;
-            this.episodeLength = _episodeLength;
         }
 
         public void CreateBlankProjekt(string projektName, string speicherOrt)
@@ -36,18 +35,18 @@ namespace GondoAssist.Klassen
             try
             {
                 string projektDatei = projektName + ".wlmp";
-
+               
                 if (sortSequence == 0)
                 {
-                    filepath = GetLikeability();
+                filepath = GetLikeability();
                 }
                 if (sortSequence == 1)
                 {
-                    filepath = GetLikeabilityByCategory();
+                filepath = GetLikeabilityByCategory();                  
                 }
 
 
-
+                
                 Tuple<int, int> getValue = new Tuple<int, int>(GetFramesizeOfVideos(filepath, 0).Item1, GetFramesizeOfVideos(filepath, 0).Item2);
                 //int width = 1920;
                 //int height = 1080;
@@ -74,16 +73,16 @@ namespace GondoAssist.Klassen
             {
                 using (StreamWriter sr = new StreamWriter(Directory.GetCurrentDirectory() + "\\ErrorProject.txt", true, Encoding.UTF8))
                 {
-
-                    sr.WriteLine(ex.Message + ex.ToString());
-                    // Get stack trace for the exception with source file information
-                    var st = new StackTrace(ex, true);
-                    // Get the top stack frame
-                    var frame = st.GetFrame(0);
-                    // Get the line number from the stack frame
-                    var line = frame.GetFileLineNumber();
-                    sr.WriteLine(st + " " + frame + " " + line + " ");
-
+                
+                        sr.WriteLine(ex.Message + ex.ToString());
+                        // Get stack trace for the exception with source file information
+                        var st = new StackTrace(ex, true);
+                        // Get the top stack frame
+                        var frame = st.GetFrame(0);
+                        // Get the line number from the stack frame
+                        var line = frame.GetFileLineNumber();
+                        sr.WriteLine(st + " " + frame + " " + line + " ");
+                    
                 }
             }
         }
@@ -308,31 +307,6 @@ namespace GondoAssist.Klassen
                 int n = 0;
                 duration = 0;
                 profilename = string.Empty;
-                if (episodeLength != 0)
-                    {
-                    episodeLength = episodeLength * 60;
-                    while (duration < episodeLength)
-                    {
-
-                        // 5 < 12
-
-                        duration += lgg.Select(d => d.Duration).Skip(n).First();
-                        profilename = lgg.Select(p => p.ProfileName).Skip(n).First();
-
-
-                        n++;
-
-                    }
-                    lgg.RemoveRange(n, lgg.Count - n);
-                    foreach (var file in lgg)
-                    {
-                        filePath = lgg.Select(f => f.Link).ToArray();
-                    }
-                    MakeProfileListQuellen(lgg, n);
-
-                    return filePath;
-
-                }
                 // Zehn Minuten Episode
                 if (cbTen == true)
                 {
@@ -492,7 +466,7 @@ namespace GondoAssist.Klassen
         }
 
         List<LikeabilityQuellen> lTop = new List<LikeabilityQuellen>();
-        // List<string> lTop = new List<string>();
+       // List<string> lTop = new List<string>();
         List<LikeabilityQuellen> lBetter = new List<LikeabilityQuellen>();
         List<LikeabilityQuellen> lGood = new List<LikeabilityQuellen>();
         List<LikeabilityQuellen> lMiddle = new List<LikeabilityQuellen>();
@@ -573,10 +547,10 @@ namespace GondoAssist.Klassen
 
                 using (StreamWriter srx = new StreamWriter(Directory.GetCurrentDirectory() + "\\ErrorProject.txt", true, Encoding.UTF8))
                 {
-                    foreach (var item in newListOfCategories)
+                    foreach( var item in newListOfCategories)
                     {
 
-                        srx.WriteLine(item.Duration + " | " + item.ProfileName + " | " + item.Link + " | " + item.Likeability);
+                    srx.WriteLine(item.Duration + " | " + item.ProfileName + " | " + item.Link + " | " + item.Likeability);
                     }
 
 
@@ -590,70 +564,38 @@ namespace GondoAssist.Klassen
                 try
                 {
 
-                    if (episodeLength != 0)
+                // Zehn Minuten Episode
+                if (cbTen == true)
+                {
+                    while (duration < tenMinDuration)
                     {
-                        while (duration < episodeLength)
+                        if (n < newListOfCategories.Count)
                         {
-                            if (n < newListOfCategories.Count)
-                            {
 
-                                // 5 < 12
+                        // 5 < 12
 
 
-                                duration += newListOfCategories.Select(d => d.Duration).Skip(n).First();
-                                profilename = newListOfCategories.Select(p => p.ProfileName).Skip(n).First();
+                        duration += newListOfCategories.Select(d => d.Duration).Skip(n).First();
+                        profilename = newListOfCategories.Select(p => p.ProfileName).Skip(n).First();
 
 
-                                n++;
-                            }
-                            else
+                        n++;
+                        }
+                        else
                             {
                                 break;
                             }
 
-                        }
-                        newListOfCategories.RemoveRange(n, newListOfCategories.Count - n);
-                        foreach (var file in newListOfCategories)
-                        {
-                            filePath = newListOfCategories.Select(f => f.Link).ToArray();
-                        }
-                        MakeProfileListQuellen(newListOfCategories, n);
-
-                        return filePath;
-
                     }
-                    // Zehn Minuten Episode
-                    if (cbTen == true)
+                    newListOfCategories.RemoveRange(n, newListOfCategories.Count - n);
+                    foreach (var file in newListOfCategories)
                     {
-                        while (duration < tenMinDuration)
-                        {
-                            if (n < newListOfCategories.Count)
-                            {
-
-                                // 5 < 12
-
-
-                                duration += newListOfCategories.Select(d => d.Duration).Skip(n).First();
-                                profilename = newListOfCategories.Select(p => p.ProfileName).Skip(n).First();
-
-
-                                n++;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                        }
-                        newListOfCategories.RemoveRange(n, newListOfCategories.Count - n);
-                        foreach (var file in newListOfCategories)
-                        {
-                            filePath = newListOfCategories.Select(f => f.Link).ToArray();
-                        }
-                        MakeProfileListQuellen(newListOfCategories, n);
-
-                        return filePath;
+                        filePath = newListOfCategories.Select(f => f.Link).ToArray();
                     }
+                    MakeProfileListQuellen(newListOfCategories, n);
+
+                    return filePath;
+                }
                 }
                 catch (Exception ex)
                 {

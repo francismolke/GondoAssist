@@ -496,34 +496,9 @@ namespace GondoAssist
 
 
                     driver.Url = profileList.ElementAt(counter);
-
                     var html = driver.PageSource;
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(html);
-
-
-
-                    //CheckIfProfileIsFollowed();
-                    string profilename = "";                //  ffKix.sqdOP.L3NKy.y3zKF      
-                    if (IsElementPresent(By.CssSelector("button.ffKix.sqdOP.L3NKy.y3zKF"), driver))
-                    {
-                        driver.FindElement(By.CssSelector("button.ffKix.sqdOP.L3NKy.y3zKF")).Click();
-                        Thread.Sleep(2000);
-                    }
-                    else if (IsElementPresent(By.CssSelector("button._5f5mN.jIbKX._6VtSN.yZn4P"), driver))
-                    {
-                        driver.FindElement(By.CssSelector("button._5f5mN.jIbKX._6VtSN.yZn4P")).Click();
-                        Thread.Sleep(2000);
-                    }
-                    else if (IsElementPresent(By.CssSelector("button.sqdOP.L3NKy.y3zKF"), driver))
-                    {
-                        driver.FindElement(By.CssSelector("button.sqdOP.L3NKy.y3zKF")).Click();
-                        Thread.Sleep(2000);
-                    }
-
-                    //   return profilename; 
-
-                    //  var follow = htmlDoc.DocumentNode.SelectNodes("//button[@class='ffKix.sqdOP.L3NKy.y3zKF'][@datetime]");
                     creatorName = GetProfileName(profileList.ElementAt(counter));
                     // zweite
 
@@ -666,8 +641,6 @@ namespace GondoAssist
             CopyQuellenToDebugFolder(targetPath);
             MessageBox.Show("Videosuche beendet.");
         }
-
-
 
         private string DownloadLinkExpress(IWebDriver driver)
         {

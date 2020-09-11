@@ -30,7 +30,6 @@
             <StackPanel Width="300" HorizontalAlignment="Left" Margin="3,0,3,0">
                 <Label Name="lbSettings" Content="Einstellungen:"/>
                 <Label Name="lbEpisodenLaenge" Content="Episoden Länge:"/>
-                <TextBox x:Name="tbepslength" Width="60" HorizontalAlignment="Left" Margin="5,0,0,5" TextChanged="EpisodeLengthTextChanged"/>
                 <CheckBox x:Name="cbTenmin" Content="10-15 Minuten Episode" />
                 <CheckBox x:Name="cbTwentymin" Content="20 Minuten Episode" />
                 <CheckBox x:Name="cbAll" Content="Alle Clips benutzen" />
