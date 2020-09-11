@@ -96,13 +96,29 @@ namespace GondoAssist
             }
             catch (Exception ex)
             {
-                using (StreamWriter writer = new StreamWriter(speicherort + "\\InstagramgrabberError.txt", true, Encoding.UTF8))
-
+                using (StreamWriter sr = new StreamWriter(Directory.GetCurrentDirectory() + "\\ErrorInstaGrabber.txt", true, Encoding.UTF8))
                 {
-                    writer.Write(ex.Message);
-                }
 
+                    sr.WriteLine(ex.Message + ex.ToString());
+                    // Get stack trace for the exception with source file information
+                    var st = new StackTrace(ex, true);
+                    // Get the top stack frame
+                    var frame = st.GetFrame(0);
+                    // Get the line number from the stack frame
+                    var line = frame.GetFileLineNumber();
+                    sr.WriteLine(st + " " + frame + " " + line + " ");
+
+                }
             }
+            //catch (Exception ex)
+            //{
+            //    using (StreamWriter writer = new StreamWriter(speicherort + "\\InstagramgrabberError.txt", true, Encoding.UTF8))
+
+            //    {
+            //        writer.Write(ex.Message);
+            //    }
+
+            //}
         }
 
 
@@ -174,48 +190,64 @@ namespace GondoAssist
             try
             {
 
-            if ((string)cBShowList.SelectedItem == "")
-            {
-                MessageBox.Show("Liste auswählen");
-            }
-            else
-            {
-                if (speicherort == "" || speicherort == null)
+                if ((string)cBShowList.SelectedItem == "")
                 {
-                    MessageBox.Show("Kein Speicherort ausgewählt, bitte wähle den Episoden Ordner");
+                    MessageBox.Show("Liste auswählen");
                 }
                 else
                 {
-                    if (igtitle.Text == "")
+                    if (speicherort == "" || speicherort == null)
                     {
-                        igtitle.Text = "Heute";
+                        MessageBox.Show("Kein Speicherort ausgewählt, bitte wähle den Episoden Ordner");
                     }
-                    //       string targetPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\" + igtitle.Text;
-                    speicherortQuellenLikeability = Directory.GetCurrentDirectory();
-                    targetPath = speicherort + @"\" + igtitle.Text;
-                    Directory.CreateDirectory(targetPath);
-                    if (startWithBotProfile.IsChecked == true)
+                    else
                     {
-                        botProfileIsActive = true;
+                        if (igtitle.Text == "")
+                        {
+                            igtitle.Text = "Heute";
+                        }
+                        //       string targetPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\" + igtitle.Text;
+                        speicherortQuellenLikeability = Directory.GetCurrentDirectory();
+                        targetPath = speicherort + @"\" + igtitle.Text;
+                        Directory.CreateDirectory(targetPath);
+                        if (startWithBotProfile.IsChecked == true)
+                        {
+                            botProfileIsActive = true;
+                        }
+                        if (cbRemoveTags.IsChecked == true)
+                        {
+                            FillBlackListForTags();
+                        }
+                        DateTimeCheck();
                     }
-                    if (cbRemoveTags.IsChecked == true)
-                    {
-                        FillBlackListForTags();
-                    }
-                    DateTimeCheck();
+                    GetDateForQuellen();
                 }
-                GetDateForQuellen();
-            }
             }
             catch (Exception ex)
             {
-                using (StreamWriter writer = new StreamWriter(speicherort + "\\InstagramgrabberError.txt", true, Encoding.UTF8))
-
+                using (StreamWriter sr = new StreamWriter(Directory.GetCurrentDirectory() + "\\ErrorInstaGrabber.txt", true, Encoding.UTF8))
                 {
-                    writer.Write(ex.Message);
-                }
 
+                    sr.WriteLine(ex.Message + ex.ToString());
+                    // Get stack trace for the exception with source file information
+                    var st = new StackTrace(ex, true);
+                    // Get the top stack frame
+                    var frame = st.GetFrame(0);
+                    // Get the line number from the stack frame
+                    var line = frame.GetFileLineNumber();
+                    sr.WriteLine(st + " " + frame + " " + line + " ");
+
+                }
             }
+            //catch (Exception ex)
+            //{
+            //    using (StreamWriter writer = new StreamWriter(speicherort + "\\InstagramgrabberError.txt", true, Encoding.UTF8))
+
+            //    {
+            //        writer.Write(ex.Message);
+            //    }
+
+            //}
         }
 
 
@@ -225,30 +257,46 @@ namespace GondoAssist
             try
             {
 
-            File.WriteAllText("BlackListforTags.txt", String.Empty);
-            using (StreamWriter blackListWriter = new StreamWriter("BlackListforTags.txt", true, Encoding.UTF8))
-            {
-
-                //driver.Manage().Cookies.AddCookie(cookie);
-                foreach (var element in lBBlackList.Items)
+                File.WriteAllText("BlackListforTags.txt", String.Empty);
+                using (StreamWriter blackListWriter = new StreamWriter("BlackListforTags.txt", true, Encoding.UTF8))
                 {
 
-                    blackListWriter.WriteLine(element);
+                    //driver.Manage().Cookies.AddCookie(cookie);
+                    foreach (var element in lBBlackList.Items)
+                    {
+
+                        blackListWriter.WriteLine(element);
+                    }
+
+
+                    blackListWriter.Close();
                 }
-
-
-                blackListWriter.Close();
-            }
             }
             catch (Exception ex)
             {
-                using (StreamWriter writer = new StreamWriter(speicherort + "\\InstagramgrabberError.txt", true, Encoding.UTF8))
-
+                using (StreamWriter sr = new StreamWriter(Directory.GetCurrentDirectory() + "\\ErrorInstaGrabber.txt", true, Encoding.UTF8))
                 {
-                    writer.Write(ex.Message);
-                }
 
+                    sr.WriteLine(ex.Message + ex.ToString());
+                    // Get stack trace for the exception with source file information
+                    var st = new StackTrace(ex, true);
+                    // Get the top stack frame
+                    var frame = st.GetFrame(0);
+                    // Get the line number from the stack frame
+                    var line = frame.GetFileLineNumber();
+                    sr.WriteLine(st + " " + frame + " " + line + " ");
+
+                }
             }
+            //catch (Exception ex)
+            //{
+            //    using (StreamWriter writer = new StreamWriter(speicherort + "\\InstagramgrabberError.txt", true, Encoding.UTF8))
+
+            //    {
+            //        writer.Write(ex.Message);
+            //    }
+
+            //}
         }
 
         private void CreateIGListAgain()
@@ -277,57 +325,64 @@ namespace GondoAssist
             try
             {
 
-            int counter = 1;
+                int counter = 1;
 
-            DateTime dateTimeNow = DateTime.Now;
-            DateTime lastThuesday = DateTime.Now.AddDays(-1);
-            DateTime lastFriday = DateTime.Now.AddDays(-1);
-            DateTime insertDate = (DateTime)IGDatePicker.SelectedDate;
-            DateTime suggestedDate;
-            //  insertDate = dpSelectedDate;
+                DateTime dateTimeNow = DateTime.Now;
+                DateTime lastThuesday = DateTime.Now.AddDays(-1);
+                DateTime lastFriday = DateTime.Now.AddDays(-1);
+                DateTime insertDate = (DateTime)IGDatePicker.SelectedDate;
+                DateTime suggestedDate;
+                //  insertDate = dpSelectedDate;
 
-            if (insertDate == null)
-            {
-                if (dateTimeNow.DayOfWeek == DayOfWeek.Friday)
+                if (insertDate == null)
                 {
-
-
-                    while (lastThuesday.DayOfWeek != DayOfWeek.Friday)
+                    if (dateTimeNow.DayOfWeek == DayOfWeek.Friday)
                     {
-                        lastThuesday = lastThuesday.AddDays(-1);
-                        counter++;
+
+
+                        while (lastThuesday.DayOfWeek != DayOfWeek.Friday)
+                        {
+                            lastThuesday = lastThuesday.AddDays(-1);
+                            counter++;
+                        }
+                        TimeSpan diffDays = dateTimeNow.Subtract(lastThuesday);
+                        suggestedDate = dateTimeNow - diffDays;
                     }
-                    TimeSpan diffDays = dateTimeNow.Subtract(lastThuesday);
-                    suggestedDate = dateTimeNow - diffDays;
-                }
-                else
-                {
-
-
-                    while (lastFriday.DayOfWeek != DayOfWeek.Friday)
+                    else
                     {
-                        lastFriday = lastFriday.AddDays(-1);
-                        counter++;
+
+
+                        while (lastFriday.DayOfWeek != DayOfWeek.Friday)
+                        {
+                            lastFriday = lastFriday.AddDays(-1);
+                            counter++;
+                        }
+                        TimeSpan diffDays = dateTimeNow.Subtract(lastFriday);
+                        suggestedDate = dateTimeNow - diffDays;
+
                     }
-                    TimeSpan diffDays = dateTimeNow.Subtract(lastFriday);
-                    suggestedDate = dateTimeNow - diffDays;
-
+                    //dpSelectedDate.SelectedDate = suggestedDate;
+                    GetInstagramList(suggestedDate);
                 }
-                //dpSelectedDate.SelectedDate = suggestedDate;
-                GetInstagramList(suggestedDate);
-            }
 
 
-            GetInstagramList(insertDate);
+                GetInstagramList(insertDate);
             }
             catch (Exception ex)
             {
-                using (StreamWriter writer = new StreamWriter(speicherort + "\\InstagramgrabberError.txt", true, Encoding.UTF8))
-
+                using (StreamWriter sr = new StreamWriter(Directory.GetCurrentDirectory() + "\\ErrorInstaGrabber.txt", true, Encoding.UTF8))
                 {
-                    writer.Write(ex.Message);
-                }
 
+                    sr.WriteLine(ex.Message + ex.ToString());
+                    // Get stack trace for the exception with source file information
+                    var st = new StackTrace(ex, true);
+                    // Get the top stack frame
+                    var frame = st.GetFrame(0);
+                    // Get the line number from the stack frame
+                    var line = frame.GetFileLineNumber();
+                    sr.WriteLine(st + " " + frame + " " + line + " ");
+
+                }
             }
 
 
@@ -1276,7 +1331,7 @@ namespace GondoAssist
                 }
                 FillListinCB();
             }
-            
+
         }
 
         private string EncryptLoginInfo(string value)
