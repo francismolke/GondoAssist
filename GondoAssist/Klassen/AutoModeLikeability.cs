@@ -16,16 +16,17 @@ namespace GondoAssist.Klassen
 {
     public class AutoModeLikeability
     {
-        bool? cbTen, cbTwenty, cbAll;
-        int sortSequence;
+        bool? cbTen, cbTwenty, cbAll = false;
+        int sortSequence, episodeLength;
 
-        public AutoModeLikeability(bool? _cbTen, bool? _cbTwenty, bool? _cbAll, int _sortSequence)
+        public AutoModeLikeability(bool? _cbTen, bool? _cbTwenty, bool? _cbAll, int _sortSequence, int _episodeLength)
         {
             //CheckBox _cbTen, CheckBox _cbTwenty, CheckBox _cbAll
             this.cbTen = _cbTen;
             this.cbTwenty = _cbTwenty;
             this.cbAll = _cbAll;
             this.sortSequence = _sortSequence;
+            this.episodeLength = _episodeLength;
         }
 
         public void CreateBlankProjekt(string projektName, string speicherOrt)
@@ -307,6 +308,32 @@ namespace GondoAssist.Klassen
                 int n = 0;
                 duration = 0;
                 profilename = string.Empty;
+                if (episodeLength != 0)
+                {
+                    episodeLength = episodeLength * 60;
+                    while (duration < episodeLength)
+                    {
+
+                        // 5 < 12
+
+                        duration += lgg.Select(d => d.Duration).Skip(n).First();
+                        profilename = lgg.Select(p => p.ProfileName).Skip(n).First();
+
+
+                        n++;
+
+                    }
+                    lgg.RemoveRange(n, lgg.Count - n);
+                    foreach (var file in lgg)
+                    {
+                        filePath = lgg.Select(f => f.Link).ToArray();
+                    }
+                    MakeProfileListQuellen(lgg, n);
+
+                    return filePath;
+
+                }
+
                 // Zehn Minuten Episode
                 if (cbTen == true)
                 {
@@ -563,9 +590,41 @@ namespace GondoAssist.Klassen
                 profilename = string.Empty;
                 try
                 {
+                    if (episodeLength != 0)
+                    {
+                        while (duration < episodeLength)
+                        {
+                            if (n < newListOfCategories.Count)
+                            {
 
-                // Zehn Minuten Episode
-                if (cbTen == true)
+                                // 5 < 12
+
+
+                                duration += newListOfCategories.Select(d => d.Duration).Skip(n).First();
+                                profilename = newListOfCategories.Select(p => p.ProfileName).Skip(n).First();
+
+
+                                n++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+
+                        }
+                        newListOfCategories.RemoveRange(n, newListOfCategories.Count - n);
+                        foreach (var file in newListOfCategories)
+                        {
+                            filePath = newListOfCategories.Select(f => f.Link).ToArray();
+                        }
+                        MakeProfileListQuellen(newListOfCategories, n);
+
+                        return filePath;
+
+                    }
+
+                    // Zehn Minuten Episode
+                    if (cbTen == true)
                 {
                     while (duration < tenMinDuration)
                     {

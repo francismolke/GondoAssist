@@ -383,6 +383,20 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\ProjectItems\InstagramProfileLists\InstagramProfileList.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ProjectItems\ProfilListen\AllLists.txt" />
+    <Resource Include="Resources\ProjectItems\ProfilListen\Better.txt" />
+    <Resource Include="Resources\ProjectItems\ProfilListen\End.txt" />
+    <Resource Include="Resources\ProjectItems\ProfilListen\Filler.txt" />
+    <Resource Include="Resources\ProjectItems\ProfilListen\Good.txt" />
+    <Resource Include="Resources\ProjectItems\ProfilListen\Middle.txt" />
+    <Resource Include="Resources\ProjectItems\ProfilListen\Top.txt" />
+    <Resource Include="Resources\ProjectItems\User\Youtube_VideoDescription.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

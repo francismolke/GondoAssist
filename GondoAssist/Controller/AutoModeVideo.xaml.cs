@@ -97,27 +97,55 @@ namespace GondoAssist.Controller
         {
             try
             {
-            if (cbTwentymin.IsChecked == false && cbTenmin.IsChecked == false && cbAll.IsChecked == false)
-            {
-                MessageBox.Show("Bitte die Dauer des Episode auswählen: ");
-            }
 
-            if (cbByLikeability.IsChecked == false && cbByCategoryThenLikeability.IsChecked == false)
-            {
-                MessageBox.Show("Sortierreihenfolge wurde nicht gewählt");
-            }
-            if (cbByLikeability.IsChecked == true && (cbTwentymin.IsChecked == true || cbTenmin.IsChecked == true || cbAll.IsChecked == true))
-            {
-                // 0 = Likeablity
-                AutoModeLikeability aml = new AutoModeLikeability(cbTenmin.IsChecked, cbTwentymin.IsChecked, cbAll.IsChecked, 0);
-                aml.CreateBlankProjekt(episodeTitle.Text, speicherort);
-            }
-            if (cbByCategoryThenLikeability.IsChecked == true && (cbTwentymin.IsChecked == true || cbTenmin.IsChecked == true || cbAll.IsChecked == true))
-            {
-                // 1 = Category & Likeability
-                AutoModeLikeability aml = new AutoModeLikeability(cbTenmin.IsChecked, cbTwentymin.IsChecked, cbAll.IsChecked, 1);
-                aml.CreateBlankProjekt(episodeTitle.Text, speicherort);
-            }
+                if (cbTwentymin.IsChecked == false && cbTenmin.IsChecked == false && cbAll.IsChecked == false && tbepslength.Text == "")
+                {
+                    MessageBox.Show("Bitte die Dauer des Episode auswählen: ");
+                }
+                if (tbepslength.Text != "" && cbTwentymin.IsChecked == false && cbTenmin.IsChecked == false && cbAll.IsChecked == false)
+                {
+                    int episodeLength = Int32.Parse(tbepslength.Text);
+                    AutoModeLikeability aml = new AutoModeLikeability(cbTenmin.IsChecked, cbTwentymin.IsChecked, cbAll.IsChecked, 0, episodeLength);
+                    aml.CreateBlankProjekt(episodeTitle.Text, speicherort);
+
+                }
+                else if (cbByLikeability.IsChecked == false && cbByCategoryThenLikeability.IsChecked == false)
+                {
+                    MessageBox.Show("Sortierreihenfolge wurde nicht gewählt");
+                }
+                else if (cbByLikeability.IsChecked == true && (cbTwentymin.IsChecked == true || cbTenmin.IsChecked == true || cbAll.IsChecked == true) && tbepslength.Text == "")
+                {
+                    // 0 = Likeablity
+                    AutoModeLikeability aml = new AutoModeLikeability(cbTenmin.IsChecked, cbTwentymin.IsChecked, cbAll.IsChecked, 0, 0);
+                    aml.CreateBlankProjekt(episodeTitle.Text, speicherort);
+                }
+                else if (cbByCategoryThenLikeability.IsChecked == true && (cbTwentymin.IsChecked == true || cbTenmin.IsChecked == true || cbAll.IsChecked == true) && tbepslength.Text == "")
+                {
+                    // 1 = Category & Likeability
+                    AutoModeLikeability aml = new AutoModeLikeability(cbTenmin.IsChecked, cbTwentymin.IsChecked, cbAll.IsChecked, 1, 0);
+                    aml.CreateBlankProjekt(episodeTitle.Text, speicherort);
+                }
+                //if (cbTwentymin.IsChecked == false && cbTenmin.IsChecked == false && cbAll.IsChecked == false)
+                //{
+                //    MessageBox.Show("Bitte die Dauer des Episode auswählen: ");
+                //}
+
+                //if (cbByLikeability.IsChecked == false && cbByCategoryThenLikeability.IsChecked == false)
+                //{
+                //    MessageBox.Show("Sortierreihenfolge wurde nicht gewählt");
+                //}
+                //if (cbByLikeability.IsChecked == true && (cbTwentymin.IsChecked == true || cbTenmin.IsChecked == true || cbAll.IsChecked == true))
+                //{
+                //    // 0 = Likeablity
+                //    AutoModeLikeability aml = new AutoModeLikeability(cbTenmin.IsChecked, cbTwentymin.IsChecked, cbAll.IsChecked, 0);
+                //    aml.CreateBlankProjekt(episodeTitle.Text, speicherort);
+                //}
+                //if (cbByCategoryThenLikeability.IsChecked == true && (cbTwentymin.IsChecked == true || cbTenmin.IsChecked == true || cbAll.IsChecked == true))
+                //{
+                //    // 1 = Category & Likeability
+                //    AutoModeLikeability aml = new AutoModeLikeability(cbTenmin.IsChecked, cbTwentymin.IsChecked, cbAll.IsChecked, 1);
+                //    aml.CreateBlankProjekt(episodeTitle.Text, speicherort);
+                //}
 
             }
             catch(Exception ex)
@@ -230,7 +258,21 @@ namespace GondoAssist.Controller
                 MessageBox.Show("Es ist keine Quellen Datei verfügbar");
             }
         }
-
+        private void EpisodeLengthTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (tbepslength.Text == "")
+            {
+                cbTenmin.IsEnabled = true;
+                cbTwentymin.IsEnabled = true;
+                cbAll.IsEnabled = true;
+            }
+            if (tbepslength.Text != "")
+            {
+                cbTenmin.IsEnabled = false;
+                cbTwentymin.IsEnabled = false;
+                cbAll.IsEnabled = false;
+            }
+        }
         private void onTenMinsClicked(object sender, RoutedEventArgs e)
         {
             //// Tenmin Checkbox enabled

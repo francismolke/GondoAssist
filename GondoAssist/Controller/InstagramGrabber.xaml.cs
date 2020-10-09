@@ -1,12 +1,9 @@
-﻿using GondoAssist.Klassen;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -60,8 +57,12 @@ namespace GondoAssist
             cBShowList.ItemsSource = null;
             List<string> profileLists = new List<string>();
 
+            // "D:\\GondoAssist_Neueste\\GondoAssist\\GondoAssist\\ProjectItems\\InstagramProfileLists"
+            //string[] profileListsArray = Directory.GetFiles("InstagramProfileLists");
+            var BinFolder = Directory.GetParent(Directory.GetCurrentDirectory());
+            var ParentOfBinFolder = BinFolder.Parent.FullName;
+            string[] profileListsArray = Directory.GetFiles(ParentOfBinFolder + "\\Resources\\ProjectItems\\InstagramProfileLists");
 
-            string[] profileListsArray = Directory.GetFiles("InstagramProfileLists");
             foreach (var profile in profileListsArray)
             {
                 profileLists.Add(Path.GetFileNameWithoutExtension(profile));
@@ -408,10 +409,13 @@ namespace GondoAssist
             }
             else
             {
+                var BinFolder = Directory.GetParent(Directory.GetCurrentDirectory());
+                var ParentOfBinFolder = BinFolder.Parent.FullName + "\\Resources\\ProjectItems\\InstagramProfileLists\\";
 
-                using (StreamReader filereader = new StreamReader("InstagramProfileLists\\" + sourcepath + ".txt"))
+
+                using (StreamReader filereader = new StreamReader(ParentOfBinFolder + sourcepath + ".txt"))
                 {
-                    foreach (string line in File.ReadLines("InstagramProfileLists\\" + sourcepath + ".txt", Encoding.UTF8))
+                    foreach (string line in File.ReadLines(ParentOfBinFolder + sourcepath + ".txt", Encoding.UTF8))
                     {
                         profileList.Add(line);
                     }
@@ -556,6 +560,10 @@ namespace GondoAssist
                     htmlDoc.LoadHtml(html);
                     creatorName = GetProfileName(profileList.ElementAt(counter));
                     // zweite
+                    if (IsElementPresent(By.XPath("//div[@class='pbNvD    FrS-d  ']"), driver))
+                    {
+                        driver.FindElement(By.XPath("//button[@class='aOOlW  bIiDR  ']")).Click();
+                    }
 
 
                     // Check if Bot was not blocked by Instagram
@@ -1147,9 +1155,11 @@ namespace GondoAssist
             {
                 string sourcepath = cBShowList.SelectedItem.ToString() + ".txt";
                 List<string> profileListRoh = new List<string>();
-                using (StreamReader filereader = new StreamReader("InstagramProfileLists\\" + sourcepath))
+                var BinFolder = Directory.GetParent(Directory.GetCurrentDirectory());
+                var ParentOfBinFolder = BinFolder.Parent.FullName + "\\Resources\\ProjectItems\\InstagramProfileLists\\";
+                using (StreamReader filereader = new StreamReader(ParentOfBinFolder + sourcepath))
                 {
-                    foreach (string line in File.ReadLines("InstagramProfileLists\\" + sourcepath, Encoding.UTF8))
+                    foreach (string line in File.ReadLines(ParentOfBinFolder + sourcepath, Encoding.UTF8))
                     {
                         profileListRoh.Add(line);
                     }
@@ -1228,12 +1238,14 @@ namespace GondoAssist
             }
             else
             {
-                if (File.Exists("InstagramProfileLists\\" + tbProfileListName.Text + ".txt"))
+                var BinFolder = Directory.GetParent(Directory.GetCurrentDirectory());
+                var ParentOfBinFolder = BinFolder.Parent.FullName + "\\Resources\\ProjectItems\\InstagramProfileLists\\";
+                if (File.Exists(ParentOfBinFolder + tbProfileListName.Text + ".txt"))
                 {
                     System.Windows.Forms.DialogResult dialogResult = System.Windows.Forms.MessageBox.Show("Das Profil existiert schon, möchten Sie überschreiben?", "Profil existiert schon", System.Windows.Forms.MessageBoxButtons.YesNoCancel);
                     if (dialogResult == System.Windows.Forms.DialogResult.Yes)
                     {
-                        File.WriteAllText("InstagramProfileLists\\" + tbProfileListName.Text + ".txt", String.Empty);
+                        File.WriteAllText(ParentOfBinFolder + tbProfileListName.Text + ".txt", String.Empty);
 
                         WriteProfileList();
                     }
@@ -1256,8 +1268,9 @@ namespace GondoAssist
         private void WriteProfileList()
         {
             int i = tbProfileList.LineCount;
-
-            using (StreamWriter profileListWriter = new StreamWriter("InstagramProfileLists\\" + tbProfileListName.Text + ".txt", true, Encoding.UTF8))
+            var BinFolder = Directory.GetParent(Directory.GetCurrentDirectory());
+            var ParentOfBinFolder = BinFolder.Parent.FullName + "\\Resources\\ProjectItems\\InstagramProfileLists\\";
+            using (StreamWriter profileListWriter = new StreamWriter(ParentOfBinFolder + tbProfileListName.Text + ".txt", true, Encoding.UTF8))
             {
                 for (int line = 0; line < i; line++)
                 {
@@ -1286,9 +1299,11 @@ namespace GondoAssist
                 spProfileList.Visibility = Visibility.Visible;
                 tbProfileListName.Text = cBShowList.SelectedItem.ToString();
                 List<string> profileListRoh = new List<string>();
-                using (StreamReader filereader = new StreamReader("InstagramProfileLists\\" + sourcepath))
+                var BinFolder = Directory.GetParent(Directory.GetCurrentDirectory());
+                var ParentOfBinFolder = BinFolder.Parent.FullName + "\\Resources\\ProjectItems\\InstagramProfileLists\\";
+                using (StreamReader filereader = new StreamReader(ParentOfBinFolder + sourcepath))
                 {
-                    foreach (string line in File.ReadLines("InstagramProfileLists\\" + sourcepath, Encoding.UTF8))
+                    foreach (string line in File.ReadLines(ParentOfBinFolder + sourcepath, Encoding.UTF8))
                     {
                         profileListRoh.Add(line);
                     }
@@ -1307,7 +1322,9 @@ namespace GondoAssist
 
         private void onDeleteListClicked(object sender, RoutedEventArgs e)
         {
-            string sourcepath = "InstagramProfileLists\\" + cBShowList.SelectedItem.ToString() + ".txt";
+            var BinFolder = Directory.GetParent(Directory.GetCurrentDirectory());
+            var ParentOfBinFolder = BinFolder.Parent.FullName + "\\Resources\\ProjectItems\\InstagramProfileLists\\";
+            string sourcepath = ParentOfBinFolder + cBShowList.SelectedItem.ToString() + ".txt";
 
             if ((string)cBShowList.SelectedItem == "")
             {
