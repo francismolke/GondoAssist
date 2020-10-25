@@ -435,6 +435,7 @@ namespace GondoAssist
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
             wait.Until(drivers => ((IJavaScriptExecutor)drivers).ExecuteScript("return document.readyState").Equals("complete"));
         }
+        
 
         public void GetHTMLInfo(List<string> profileList, DateTime suggestedDate)
         {
@@ -456,7 +457,6 @@ namespace GondoAssist
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
 
 
-
             //  COOKIE MANAGEMENT !?
             if (isBotProfileBlocked == true || botProfileIsActive == true)
             {
@@ -464,6 +464,7 @@ namespace GondoAssist
                 driver.Url = "https://www.instagram.com/accounts/login/";
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
                 //   driver.Manage().Cookies.AddCookie(Cookie("scheißIG", "fickdeinemutter"));
+                CheckDatenschutz(driver);
 
                 driver.Manage().Cookies.AddCookie(new OpenQA.Selenium.Cookie("scheißIG", "fickdeinemutter"));
 
@@ -491,6 +492,8 @@ namespace GondoAssist
                 driver.Url = "https://www.instagram.com/accounts/login/";
                 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20);
                 //driver.Manage().Cookies.AddCookie(new Cookie("scheißIG", "fickdeinemutter"));
+                CheckDatenschutz(driver);
+
                 driver.Manage().Cookies.AddCookie(new OpenQA.Selenium.Cookie("scheißIG", "fickdeinemutter"));
 
                 var username = driver.FindElement(By.CssSelector("input[name='username']"));
@@ -511,6 +514,7 @@ namespace GondoAssist
                     cookieWriter.Close();
                 }
             }
+            CheckDatenschutz(driver);
 
             //  Cookie ck = new Cookie(coo)
             ///  aufrufeRoh = driver.FindElement(By.ClassName("vcOH2")).Text;
@@ -560,10 +564,7 @@ namespace GondoAssist
                     htmlDoc.LoadHtml(html);
                     creatorName = GetProfileName(profileList.ElementAt(counter));
                     // zweite
-                    if (IsElementPresent(By.XPath("//div[@class='pbNvD    FrS-d  ']"), driver))
-                    {
-                        driver.FindElement(By.XPath("//button[@class='aOOlW  bIiDR  ']")).Click();
-                    }
+
 
 
                     // Check if Bot was not blocked by Instagram
@@ -703,6 +704,14 @@ namespace GondoAssist
             }
             CopyQuellenToDebugFolder(targetPath);
             MessageBox.Show("Videosuche beendet.");
+        }
+
+        private void CheckDatenschutz(IWebDriver driver)
+        {
+            if (IsElementPresent(By.XPath("//div[@class='pbNvD    FrS-d  ']"), driver))
+            {
+                driver.FindElement(By.XPath("//button[@class='aOOlW  bIiDR  ']")).Click();
+            }
         }
 
         private string DownloadLinkExpress(IWebDriver driver)
